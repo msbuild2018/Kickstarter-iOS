@@ -6,7 +6,7 @@ internal final class ProjectNavigatorPagesDataSource: NSObject, UIPageViewContro
   private let initialProject: Project
   private var playlist: [Project] = []
   private let refTag: RefTag
-  private var viewControllers: [UIViewController?] = []
+  internal var viewControllers: [UIViewController?] = []
 
   init(refTag: RefTag, initialPlaylist: [Project]?, initialProject: Project) {
     self.initialProject = initialProject

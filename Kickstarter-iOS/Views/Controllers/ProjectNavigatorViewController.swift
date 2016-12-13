@@ -154,7 +154,12 @@ extension ProjectNavigatorViewController: UIPageViewControllerDelegate {
                                                       previousViewControllers: [UIViewController],
                                                       transitionCompleted completed: Bool) {
 
-    self.viewModel.inputs.pageTransition(completed: completed)
+    // do the same here for computing `idx` and making the input take it.
+
+    let idx = previousViewControllers.first.flatMap(self.pageDataSource.indexFor(controller:))
+
+
+    self.viewModel.inputs.pageTransition(completed: completed, toPage: idx)
   }
 
   internal func pageViewController(
@@ -169,7 +174,10 @@ extension ProjectNavigatorViewController: UIPageViewControllerDelegate {
 
     vc.delegate = self
 
-    self.viewModel.inputs.willTransition(toProject: project)
+    let idx = pendingViewControllers.first.flatMap(self.pageDataSource.indexFor(controller:))
+
+    // make the input take `idx`
+    self.viewModel.inputs.willTransition(toProject: project, toPage: idx)
   }
 }
 

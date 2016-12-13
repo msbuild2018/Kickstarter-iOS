@@ -147,6 +147,19 @@ public final class Koala {
     }
   }
 
+  /// Determines swipe direction
+  public enum DirectionType: String {
+    case left
+    case right
+
+    private var trackingString: String {
+      switch self {
+      case .left: return "leftSwipe"
+      case .right: return "rightSwipe"
+      }
+    }
+  }
+
   /**
    Determines the place from which the newsletter toggle was presented.
 
@@ -1113,13 +1126,23 @@ public final class Koala {
     self.track(event: "Viewed Project Page", properties: props)
   }
 
-  public func trackSwipedProject(project: Project, refTag: RefTag?) {
+  public func trackSwipedProject(project: Project, refTag: RefTag?, direction: DirectionType) {
 
     var props = properties(project: project, loggedInUser: self.loggedInUser)
     props["ref_tag"] = refTag?.stringTag
 
     self.track(event: "Swiped Project", properties: props)
     self.track(event: "Project Navigate", properties: props)
+    self.track(event: "Swipe Project Direction", properties: [
+      "direction_type": direction.trackingString
+      ])
+
+  }
+
+  public func trackProjectSwipeDirection(project: Project, direction: DirectionType){
+    self.track(event: "Swipe Project Direction", properties: [
+      "direction_type": direction.trackingString
+      ])
   }
 
   public func trackClosedProjectPage(project: Project, refTag: RefTag?, gestureType: GestureType) {

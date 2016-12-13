@@ -8,7 +8,7 @@ public protocol ProjectNavigatorViewModelInputs {
   func configureWith(project project: Project, refTag: RefTag)
 
   /// Call when the UIPageViewController finishes transitioning.
-  func pageTransition(completed completed: Bool)
+  func pageTransition(completed completed: Bool, toPage: Int?)
 
   /// Call with panning data.
   func panning(contentOffset contentOffset: CGPoint,
@@ -20,7 +20,7 @@ public protocol ProjectNavigatorViewModelInputs {
   func viewDidLoad()
 
   /// Call when the UIPageViewController begins a transition sequence to a project.
-  func willTransition(toProject project: Project)
+  func willTransition(toProject project: Project, toPage: Int?)
 }
 
 public protocol ProjectNavigatorViewModelOutputs {
@@ -63,12 +63,28 @@ ProjectNavigatorViewModelInputs, ProjectNavigatorViewModelOutputs {
       .map(first)
 
     let swipedToProject = self.willTransitionToProjectProperty.signal.ignoreNil()
-      .takeWhen(self.pageTransitionCompletedProperty.signal.filter(isTrue))
+      .takeWhen(self.pageTransitionCompletedProperty.signal.filter{ $0!.0 == true })
 
-    let currentProject = Signal.merge(
-      configData.map { $0.project },
-      swipedToProject
-    )
+    let currentPage = self.willTransitionToProjectProperty.signal.ignoreNil().map(second)
+    let nextPage = self.pageTransitionCompletedProperty.signal.ignoreNil().map(second)
+
+    let pages = combineLatest(currentPage, nextPage)
+
+    let pageDirection = pages
+      .scan(Direction.none) { direction, page in
+        if page.0 > page.1 {
+          return  .left
+        } else if page.0 < page.1 {
+          return  .right
+        } else {
+          return direction
+        }
+    }
+
+    let currentProject = /*Signal.merge(*/
+      configData.map { $0.project }
+//      swipedToProject
+//    )
 
     self.setNeedsStatusBarAppearanceUpdate = swipedToProject.ignoreValues()
 
@@ -122,11 +138,16 @@ ProjectNavigatorViewModelInputs, ProjectNavigatorViewModelOutputs {
       .map { $0 == .started || $0 == .updating }
       .skipRepeats()
 
-    configData
+    combineLatest(configData, pageDirection)
       .takePairWhen(swipedToProject)
-      .observeNext { configData, project in
-        AppEnvironment.current.koala.trackSwipedProject(project, refTag: configData.refTag)
+      .observeNext { configDataDirection, project in
+        AppEnvironment.current.koala.trackSwipedProject(project.0!, refTag: configDataDirection.0.refTag, direction: configDataDirection.1 == .left ? .left : .right )
     }
+
+//    pageDirection
+//      .takePairWhen(swipedToProject)
+//      .observeNext { pageDirection, project in AppEnvironment.current.koala.trackProjectSwipeDirection(project.0!, direction: pageDirection == .left ? .left : .right )
+//    }
 
     combineLatest(configData, currentProject)
       .takeWhen(self.finishInteractiveTransition)
@@ -144,9 +165,9 @@ ProjectNavigatorViewModelInputs, ProjectNavigatorViewModelOutputs {
     self.configDataProperty.value = ConfigData(project: project, refTag: refTag)
   }
 
-  private let pageTransitionCompletedProperty = MutableProperty(false)
-  public func pageTransition(completed completed: Bool) {
-    self.pageTransitionCompletedProperty.value = completed
+  private let pageTransitionCompletedProperty = MutableProperty<(Bool, Int?)?>(nil)
+  public func pageTransition(completed completed: Bool, toPage: Int?){
+    self.pageTransitionCompletedProperty.value = (completed, toPage)
   }
 
   private let viewDidLoadProperty = MutableProperty()
@@ -154,9 +175,9 @@ ProjectNavigatorViewModelInputs, ProjectNavigatorViewModelOutputs {
     self.viewDidLoadProperty.value = ()
   }
 
-  private let willTransitionToProjectProperty = MutableProperty<Project?>(nil)
-  public func willTransition(toProject project: Project) {
-    self.willTransitionToProjectProperty.value = project
+  private let willTransitionToProjectProperty = MutableProperty<(Project?, Int?)?>(nil)
+  public func willTransition(toProject project: Project, toPage: Int?) {
+    self.willTransitionToProjectProperty.value = (project, toPage)
   }
 
   private let panningDataProperty = MutableProperty<PanningData?>(nil)
@@ -193,6 +214,14 @@ private struct PanningData {
   private let translation: CGPoint
   private let velocity: CGPoint
 }
+
+
+private enum Direction {
+  case none
+  case left
+  case right
+}
+
 
 private enum TransitionPhase {
   case none
