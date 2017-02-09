@@ -500,6 +500,7 @@
 		A7AC5E2A1E4BF7800090DD82 /* MockBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AC5E251E4BF7800090DD82 /* MockBundle.swift */; };
 		A7AC5E2B1E4BF7800090DD82 /* TestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AC5E261E4BF7800090DD82 /* TestCase.swift */; };
 		A7AC5E2C1E4BF7800090DD82 /* XCTestCase+AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AC5E271E4BF7800090DD82 /* XCTestCase+AppEnvironment.swift */; };
+		A7AC5E301E4BF9800090DD82 /* LocalizedStringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AC5E2F1E4BF9800090DD82 /* LocalizedStringTests.swift */; };
 		A7B11A771D79F03300A5036E /* PKPaymentRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7B11A761D79F03300A5036E /* PKPaymentRequest.swift */; };
 		A7B1BA9A1D01D75F0025A69C /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01D31A361CCA786A0037A178 /* FBSDKCoreKit.framework */; };
 		A7B1BA9B1D01D7620025A69C /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01D31A371CCA786A0037A178 /* FBSDKLoginKit.framework */; };
@@ -1794,6 +1795,7 @@
 		A7AC5E251E4BF7800090DD82 /* MockBundle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockBundle.swift; sourceTree = "<group>"; };
 		A7AC5E261E4BF7800090DD82 /* TestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestCase.swift; sourceTree = "<group>"; };
 		A7AC5E271E4BF7800090DD82 /* XCTestCase+AppEnvironment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AppEnvironment.swift"; sourceTree = "<group>"; };
+		A7AC5E2F1E4BF9800090DD82 /* LocalizedStringTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalizedStringTests.swift; sourceTree = "<group>"; };
 		A7B11A761D79F03300A5036E /* PKPaymentRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PKPaymentRequest.swift; sourceTree = "<group>"; };
 		A7B1EBB01D901DE800BEE8B3 /* ProjectPamphletViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectPamphletViewModel.swift; sourceTree = "<group>"; };
 		A7B1EBB21D90496A00BEE8B3 /* NoRewardCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoRewardCell.swift; sourceTree = "<group>"; };
@@ -2830,6 +2832,7 @@
 				A7AC5D451E4BF67E0090DD82 /* LaunchedCountriesTests.swift */,
 				D05C0CAF1E02E3F100914393 /* LiveStreamActivityItemProvider.swift */,
 				A7C725841C85D36D005A016B /* LocalizedString.swift */,
+				A7AC5E2F1E4BF9800090DD82 /* LocalizedStringTests.swift */,
 				A707BAD41CFFAB9400653B2F /* LoginIntent.swift */,
 				80E26A121D500C6A007B3022 /* Navigation.swift */,
 				A7AC5D461E4BF67E0090DD82 /* NavigationTests.swift */,
@@ -4313,6 +4316,7 @@
 				A7AC5DFB1E4BF6BC0090DD82 /* DiscoveryNavigationHeaderViewModelTests.swift in Sources */,
 				A7AC5E0B1E4BF6BC0090DD82 /* ProfileViewModelTests.swift in Sources */,
 				A7AC5DF81E4BF6BC0090DD82 /* DiscoveryViewModelTests.swift in Sources */,
+				A7AC5E301E4BF9800090DD82 /* LocalizedStringTests.swift in Sources */,
 				A7AC5DD21E4BF6BC0090DD82 /* ProjectNavBarViewModelTests.swift in Sources */,
 				A7AC5DCA1E4BF6BC0090DD82 /* BackingCellViewModelTests.swift in Sources */,
 				A7AC5E2B1E4BF7800090DD82 /* TestCase.swift in Sources */,
