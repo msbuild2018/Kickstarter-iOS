@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16A313a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Data Table View Controller-->
+        <scene sceneID="qet-KV-0ZA">
+            <objects>
+                <tableViewController storyboardIdentifier="DataTableViewController" id="y0q-xn-7bW" customClass="DataTableViewController" customModule="Kickstarter_Framework" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="156" sectionHeaderHeight="28" sectionFooterHeight="28" id="rHl-82-ikf">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DataSimpleCell" rowHeight="156" id="Kil-PT-dqS" customClass="DataSimpleCell" customModule="Kickstarter_Framework" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="28" width="375" height="156"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Kil-PT-dqS" id="PY4-MO-eda">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="155"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5AH-PL-WS1">
+                                            <rect key="frame" x="8" y="8" width="359" height="139.5"/>
+                                            <color key="backgroundColor" red="0.1450980392" green="0.79607843140000001" blue="0.40784313729999999" alpha="1" colorSpace="calibratedRGB"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="5AH-PL-WS1" firstAttribute="leading" secondItem="PY4-MO-eda" secondAttribute="leadingMargin" id="3VM-jY-EEl"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="5AH-PL-WS1" secondAttribute="trailing" id="7H1-8I-3KI"/>
+                                        <constraint firstItem="5AH-PL-WS1" firstAttribute="top" secondItem="PY4-MO-eda" secondAttribute="topMargin" id="KKn-Oc-o2n"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="5AH-PL-WS1" secondAttribute="bottom" id="i8S-bS-bgp"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="simpleLabel" destination="5AH-PL-WS1" id="oNt-ab-Qv6"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DataPictureCell" rowHeight="156" id="C5o-5W-TqD" customClass="DataPictureCell" customModule="Kickstarter_Framework" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="184" width="375" height="156"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="C5o-5W-TqD" id="l71-Xq-9qh">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="155"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Zp1-vs-6vR">
+                                            <rect key="frame" x="8" y="8" width="359" height="139.5"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="zack-sears" translatesAutoresizingMaskIntoConstraints="NO" id="5A0-fd-GBe">
+                                                    <rect key="frame" x="0.0" y="0.0" width="160" height="139.5"/>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tKJ-lL-ghd">
+                                                    <rect key="frame" x="317" y="59.5" width="42" height="20.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </stackView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="trailingMargin" secondItem="Zp1-vs-6vR" secondAttribute="trailing" id="4Yp-Em-WaQ"/>
+                                        <constraint firstItem="Zp1-vs-6vR" firstAttribute="top" secondItem="l71-Xq-9qh" secondAttribute="topMargin" id="GwL-cv-QHw"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="Zp1-vs-6vR" secondAttribute="bottom" id="Mg8-hq-awj"/>
+                                        <constraint firstItem="Zp1-vs-6vR" firstAttribute="leading" secondItem="l71-Xq-9qh" secondAttribute="leadingMargin" id="c45-Un-PkC"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="pictureImageView" destination="5A0-fd-GBe" id="SMH-uu-mds"/>
+                                    <outlet property="pictureLabel" destination="tKJ-lL-ghd" id="c7n-Z1-0pI"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="y0q-xn-7bW" id="Pgo-WG-oMd"/>
+                            <outlet property="delegate" destination="y0q-xn-7bW" id="CEI-Hm-Z0v"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VgZ-HV-6tH" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-248.80000000000001" y="125.4872563718141"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="zack-sears" width="160" height="160"/>
+    </resources>
+</document>

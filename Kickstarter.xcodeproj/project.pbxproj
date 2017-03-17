@@ -581,6 +581,10 @@
 		A7E8FAEF1CD6806800DBF142 /* SearchDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7E8FAC11CD67F5C00DBF142 /* SearchDataSourceTests.swift */; };
 		A7EDEE571D83453F00780B34 /* PKPaymentAuthorizationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7EDEE561D83453F00780B34 /* PKPaymentAuthorizationViewController.swift */; };
 		A7EDEE7B1D83635400780B34 /* CommentsViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7EDEE7A1D83635400780B34 /* CommentsViewControllerTests.swift */; };
+		A7F1B9641E7C7C8900438951 /* DataTable.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A7F1B9631E7C7C8900438951 /* DataTable.storyboard */; };
+		A7F1B9A01E7C7D5D00438951 /* DataTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F1B99F1E7C7D5D00438951 /* DataTableViewController.swift */; };
+		A7F1B9A21E7C7DAD00438951 /* DataSimpleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F1B9A11E7C7DAD00438951 /* DataSimpleCell.swift */; };
+		A7F1B9A41E7C7DBC00438951 /* DataPictureCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F1B9A31E7C7DBC00438951 /* DataPictureCell.swift */; };
 		A7F441AD1D005A9400FE6FC5 /* ActivitiesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F4418E1D005A9400FE6FC5 /* ActivitiesViewModel.swift */; };
 		A7F441AF1D005A9400FE6FC5 /* ActivityFriendBackingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F4418F1D005A9400FE6FC5 /* ActivityFriendBackingViewModel.swift */; };
 		A7F441B31D005A9400FE6FC5 /* ActivityProjectStatusViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F441911D005A9400FE6FC5 /* ActivityProjectStatusViewModel.swift */; };
@@ -1899,6 +1903,10 @@
 		A7E8FAC11CD67F5C00DBF142 /* SearchDataSourceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchDataSourceTests.swift; sourceTree = "<group>"; };
 		A7EDEE561D83453F00780B34 /* PKPaymentAuthorizationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PKPaymentAuthorizationViewController.swift; sourceTree = "<group>"; };
 		A7EDEE7A1D83635400780B34 /* CommentsViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentsViewControllerTests.swift; sourceTree = "<group>"; };
+		A7F1B9631E7C7C8900438951 /* DataTable.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = DataTable.storyboard; sourceTree = "<group>"; };
+		A7F1B99F1E7C7D5D00438951 /* DataTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataTableViewController.swift; sourceTree = "<group>"; };
+		A7F1B9A11E7C7DAD00438951 /* DataSimpleCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataSimpleCell.swift; sourceTree = "<group>"; };
+		A7F1B9A31E7C7DBC00438951 /* DataPictureCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataPictureCell.swift; sourceTree = "<group>"; };
 		A7F4418E1D005A9400FE6FC5 /* ActivitiesViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivitiesViewModel.swift; sourceTree = "<group>"; };
 		A7F4418F1D005A9400FE6FC5 /* ActivityFriendBackingViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityFriendBackingViewModel.swift; sourceTree = "<group>"; };
 		A7F441901D005A9400FE6FC5 /* ActivityFriendFollowCellViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityFriendFollowCellViewModel.swift; sourceTree = "<group>"; };
@@ -2324,6 +2332,7 @@
 				59673C8A1D50EC920035AFD9 /* Video.storyboard */,
 				9D89B7E71D6BA71F0021F6FF /* WebModal.storyboard */,
 				A77DA9231E4D13F000DB3A66 /* RewardCell.xib */,
+				A7F1B9631E7C7C8900438951 /* DataTable.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -2471,6 +2480,8 @@
 				A75CFA7C1CCE56C4004CD5FA /* SearchProjectCell.swift */,
 				014A8E1A1CE3CE34003BF51C /* ThanksCategoryCell.swift */,
 				014A8E171CE3CD86003BF51C /* ThanksProjectCell.swift */,
+				A7F1B9A11E7C7DAD00438951 /* DataSimpleCell.swift */,
+				A7F1B9A31E7C7DBC00438951 /* DataPictureCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -2529,6 +2540,7 @@
 				A731BF8B1D1EE44E00A734AC /* UpdateViewController.swift */,
 				59673CBC1D50ED380035AFD9 /* VideoViewController.swift */,
 				9D89B7E21D6B8B310021F6FF /* WebModalViewController.swift */,
+				A7F1B99F1E7C7D5D00438951 /* DataTableViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -4121,6 +4133,7 @@
 				A73923C31D272242004524C3 /* Login.storyboard in Resources */,
 				A73923C91D272242004524C3 /* Search.storyboard in Resources */,
 				A77DA9241E4D13F000DB3A66 /* RewardCell.xib in Resources */,
+				A7F1B9641E7C7C8900438951 /* DataTable.storyboard in Resources */,
 				A73923CC1D272242004524C3 /* UpdateDraft.storyboard in Resources */,
 				A7986C9D1D6B85840027030D /* Thanks.storyboard in Resources */,
 				A73923CB1D272242004524C3 /* Update.storyboard in Resources */,
@@ -4591,6 +4604,7 @@
 				D08A817B1DFAAD04000128DB /* LiveStreamContainerViewController.swift in Sources */,
 				A71003DD1CDD068F00B4F4D7 /* MessageThreadsDataSource.swift in Sources */,
 				598D96B61D426D80003F3F66 /* ActivitySampleFollowCell.swift in Sources */,
+				A7F1B9A21E7C7DAD00438951 /* DataSimpleCell.swift in Sources */,
 				A72C3AB91D00FB1F0075227E /* DiscoverySelectableRowCell.swift in Sources */,
 				A745D04B1CA8986E00C12802 /* ProfileViewController.swift in Sources */,
 				A77DA9641E4D1F4D00DB3A66 /* Nib.swift in Sources */,
@@ -4604,6 +4618,7 @@
 				A7CA8BB71D8F14260086A3E9 /* ProjectPamphletMainCell.swift in Sources */,
 				593AC5CF1D33F4BF002613F4 /* DashboardFundingCell.swift in Sources */,
 				A71003E31CDD077200B4F4D7 /* MessageCell.swift in Sources */,
+				A7F1B9A01E7C7D5D00438951 /* DataTableViewController.swift in Sources */,
 				8072F44F1D46BAA400999EF1 /* UpdatePreviewViewModel.swift in Sources */,
 				A7C795B31C873AC90081977F /* ActivitiesViewController.swift in Sources */,
 				59322F071CD27B1000C90CC6 /* ProfileDataSource.swift in Sources */,
@@ -4633,6 +4648,7 @@
 				0148EF911CDD2879000DEFF8 /* ThanksViewController.swift in Sources */,
 				8072F41D1D46B75200999EF1 /* UpdatePreviewViewController.swift in Sources */,
 				A749001F1D00E27100BC3BE7 /* SignupViewController.swift in Sources */,
+				A7F1B9A41E7C7DBC00438951 /* DataPictureCell.swift in Sources */,
 				59B0DFFE1D11B2E50081D2DC /* DashboardContextCell.swift in Sources */,
 				D04F48D41E0313FB00EDC98A /* ActivityProjectStatusCell.swift in Sources */,
 				D08A817C1DFAAD08000128DB /* LiveStreamCountdownViewController.swift in Sources */,
