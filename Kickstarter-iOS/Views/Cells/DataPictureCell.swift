@@ -14,6 +14,7 @@ internal final class DataPictureCell: UITableViewCell, ValueCell {
 
   func configureWith(value: DataUser) {
     self.pictureLabel.text = value.name
+    self.pictureImageView.image = nil
     self.pictureImageView.af_setImage(withURL: URL(string: value.image)!)
   }
 }

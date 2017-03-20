@@ -532,6 +532,8 @@
 		A7BC37331E237F7500C4D031 /* LiveStreamViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7BC37311E237F7500C4D031 /* LiveStreamViewModelTests.swift */; };
 		A7BC37341E237F7500C4D031 /* LiveVideoViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7BC37321E237F7500C4D031 /* LiveVideoViewModelTests.swift */; };
 		A7BC37361E237F8600C4D031 /* LiveStreamEventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7BC37351E237F8600C4D031 /* LiveStreamEventTests.swift */; };
+		A7C5BA261E805837001F9E62 /* DataTableDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C5BA251E805837001F9E62 /* DataTableDataSource.swift */; };
+		A7C5BA621E805D61001F9E62 /* DataProjectCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C5BA611E805D61001F9E62 /* DataProjectCell.swift */; };
 		A7C5C4F81DF881190048D14C /* KsApi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7C5C4501DF87CAC0048D14C /* KsApi.framework */; };
 		A7C5C5331DF893110048D14C /* Prelude.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7C5C4D41DF87CEB0048D14C /* Prelude.framework */; };
 		A7C5C5361DF894DA0048D14C /* Prelude_UIKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A7C5C4DC1DF87CEB0048D14C /* Prelude_UIKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -1841,6 +1843,8 @@
 		A7BE4EEB1D05C10200353EF9 /* Argo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Argo.xcodeproj; path = "Frameworks/ios-ksapi/Frameworks/Argo/Argo.xcodeproj"; sourceTree = "<group>"; };
 		A7BE4F031D05C10600353EF9 /* Curry.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Curry.xcodeproj; path = "Frameworks/ios-ksapi/Frameworks/Curry/Curry.xcodeproj"; sourceTree = "<group>"; };
 		A7BE4F121D05C10B00353EF9 /* Prelude.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Prelude.xcodeproj; path = "Frameworks/ios-ksapi/Frameworks/Prelude/Prelude.xcodeproj"; sourceTree = "<group>"; };
+		A7C5BA251E805837001F9E62 /* DataTableDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataTableDataSource.swift; sourceTree = "<group>"; };
+		A7C5BA611E805D61001F9E62 /* DataProjectCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataProjectCell.swift; sourceTree = "<group>"; };
 		A7C725781C85D36D005A016B /* AppEnvironment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AppEnvironment.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A7C725791C85D36D005A016B /* AssetImageGeneratorType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AssetImageGeneratorType.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A7C7257A1C85D36D005A016B /* AVPlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVPlayerView.swift; sourceTree = "<group>"; };
@@ -2485,6 +2489,7 @@
 				014A8E171CE3CD86003BF51C /* ThanksProjectCell.swift */,
 				A7F1B9A11E7C7DAD00438951 /* DataSimpleCell.swift */,
 				A7F1B9A31E7C7DBC00438951 /* DataPictureCell.swift */,
+				A7C5BA611E805D61001F9E62 /* DataProjectCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -3188,6 +3193,7 @@
 				A74FFEC81CE4FB9900C7BCB9 /* SearchMessagesDataSource.swift */,
 				014A8DE91CE3C350003BF51C /* ThanksProjectsDataSource.swift */,
 				A71C7FAD1E2FA65F0051E5E3 /* LiveStreamDiscoveryDataSource.swift */,
+				A7C5BA251E805837001F9E62 /* DataTableDataSource.swift */,
 			);
 			path = DataSources;
 			sourceTree = "<group>";
@@ -4564,6 +4570,7 @@
 				0146E3231CC0296900082C5B /* FacebookConfirmationViewController.swift in Sources */,
 				A71199F91DD8E42A0072D478 /* ProjectPamphletMinimalCell.swift in Sources */,
 				0170E7701D25C55200E2CCE4 /* ProjectActivityCommentCell.swift in Sources */,
+				A7C5BA621E805D61001F9E62 /* DataProjectCell.swift in Sources */,
 				9D14FF901D133351005F4ABB /* ProjectActivityNegativeStateChangeCell.swift in Sources */,
 				015A07461D247564007AE210 /* UpdateDraftViewController.swift in Sources */,
 				A70F1F321D8A3E85007DA8E9 /* ProjectPamphletViewController.swift in Sources */,
@@ -4698,6 +4705,7 @@
 				014A8E1C1CE3CE34003BF51C /* ThanksCategoryCell.swift in Sources */,
 				A74FFECA1CE4FB9900C7BCB9 /* SearchMessagesDataSource.swift in Sources */,
 				A775B5211CA8705B00BBB587 /* RootTabBarViewController.swift in Sources */,
+				A7C5BA261E805837001F9E62 /* DataTableDataSource.swift in Sources */,
 				A75CFA501CCDB322004CD5FA /* SearchDataSource.swift in Sources */,
 				A7A052141CD12DD7005AF5E2 /* CommentCell.swift in Sources */,
 				9D14FF8F1D133351005F4ABB /* ProjectActivityLaunchCell.swift in Sources */,

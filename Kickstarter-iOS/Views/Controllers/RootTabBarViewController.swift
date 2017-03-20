@@ -32,6 +32,14 @@ public final class RootTabBarViewController: UITabBarController {
     self.viewModel.inputs.viewDidLoad()
   }
 
+  public override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+
+    self.present(Storyboard.DataTable.instantiate(DataTableViewController.self),
+                 animated: true,
+                 completion: nil)
+  }
+
   override public func bindStyles() {
     super.bindStyles()
 

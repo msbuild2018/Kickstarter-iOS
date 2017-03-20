@@ -37,13 +37,13 @@ internal final class ProjectPamphletContentDataSource: ValueCellDataSource {
 
     let liveStreamSubpages = self.liveStreamSubpages(forLiveStreamEvents: liveStreamEvents)
 
-    let values = liveStreamSubpages + [
+    let subpages = liveStreamSubpages + [
       .comments(project.stats.commentsCount as Int?, liveStreamSubpages.isEmpty ? .first : .middle),
       .updates(project.stats.updatesCount as Int?, .last)
       ]
 
     self.set(
-      values: values,
+      values: subpages,
       cellClass: ProjectPamphletSubpageCell.self,
       inSection: Section.subpages.rawValue
     )
