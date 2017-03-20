@@ -149,6 +149,83 @@
             </objects>
             <point key="canvasLocation" x="-248.80000000000001" y="125.4872563718141"/>
         </scene>
+        <!--Data Comments View Controller-->
+        <scene sceneID="VR3-fA-srB">
+            <objects>
+                <tableViewController id="SZP-6J-UPY" customClass="DataCommentsViewController" customModule="Kickstarter_Framework" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="222" sectionHeaderHeight="28" sectionFooterHeight="28" id="JV8-8x-zEz">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DataCommentCell" rowHeight="222" id="wkx-b6-4et" customClass="DataCommentCell" customModule="Kickstarter_Framework" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="28" width="375" height="222"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="wkx-b6-4et" id="LPU-4m-RvO">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="221"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="j3s-uk-YNm">
+                                            <rect key="frame" x="8" y="8" width="359" height="205.5"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="zack-sears" translatesAutoresizingMaskIntoConstraints="NO" id="dbX-Fo-0oa">
+                                                    <rect key="frame" x="0.0" y="0.0" width="80" height="80"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" secondItem="dbX-Fo-0oa" secondAttribute="height" multiplier="1:1" id="GG2-x0-QHn"/>
+                                                        <constraint firstAttribute="width" constant="80" id="VFh-eX-SdL"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="Nkw-7r-24a">
+                                                    <rect key="frame" x="88" y="0.0" width="271" height="73.5"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Zack Sears" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hut-rg-ccZ">
+                                                            <rect key="frame" x="0.0" y="0.0" width="85.5" height="20.5"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Jan 1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YJx-Vm-cRt">
+                                                            <rect key="frame" x="0.0" y="26.5" width="39.5" height="20.5"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hey here's my comment" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="di4-0J-v8X">
+                                                            <rect key="frame" x="0.0" y="53" width="185.5" height="20.5"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
+                                                </stackView>
+                                            </subviews>
+                                        </stackView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="j3s-uk-YNm" firstAttribute="top" secondItem="LPU-4m-RvO" secondAttribute="topMargin" id="NS0-FS-m5m"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="j3s-uk-YNm" secondAttribute="bottom" id="V6f-nE-Kkz"/>
+                                        <constraint firstItem="j3s-uk-YNm" firstAttribute="leading" secondItem="LPU-4m-RvO" secondAttribute="leadingMargin" id="aq5-68-bPR"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="j3s-uk-YNm" secondAttribute="trailing" id="rrm-lA-xy6"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="bodyLabel" destination="di4-0J-v8X" id="KeE-2c-Y30"/>
+                                    <outlet property="dateLabel" destination="YJx-Vm-cRt" id="M2K-VF-OGP"/>
+                                    <outlet property="nameLabel" destination="hut-rg-ccZ" id="Qkh-qu-aO9"/>
+                                    <outlet property="userImageView" destination="dbX-Fo-0oa" id="tPH-tb-fFg"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="SZP-6J-UPY" id="Ceo-Bb-6Eh"/>
+                            <outlet property="delegate" destination="SZP-6J-UPY" id="WCb-Yq-Uj6"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="bcy-v1-MPR" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="632.79999999999995" y="179.46026986506749"/>
+        </scene>
     </scenes>
     <resources>
         <image name="cosmic-surgery" width="800" height="600"/>
