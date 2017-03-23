@@ -1794,7 +1794,7 @@ public final class Koala {
   }
 
   private var clientPlatform: String {
-    switch self.devi {
+    switch self.device.userInterfaceIdiom {
     case .phone, .pad: return "ios"
     case .tv:          return "tvos"
     default:           return "unspecified"

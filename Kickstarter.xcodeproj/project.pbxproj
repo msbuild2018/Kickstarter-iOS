@@ -659,6 +659,10 @@
 		D70347901DBAABC30099C668 /* DiscoveryExpandableRowCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D703478F1DBAABC30099C668 /* DiscoveryExpandableRowCellViewModel.swift */; };
 		D7086F3C1DB7FBA40087E5EB /* BackingViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7086F3B1DB7FBA40087E5EB /* BackingViewControllerTests.swift */; };
 		D73627061E71E0FD0087F2BF /* MessageThreadsViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D73627051E71E0FD0087F2BF /* MessageThreadsViewControllerTests.swift */; };
+		D781E0591E830E4800A1600E /* MessageTable.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D781E0581E830E4800A1600E /* MessageTable.storyboard */; };
+		D781E0951E830ED000A1600E /* MessageTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D781E0941E830ED000A1600E /* MessageTableViewController.swift */; };
+		D781E0971E83150100A1600E /* MessageDataMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D781E0961E83150100A1600E /* MessageDataMessageCell.swift */; };
+		D781E0991E831AF000A1600E /* MessageTableDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D781E0981E831AF000A1600E /* MessageTableDataSource.swift */; };
 		D7A37C8F1E2EB01700EA066D /* SearchEmptyStateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A37C8E1E2EB01700EA066D /* SearchEmptyStateCell.swift */; };
 		D7A37CCF1E2FF93D00EA066D /* SearchEmptyStateCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A37CCE1E2FF93D00EA066D /* SearchEmptyStateCellViewModel.swift */; };
 		D7A37CF71E3278A800EA066D /* SearchEmptyStateCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A37CF61E3278A800EA066D /* SearchEmptyStateCellViewModelTests.swift */; };
@@ -1989,6 +1993,10 @@
 		D703478F1DBAABC30099C668 /* DiscoveryExpandableRowCellViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoveryExpandableRowCellViewModel.swift; sourceTree = "<group>"; };
 		D7086F3B1DB7FBA40087E5EB /* BackingViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackingViewControllerTests.swift; sourceTree = "<group>"; };
 		D73627051E71E0FD0087F2BF /* MessageThreadsViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageThreadsViewControllerTests.swift; sourceTree = "<group>"; };
+		D781E0581E830E4800A1600E /* MessageTable.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MessageTable.storyboard; sourceTree = "<group>"; };
+		D781E0941E830ED000A1600E /* MessageTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageTableViewController.swift; sourceTree = "<group>"; };
+		D781E0961E83150100A1600E /* MessageDataMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageDataMessageCell.swift; sourceTree = "<group>"; };
+		D781E0981E831AF000A1600E /* MessageTableDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageTableDataSource.swift; sourceTree = "<group>"; };
 		D7A37C8E1E2EB01700EA066D /* SearchEmptyStateCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchEmptyStateCell.swift; sourceTree = "<group>"; };
 		D7A37CCE1E2FF93D00EA066D /* SearchEmptyStateCellViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchEmptyStateCellViewModel.swift; sourceTree = "<group>"; };
 		D7A37CF61E3278A800EA066D /* SearchEmptyStateCellViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchEmptyStateCellViewModelTests.swift; sourceTree = "<group>"; };
@@ -2345,6 +2353,7 @@
 				59673C8A1D50EC920035AFD9 /* Video.storyboard */,
 				9D89B7E71D6BA71F0021F6FF /* WebModal.storyboard */,
 				A77DA9231E4D13F000DB3A66 /* RewardCell.xib */,
+				D781E0581E830E4800A1600E /* MessageTable.storyboard */,
 				A7F1B9631E7C7C8900438951 /* DataTable.storyboard */,
 			);
 			path = Storyboards;
@@ -2496,6 +2505,7 @@
 				A7F1B9A11E7C7DAD00438951 /* DataSimpleCell.swift */,
 				A7F1B9A31E7C7DBC00438951 /* DataPictureCell.swift */,
 				A7C5BA611E805D61001F9E62 /* DataProjectCell.swift */,
+				D781E0961E83150100A1600E /* MessageDataMessageCell.swift */,
 				A7C5BA651E806280001F9E62 /* DataCommentCell.swift */,
 			);
 			path = Cells;
@@ -2527,6 +2537,7 @@
 				018F1F821C8E182200643DAA /* LoginViewController.swift */,
 				A74FFDEE1CE3E33300C7BCB9 /* MessageDialogViewController.swift */,
 				A75A29231CE0AE5A00D35E5C /* MessagesViewController.swift */,
+				D781E0941E830ED000A1600E /* MessageTableViewController.swift */,
 				A71003D81CDCFA2500B4F4D7 /* MessageThreadsViewController.swift */,
 				A745D0491CA8986E00C12802 /* ProfileViewController.swift */,
 				9D9F580C1D131B1200CE81DE /* ProjectActivitiesViewController.swift */,
@@ -3191,6 +3202,7 @@
 				A7E315C41C88AAA8000DD85A /* DiscoveryProjectsDataSource.swift */,
 				A7CC14431D00E75F00035C52 /* FindFriendsDataSource.swift */,
 				A75A292C1CE0B95300D35E5C /* MessagesDataSource.swift */,
+				D781E0981E831AF000A1600E /* MessageTableDataSource.swift */,
 				A71003DB1CDD068F00B4F4D7 /* MessageThreadsDataSource.swift */,
 				59322F051CD27B1000C90CC6 /* ProfileDataSource.swift */,
 				9D9F58141D131D4A00CE81DE /* ProjectActivitiesDataSource.swift */,
@@ -4155,6 +4167,7 @@
 				A73923CC1D272242004524C3 /* UpdateDraft.storyboard in Resources */,
 				A7986C9D1D6B85840027030D /* Thanks.storyboard in Resources */,
 				A73923CB1D272242004524C3 /* Update.storyboard in Resources */,
+				D781E0591E830E4800A1600E /* MessageTable.storyboard in Resources */,
 				A71C7F6E1E2FA03B0051E5E3 /* LiveStreamDiscovery.storyboard in Resources */,
 				A787E6BE1E28A85A0017B186 /* LiveStream.storyboard in Resources */,
 				A78838741D8A2EFF0081E94D /* ProjectPamphlet.storyboard in Resources */,
@@ -4566,6 +4579,7 @@
 				A7D8B6B61DCCD4DE009BF854 /* ProjectNavigatorTransitionAnimator.swift in Sources */,
 				A77DA9651E4D1F4D00DB3A66 /* Storyboard.swift in Sources */,
 				A7561A3B1D3144210028DEA1 /* ProjectDescriptionViewController.swift in Sources */,
+				D781E0971E83150100A1600E /* MessageDataMessageCell.swift in Sources */,
 				019DDFED1CB6FF4500BDC113 /* ResetPasswordViewController.swift in Sources */,
 				018422C51D2C48AA00CA7566 /* DashboardProjectsDrawerDataSource.swift in Sources */,
 				A74FFE691CE3FFE200C7BCB9 /* SearchMessagesViewController.swift in Sources */,
@@ -4652,6 +4666,7 @@
 				A71C7FB21E3009D50051E5E3 /* LiveStreamDiscoveryTitleCell.swift in Sources */,
 				A72C3AB71D00FB1F0075227E /* DiscoveryExpandedSelectableRow.swift in Sources */,
 				80EAEF071D243FC7008C2353 /* BackingViewController.swift in Sources */,
+				D781E0991E831AF000A1600E /* MessageTableDataSource.swift in Sources */,
 				A7B1EBB31D90496A00BEE8B3 /* NoRewardCell.swift in Sources */,
 				01940B291D467ECE0074FCE3 /* HelpWebViewController.swift in Sources */,
 				A73EF70A1DCC17DD008FDBE5 /* ProjectNavigatorPagesDataSource.swift in Sources */,
@@ -4704,6 +4719,7 @@
 				597073B21D07281800B00444 /* ProjectNotificationCell.swift in Sources */,
 				01DEFB961CB44A5D003709C0 /* TwoFactorViewController.swift in Sources */,
 				A75AB2261C8B407F002FC3E6 /* ActivityFriendBackingCell.swift in Sources */,
+				D781E0951E830ED000A1600E /* MessageTableViewController.swift in Sources */,
 				A731BF901D1EE4CD00A734AC /* UpdateViewModel.swift in Sources */,
 				A72C3AB51D00FB1F0075227E /* DiscoveryExpandableRowCell.swift in Sources */,
 				A7FA38D91D9068AD0041FC9C /* RewardsTitleCell.swift in Sources */,
