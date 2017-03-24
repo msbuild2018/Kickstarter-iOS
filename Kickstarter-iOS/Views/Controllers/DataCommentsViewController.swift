@@ -13,13 +13,13 @@ final class DataCommentsViewController: UITableViewController {
 
     self.tableView.dataSource = self.dataSource
 
-    AppEnvironment.current.apiService.fetchMessageThreads(mailbox: .inbox, project: nil)
-      .flatMap { env -> SignalProducer<[Message], ErrorEnvelope> in
-        guard let messageThread = env.messageThreads.first else { return .empty }
+   AppEnvironment.current.apiService.fetchMessageThreads(mailbox: .inbox, project: nil)
+     .flatMap { env -> SignalProducer<[Message], ErrorEnvelope> in
+          guard let messageThread = env.messageThreads.first else { return .empty }
 
-        return AppEnvironment.current.apiService.fetchMessageThread(messageThreadId: messageThread.id)
-          .map { env in env.messages }
-    }
+         return AppEnvironment.current.apiService.fetchMessageThread(messageThreadId: messageThread.id)
+           .map { env in env.messages }
+      }
 
     AppEnvironment.current.apiService.fetchProject(param: Param.slug("superscreen"))
       .switchMap { p in
