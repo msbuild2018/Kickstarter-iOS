@@ -11,35 +11,20 @@ internal final class MessageTableViewController: UITableViewController {
     super.viewDidLoad()
 
     self.tableView.dataSource = self.dataSource
-/*
-    AppEnvironment.current.apiService.fetchMessageThreads(mailbox: .inbox, project: nil)
-      .map { $0.messageThreads.first?.id }
-      .skipNil()
-      .flatMap {
-        AppEnvironment.current.apiService.fetchMessageThread(messageThreadId: $0)
+      AppEnvironment.current.apiService.fetchMessageThreads(mailbox: .inbox, project: nil)
+        .map { $0.messageThreads.first?.id }
+        .skipNil()
+        .flatMap {
+          AppEnvironment.current.apiService.fetchMessageThread(messageThreadId: $0)
+        }
+        .map { $0.messages }
+        .demoteErrors()
+        .observeForUI()
+        .startWithValues { messages in
+          self.dataSource.load(messages: messages)
+          self.tableView.reloadData()
       }
-      .map { $0.messages }
-      .demoteErrors()
-      .startWithValues { messages in
-        self.dataSource.load(messages: messages)
-        self.tableView.reloadData()
 
-    }
-*/
-    AppEnvironment.current.apiService.fetchMessageThreads(mailbox: .inbox, project: nil)
-      .map { $0.messageThreads.first?.id }
-      .skipNil()
-      .flatMap {
-        AppEnvironment.current.apiService.fetchMessageThread(messageThreadId: $0)
-      }
-      //.map { $0.messages }
-      .observeForUI()
-      .start { event in
-        guard let messages = event.value?.messages else { return }
-
-        self.dataSource.load(messages: messages)
-        self.tableView.reloadData()
-    }
   }
 
   override func bindStyles() {
