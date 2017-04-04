@@ -25,18 +25,22 @@ internal final class LiveStreamRewardsDataSource: ValueCellDataSource {
       .map { (project, Either<Reward, Backing>.left($0), RewardCellContext.liveStream) }
 
     if !rewardData.isEmpty {
-      self.set(values: [project], cellClass: RewardsTitleCell.self, inSection: Section.rewardsTitle.rawValue)
+      self.set(values: [(project, .liveStream)],
+               cellClass: RewardsTitleCell.self, inSection: Section.rewardsTitle.rawValue)
       self.set(values: rewardData, cellClass: RewardCell.self, inSection: Section.rewards.rawValue)
     }
   }
 
   private func setRewardTitleArea(project: Project) {
     if project.personalization.isBacking != true && project.state == .live {
-      self.set(values: [project], cellClass: PledgeTitleCell.self, inSection: Section.pledgeTitle.rawValue)
-      self.set(values: [project], cellClass: NoRewardCell.self, inSection: Section.calloutReward.rawValue)
+      self.set(values: [(project, .liveStream)],
+               cellClass: PledgeTitleCell.self, inSection: Section.pledgeTitle.rawValue)
+      self.set(values: [(project, .liveStream)],
+               cellClass: NoRewardCell.self, inSection: Section.calloutReward.rawValue)
     } else if let backing = project.personalization.backing {
 
-      self.set(values: [project], cellClass: PledgeTitleCell.self, inSection: Section.pledgeTitle.rawValue)
+      self.set(values: [(project, .liveStream)],
+               cellClass: PledgeTitleCell.self, inSection: Section.pledgeTitle.rawValue)
       self.set(values: [(project, .right(backing), .liveStream)],
                cellClass: RewardCell.self,
                inSection: Section.calloutReward.rawValue)
@@ -44,7 +48,7 @@ internal final class LiveStreamRewardsDataSource: ValueCellDataSource {
   }
 
   internal func indexPathIsPledgeAnyAmountCell(_ indexPath: IndexPath) -> Bool {
-    guard let project = self[indexPath] as? Project else {
+    guard let (project, _) = self[indexPath] as? (Project, RewardCellContext) else {
       return false
     }
 
@@ -59,11 +63,11 @@ internal final class LiveStreamRewardsDataSource: ValueCellDataSource {
     switch (cell, value) {
     case let (cell as RewardCell, value as (Project, Either<Reward, Backing>, RewardCellContext)):
       cell.configureWith(value: value)
-    case let (cell as PledgeTitleCell, value as Project):
+    case let (cell as PledgeTitleCell, value as (Project, RewardCellContext)):
       cell.configureWith(value: value)
-    case let (cell as NoRewardCell, value as Project):
+    case let (cell as NoRewardCell, value as (Project, RewardCellContext)):
       cell.configureWith(value: value)
-    case let (cell as RewardsTitleCell, value as Project):
+    case let (cell as RewardsTitleCell, value as (Project, RewardCellContext)):
       cell.configureWith(value: value)
     default:
       fatalError("Unrecognized (\(type(of: cell)), \(type(of: value))) combo.")

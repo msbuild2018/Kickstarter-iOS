@@ -56,18 +56,22 @@ internal final class ProjectPamphletContentDataSource: ValueCellDataSource {
       .map { (project, Either<Reward, Backing>.left($0), RewardCellContext.projectPage) }
 
     if !rewardData.isEmpty {
-      self.set(values: [project], cellClass: RewardsTitleCell.self, inSection: Section.rewardsTitle.rawValue)
+      self.set(values: [(project, .liveStream)],
+               cellClass: RewardsTitleCell.self, inSection: Section.rewardsTitle.rawValue)
       self.set(values: rewardData, cellClass: RewardCell.self, inSection: Section.rewards.rawValue)
     }
   }
 
   private func setRewardTitleArea(project: Project) {
     if project.personalization.isBacking != true && project.state == .live {
-      self.set(values: [project], cellClass: PledgeTitleCell.self, inSection: Section.pledgeTitle.rawValue)
-      self.set(values: [project], cellClass: NoRewardCell.self, inSection: Section.calloutReward.rawValue)
+      self.set(values: [(project, .projectPage)],
+               cellClass: PledgeTitleCell.self, inSection: Section.pledgeTitle.rawValue)
+      self.set(values: [(project, .projectPage)],
+               cellClass: NoRewardCell.self, inSection: Section.calloutReward.rawValue)
     } else if let backing = project.personalization.backing {
 
-      self.set(values: [project], cellClass: PledgeTitleCell.self, inSection: Section.pledgeTitle.rawValue)
+      self.set(values: [(project, .projectPage)],
+               cellClass: PledgeTitleCell.self, inSection: Section.pledgeTitle.rawValue)
       self.set(values: [(project, .right(backing), .projectPage)],
                cellClass: RewardCell.self,
                inSection: Section.calloutReward.rawValue)
@@ -110,7 +114,7 @@ internal final class ProjectPamphletContentDataSource: ValueCellDataSource {
   }
 
   internal func indexPathIsPledgeAnyAmountCell(_ indexPath: IndexPath) -> Bool {
-    guard let project = self[indexPath] as? Project else {
+    guard let (project, _) = self[indexPath] as? (Project, RewardCellContext) else {
       return false
     }
 
@@ -131,11 +135,11 @@ internal final class ProjectPamphletContentDataSource: ValueCellDataSource {
       cell.configureWith(value: value)
     case let (cell as ProjectPamphletSubpageCell, value as ProjectPamphletSubpage):
       cell.configureWith(value: value)
-    case let (cell as PledgeTitleCell, value as Project):
+    case let (cell as PledgeTitleCell, value as (Project, RewardCellContext)):
       cell.configureWith(value: value)
-    case let (cell as NoRewardCell, value as Project):
+    case let (cell as NoRewardCell, value as (Project, RewardCellContext)):
       cell.configureWith(value: value)
-    case let (cell as RewardsTitleCell, value as Project):
+    case let (cell as RewardsTitleCell, value as (Project, RewardCellContext)):
       cell.configureWith(value: value)
     default:
       fatalError("Unrecognized (\(type(of: cell)), \(type(of: value))) combo.")

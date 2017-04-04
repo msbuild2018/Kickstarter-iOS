@@ -7,9 +7,14 @@ internal final class RewardsTitleCell: UITableViewCell, ValueCell {
 
   @IBOutlet fileprivate weak var rewardsTitleLabel: UILabel!
 
-  func configureWith(value project: Project) {
-    self.contentView.backgroundColor = Library.backgroundColor(forCategoryId: project.category.rootId)
-    self.rewardsTitleLabel.textColor = discoveryPrimaryColor(forCategoryId: project.category.rootId)
+  func configureWith(value projectAndContext: (Project, RewardCellContext)) {
+    let (project, context) = projectAndContext
+    self.contentView.backgroundColor = context == .liveStream
+      ? .ksr_navy_700
+      : Library.backgroundColor(forCategoryId: project.category.rootId)
+    self.rewardsTitleLabel.textColor = context == .liveStream
+      ? .white
+      : discoveryPrimaryColor(forCategoryId: project.category.rootId)
 
     switch (project.personalization.isBacking, project.state) {
     case (true?, .live):

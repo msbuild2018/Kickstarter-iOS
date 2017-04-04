@@ -16,11 +16,18 @@ public protocol LiveStreamRewardsViewModelInputs {
 
   /// Call when the viewDidLoad.
   func viewDidLoad()
+
+  func tappedPledgeAnyAmount()
+  func tapped(rewardOrBacking: Either<Reward, Backing>)
 }
 
 public protocol LiveStreamRewardsViewModelOutputs {
   /// Emits the Project to be loaded into the data source.
   var loadProjectIntoDataSource: Signal<Project, NoError> { get }
+
+  var goToBacking: Signal<Project, NoError> { get }
+
+  var goToRewardPledge: Signal<(Project, Reward), NoError> { get }
 }
 
 public final class LiveStreamRewardsViewModel: LiveStreamRewardsViewModelType,
@@ -36,6 +43,21 @@ LiveStreamRewardsViewModelInputs, LiveStreamRewardsViewModelOutputs {
     let project = configData.map(first)
 //    let liveStreamEvent = configData.map(second)
 
+    let rewardOrBackingTapped = Signal.merge(
+      self.tappedRewardOrBackingProperty.signal.skipNil(),
+      self.tappedPledgeAnyAmountProperty.signal.mapConst(.left(Reward.noReward))
+    )
+
+    self.goToRewardPledge = project
+      .takePairWhen(rewardOrBackingTapped)
+      .map(goToRewardPledgeData(forProject:rewardOrBacking:))
+      .skipNil()
+
+    self.goToBacking = project
+      .takePairWhen(rewardOrBackingTapped)
+      .map(goToBackingData(forProject:rewardOrBacking:))
+      .skipNil()
+
     self.loadProjectIntoDataSource = project
   }
 
@@ -44,13 +66,59 @@ LiveStreamRewardsViewModelInputs, LiveStreamRewardsViewModelOutputs {
     self.configDataProperty.value = (project, liveStreamEvent)
   }
 
+  fileprivate let tappedPledgeAnyAmountProperty = MutableProperty()
+  public func tappedPledgeAnyAmount() {
+    self.tappedPledgeAnyAmountProperty.value = ()
+  }
+
+  fileprivate let tappedRewardOrBackingProperty = MutableProperty<Either<Reward, Backing>?>(nil)
+  public func tapped(rewardOrBacking: Either<Reward, Backing>) {
+    self.tappedRewardOrBackingProperty.value = rewardOrBacking
+  }
+
   private let viewDidLoadProperty = MutableProperty()
   public func viewDidLoad() {
     self.viewDidLoadProperty.value = ()
   }
 
   public let loadProjectIntoDataSource: Signal<Project, NoError>
+  public let goToBacking: Signal<Project, NoError>
+  public let goToRewardPledge: Signal<(Project, Reward), NoError>
 
   public var inputs: LiveStreamRewardsViewModelInputs { return self }
   public var outputs: LiveStreamRewardsViewModelOutputs { return self }
+}
+
+private func reward(forBacking backing: Backing, inProject project: Project) -> Reward? {
+
+  return backing.reward
+    ?? project.rewards.filter { $0.id == backing.rewardId }.first
+    ?? Reward.noReward
+}
+
+private func goToRewardPledgeData(forProject project: Project, rewardOrBacking: Either<Reward, Backing>)
+  -> (Project, Reward)? {
+
+    guard project.state == .live else { return nil }
+
+    switch rewardOrBacking {
+    case let .left(reward):
+      guard reward.remaining != .some(0) else { return nil }
+      return (project, reward)
+
+    case let .right(backing):
+      guard let reward = reward(forBacking: backing, inProject: project) else { return nil }
+
+      return (project, reward)
+    }
+}
+
+private func goToBackingData(forProject project: Project, rewardOrBacking: Either<Reward, Backing>)
+  -> Project? {
+
+    guard project.state != .live && rewardOrBacking.right != nil else {
+      return nil
+    }
+    
+    return project
 }

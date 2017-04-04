@@ -12,8 +12,12 @@ internal final class NoRewardCell: UITableViewCell, ValueCell {
   @IBOutlet fileprivate weak var rootStackView: UIStackView!
   @IBOutlet fileprivate weak var copyStackView: UIStackView!
 
-  internal func configureWith(value project: Project) {
-    self.contentView.backgroundColor = Library.backgroundColor(forCategoryId: project.category.rootId)
+  internal func configureWith(value projectAndContext: (Project, RewardCellContext)) {
+    let (project, context) = projectAndContext
+
+    self.contentView.backgroundColor = context == .liveStream
+      ? .ksr_navy_700
+      : Library.backgroundColor(forCategoryId: project.category.rootId)
   }
 
   // swiftlint:disable function_body_length

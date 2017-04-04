@@ -8,10 +8,18 @@ internal final class PledgeTitleCell: UITableViewCell, ValueCell {
   @IBOutlet fileprivate weak var pledgeTitleLabel: UILabel!
   @IBOutlet fileprivate weak var separatorView: UIView!
 
-  func configureWith(value project: Project) {
-    self.contentView.backgroundColor = Library.backgroundColor(forCategoryId: project.category.rootId)
-    self.pledgeTitleLabel.textColor = discoveryPrimaryColor(forCategoryId: project.category.rootId)
-    self.separatorView.backgroundColor = strokeColor(forCategoryId: project.category.rootId)
+  func configureWith(value projectAndContext: (project: Project, context: RewardCellContext)) {
+    let (project, context) = projectAndContext
+
+    self.contentView.backgroundColor = context == .liveStream
+      ? .ksr_navy_700
+      : Library.backgroundColor(forCategoryId: project.category.rootId)
+    self.pledgeTitleLabel.textColor = context == .liveStream
+      ? .white
+      : discoveryPrimaryColor(forCategoryId: project.category.rootId)
+    self.separatorView.backgroundColor = context == .liveStream
+      ? .clear
+      : strokeColor(forCategoryId: project.category.rootId)
 
     switch (project.personalization.isBacking, project.state) {
     case (true?, .live):
