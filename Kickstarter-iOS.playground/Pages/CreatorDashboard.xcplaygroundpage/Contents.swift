@@ -1,10 +1,50 @@
 @testable import KsApi
+@testable import Kickstarter_Framework
 import Library
+import PlaygroundSupport
 import Prelude
 import Prelude_UIKit
 import UIKit
-import PlaygroundSupport
-@testable import Kickstarter_Framework
+
+let stats = [
+  3_000, 4_000, 5_000, 7_000, 8_000,
+  13_000, 14_000, 15_000, 17_000, 18_000,
+  20_000, 21_000, 22_000, 23_000, 24_000,
+//  24_000, 24_000, 24_200, 24_400, 24_800,
+//  25_000, 25_800, 26_800, 28_000, 29_500,
+//  31_500, 33_000, 35_000, 37_000, 40_000
+]
+
+let device = Device.pad
+let language = Language.de
+let orientation = Orientation.portrait
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 let rewards = (1...6).map {
   .template
@@ -64,15 +104,6 @@ let cosmicSurgery = .cosmicSurgery
   |> Project.lens.stats.pledged .~ cumulativeStats.pledged
   |> Project.lens.creator.id .~ 10
 
-let stats = [
-  3_000, 4_000, 5_000, 7_000, 8_000,
-  13_000, 14_000, 15_000, 17_000, 18_000,
-//  20_000, 21_000, 22_000, 23_000, 24_000,
-//  24_000, 24_000, 24_200, 24_400, 24_800,
-//  25_000, 25_800, 26_800, 28_000, 29_500,
-//  31_500, 33_000, 35_000, 37_000, 40_000
-]
-
 let fundingStats = stats.enumerated().map { idx, pledged in
   .template
     |> ProjectStatsEnvelope.FundingDateStats.lens.cumulativePledged .~ pledged
@@ -98,13 +129,13 @@ AppEnvironment.replaceCurrentEnvironment(
     ),
 
   currentUser: cosmicSurgery.creator,
-  language: .en,
+  language: language,
   locale: Locale(identifier: "en"),
   mainBundle: Bundle.framework
 )
 
 initialize()
 let controller = DashboardViewController.instantiate()
+let (parent, _) = playgroundControllers(device: device, orientation: orientation, child: controller)
 
-PlaygroundPage.current.liveView = controller
-controller.view |> UIView.lens.frame.size.height .~ 1_250
+PlaygroundPage.current.liveView = parent
