@@ -27,6 +27,9 @@ public protocol LiveStreamContainerPageViewModelInputs {
   /// Call when the UIPageViewController finishes transitioning.
   func pageTransition(completed: Bool)
 
+  /// Call when the rewards button is tapped.
+  func rewardsButtonTapped()
+
   /// Call when the viewDidLoad.
   func viewDidLoad()
 
@@ -55,6 +58,12 @@ public protocol LiveStreamContainerPageViewModelOutputs {
 
   /// Emits the page that should be paged to and in which direction.
   var pagedToPage: Signal<(LiveStreamContainerPage, UIPageViewControllerNavigationDirection), NoError> { get }
+
+  /// Emits the text color for the rewards button.
+  var rewardsButtonTextColor: Signal<UIColor, NoError> { get }
+
+  /// Emits the title font for the rewards button.
+  var rewardsButtonTitleFont: Signal<UIFont, NoError> { get }
 }
 
 public final class LiveStreamContainerPageViewModel: LiveStreamContainerPageViewModelType,
@@ -72,7 +81,8 @@ LiveStreamContainerPageViewModelInputs, LiveStreamContainerPageViewModelOutputs 
       [
         .info(project: project, liveStreamEvent: liveStreamEvent, refTag: refTag,
               presentedFromProject: presentedFromProject),
-        .chat(project: project, liveStreamEvent: liveStreamEvent)
+        .chat(project: project, liveStreamEvent: liveStreamEvent),
+        .rewards(project: project, liveStreamEvent: liveStreamEvent)
       ]
     }
 
@@ -85,6 +95,12 @@ LiveStreamContainerPageViewModelInputs, LiveStreamContainerPageViewModelOutputs 
     let chatButtonPage = self.loadViewControllersIntoPagesDataSource
       .map {
         $0.filter { $0.isChatPage }.first
+      }
+      .skipNil()
+
+    let rewardsButtonPage = self.loadViewControllersIntoPagesDataSource
+      .map {
+        $0.filter { $0.isRewardsPage }.first
       }
       .skipNil()
 
@@ -101,7 +117,8 @@ LiveStreamContainerPageViewModelInputs, LiveStreamContainerPageViewModelOutputs 
     let pagedToPage = Signal.merge(
       firstPage.map(first),
       infoButtonPage.takeWhen(self.infoButtonTappedProperty.signal),
-      chatButtonPage.takeWhen(self.chatButtonTappedProperty.signal)
+      chatButtonPage.takeWhen(self.chatButtonTappedProperty.signal),
+      rewardsButtonPage.takeWhen(self.rewardsButtonTappedProperty.signal)
       )
       .combinePrevious()
       .map { prev, current in
@@ -124,16 +141,25 @@ LiveStreamContainerPageViewModelInputs, LiveStreamContainerPageViewModelOutputs 
     let isChatPage = pageChangedToPage
       .map { $0.isChatPage }
 
+    let isRewardsPage = pageChangedToPage
+      .map { $0.isRewardsPage }
+
     self.infoButtonTextColor = isInfoPage
       .map { $0 ? .white : .ksr_grey_500 }
 
     self.chatButtonTextColor = isChatPage
       .map { $0 ? .white : .ksr_grey_500 }
 
+    self.rewardsButtonTextColor = isRewardsPage
+      .map { $0 ? .white : .ksr_grey_500 }
+
     self.infoButtonTitleFont = isInfoPage
       .map { $0 ? .ksr_headline(size: 14) : .ksr_body(size: 14) }
 
     self.chatButtonTitleFont = isChatPage
+      .map { $0 ? .ksr_headline(size: 14) : .ksr_body(size: 14) }
+
+    self.rewardsButtonTitleFont = isRewardsPage
       .map { $0 ? .ksr_headline(size: 14) : .ksr_body(size: 14) }
 
     self.indicatorLineViewXPosition = self.loadViewControllersIntoPagesDataSource
@@ -169,6 +195,11 @@ LiveStreamContainerPageViewModelInputs, LiveStreamContainerPageViewModelOutputs 
     self.pageTransitionCompletedProperty.value = completed
   }
 
+  private let rewardsButtonTappedProperty = MutableProperty()
+  public func rewardsButtonTapped() {
+    self.rewardsButtonTappedProperty.value = ()
+  }
+
   private let viewDidLoadProperty = MutableProperty()
   public func viewDidLoad() {
     self.viewDidLoadProperty.value = ()
@@ -186,6 +217,8 @@ LiveStreamContainerPageViewModelInputs, LiveStreamContainerPageViewModelOutputs 
   public let infoButtonTitleFont: Signal<UIFont, NoError>
   public let loadViewControllersIntoPagesDataSource: Signal<[LiveStreamContainerPage], NoError>
   public let pagedToPage: Signal<(LiveStreamContainerPage, UIPageViewControllerNavigationDirection), NoError>
+  public let rewardsButtonTextColor: Signal<UIColor, NoError>
+  public let rewardsButtonTitleFont: Signal<UIFont, NoError>
 
   public var inputs: LiveStreamContainerPageViewModelInputs { return self }
   public var outputs: LiveStreamContainerPageViewModelOutputs { return self }
@@ -194,12 +227,15 @@ LiveStreamContainerPageViewModelInputs, LiveStreamContainerPageViewModelOutputs 
 public enum LiveStreamContainerPage {
   case info(project: Project, liveStreamEvent: LiveStreamEvent, refTag: RefTag, presentedFromProject: Bool)
   case chat(project: Project, liveStreamEvent: LiveStreamEvent)
+  case rewards(project: Project, liveStreamEvent: LiveStreamEvent)
 
   var isInfoPage: Bool {
     switch self {
     case .info:
       return true
     case .chat:
+      return false
+    case .rewards:
       return false
     }
   }
@@ -208,20 +244,34 @@ public enum LiveStreamContainerPage {
     switch self {
     case .chat:
       return true
-    case .info:
+    case .info, .rewards:
+      return false
+    }
+  }
+
+  var isRewardsPage: Bool {
+    switch self {
+    case .rewards:
+      return true
+    case .chat, .info:
       return false
     }
   }
 
   func pageDirection(toPage: LiveStreamContainerPage) -> UIPageViewControllerNavigationDirection {
     switch (self, toPage) {
-    case (.info, .chat):
+    case (.info, _),
+         (_, .rewards):
       return .forward
-    case (.chat, .info):
+    case (_, .info),
+         (.rewards, _):
       return .reverse
-    case (.chat, .chat):
+    case (.chat, _),
+         (_, .chat):
       return .forward
-    case (.info, .info):
+    case (.info, _),
+         (.chat, _),
+         (.rewards, _):
       return .forward
     }
   }
@@ -240,7 +290,11 @@ extension LiveStreamContainerPage: Equatable {
           .chat(let rhsProject, let rhsLiveStreamEvent)):
       return lhsProject == rhsProject
         && lhsLiveStreamEvent == rhsLiveStreamEvent
-    case (.info, _), (.chat, _):
+    case (.rewards(let lhsProject, let lhsLiveStreamEvent),
+          .rewards(let rhsProject, let rhsLiveStreamEvent)):
+      return lhsProject == rhsProject
+        && lhsLiveStreamEvent == rhsLiveStreamEvent
+    case (.info, _), (.chat, _), (.rewards, _):
       return false
     }
   }

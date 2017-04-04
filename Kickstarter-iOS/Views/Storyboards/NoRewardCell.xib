@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="NoRewardCell" rowHeight="120" id="Ggb-Mj-pYX" customClass="NoRewardCell" customModule="Kickstarter_Framework" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="400" height="120"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Ggb-Mj-pYX" id="ibw-0Z-Slv">
+                <rect key="frame" x="0.0" y="0.0" width="400" height="119.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ca8-JU-tFV">
+                        <rect key="frame" x="8" y="8" width="384" height="95.5"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </view>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="CU4-9l-DTr">
+                        <rect key="frame" x="8" y="8" width="384" height="95.5"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Jy3-1K-IJm">
+                                <rect key="frame" x="0.0" y="0.0" width="384" height="61.5"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Make a pledge without a reward" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sbc-Nn-InD">
+                                        <rect key="frame" x="0.0" y="0.0" width="384" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pledge any amount to help bring this project to life." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r9J-fS-Rvg">
+                                        <rect key="frame" x="0.0" y="20.5" width="384" height="41"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1iC-Rz-goY">
+                                <rect key="frame" x="0.0" y="61.5" width="384" height="34"/>
+                                <state key="normal" title="Pledge without a reward">
+                                    <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                            </button>
+                        </subviews>
+                    </stackView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="ca8-JU-tFV" firstAttribute="top" secondItem="CU4-9l-DTr" secondAttribute="top" id="1sO-9J-phV"/>
+                    <constraint firstItem="ca8-JU-tFV" firstAttribute="trailing" secondItem="CU4-9l-DTr" secondAttribute="trailing" id="QOG-SY-UrV"/>
+                    <constraint firstItem="CU4-9l-DTr" firstAttribute="top" secondItem="ibw-0Z-Slv" secondAttribute="topMargin" id="SI0-CC-Aqj"/>
+                    <constraint firstAttribute="bottomMargin" relation="greaterThanOrEqual" secondItem="CU4-9l-DTr" secondAttribute="bottom" id="UTE-cR-T1E"/>
+                    <constraint firstItem="CU4-9l-DTr" firstAttribute="leading" secondItem="ibw-0Z-Slv" secondAttribute="leadingMargin" id="W9Q-aR-GIg"/>
+                    <constraint firstItem="ca8-JU-tFV" firstAttribute="leading" secondItem="CU4-9l-DTr" secondAttribute="leading" id="Yiz-h3-Nbg"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="CU4-9l-DTr" secondAttribute="trailing" id="aq9-Yl-95x"/>
+                    <constraint firstItem="ca8-JU-tFV" firstAttribute="bottom" secondItem="CU4-9l-DTr" secondAttribute="bottom" id="mJ4-J2-3zH"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="cardView" destination="ca8-JU-tFV" id="LDP-95-SUH"/>
+                <outlet property="copyStackView" destination="Jy3-1K-IJm" id="71p-6k-aVs"/>
+                <outlet property="pledgeButton" destination="1iC-Rz-goY" id="Qbt-YB-dbT"/>
+                <outlet property="pledgeSubtitleLabel" destination="r9J-fS-Rvg" id="RNx-Wc-pmZ"/>
+                <outlet property="pledgeTitleLabel" destination="Sbc-Nn-InD" id="GQo-R8-yvt"/>
+                <outlet property="rootStackView" destination="CU4-9l-DTr" id="3AB-tp-43G"/>
+            </connections>
+            <point key="canvasLocation" x="-36" y="-41"/>
+        </tableViewCell>
+    </objects>
+</document>

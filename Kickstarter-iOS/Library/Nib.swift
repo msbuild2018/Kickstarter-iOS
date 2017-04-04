@@ -3,7 +3,10 @@ import UIKit
 public enum Nib: String {
   case LiveStreamChatInputView
   case LiveStreamNavTitleView
+  case NoRewardCell
+  case PledgeTitleCell
   case RewardCell
+  case RewardsTitleCell
 }
 
 extension UITableView {

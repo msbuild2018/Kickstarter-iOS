@@ -689,7 +689,8 @@ RewardPledgeViewModelOutputs {
 
     projectAndReward
       .observeValues { [weak self] project, reward in
-        self?.rewardViewModel.inputs.configureWith(project: project, rewardOrBacking: .left(reward))
+        self?.rewardViewModel.inputs.configureWith(project: project, rewardOrBacking: .left(reward),
+                                                   context: .rewardPledge)
         self?.rewardViewModel.inputs.boundStyles()
     }
 

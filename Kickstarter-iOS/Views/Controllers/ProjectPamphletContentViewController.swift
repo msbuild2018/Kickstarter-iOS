@@ -29,6 +29,9 @@ public final class ProjectPamphletContentViewController: UITableViewController {
     )
 
     self.tableView.register(nib: .RewardCell)
+    self.tableView.register(nib: .PledgeTitleCell)
+    self.tableView.register(nib: .NoRewardCell)
+    self.tableView.register(nib: .RewardsTitleCell)
 
     self.viewModel.inputs.viewDidLoad()
   }

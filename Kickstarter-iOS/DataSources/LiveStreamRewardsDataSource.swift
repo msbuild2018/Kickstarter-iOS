@@ -1,12 +1,9 @@
 import KsApi
 import Library
-import LiveStream
 import Prelude
 
-internal final class ProjectPamphletContentDataSource: ValueCellDataSource {
+internal final class LiveStreamRewardsDataSource: ValueCellDataSource {
   internal enum Section: Int {
-    case main
-    case subpages
     case pledgeTitle
     case calloutReward
     case rewardsTitle
@@ -14,46 +11,18 @@ internal final class ProjectPamphletContentDataSource: ValueCellDataSource {
   }
 
   internal func loadMinimal(project: Project) {
-    self.set(values: [project], cellClass: ProjectPamphletMinimalCell.self, inSection: Section.main.rawValue)
-
-    let values = [
-      ProjectPamphletSubpage.comments(project.stats.commentsCount as Int?, .first),
-      ProjectPamphletSubpage.updates(project.stats.updatesCount as Int?, .last)
-    ]
-
-    self.set(
-      values: values,
-      cellClass: ProjectPamphletSubpageCell.self,
-      inSection: Section.subpages.rawValue
-    )
-
     self.setRewardTitleArea(project: project)
   }
 
-  internal func load(project: Project, liveStreamEvents: [LiveStreamEvent]) {
+  internal func load(project: Project) {
     self.clearValues()
-
-    self.set(values: [project], cellClass: ProjectPamphletMainCell.self, inSection: Section.main.rawValue)
-
-    let liveStreamSubpages = self.liveStreamSubpages(forLiveStreamEvents: liveStreamEvents)
-
-    let values = liveStreamSubpages + [
-      .comments(project.stats.commentsCount as Int?, liveStreamSubpages.isEmpty ? .first : .middle),
-      .updates(project.stats.updatesCount as Int?, .last)
-      ]
-
-    self.set(
-      values: values,
-      cellClass: ProjectPamphletSubpageCell.self,
-      inSection: Section.subpages.rawValue
-    )
 
     self.setRewardTitleArea(project: project)
 
     let rewardData = project.rewards
       .filter { isMainReward(reward: $0, project: project) }
       .sorted()
-      .map { (project, Either<Reward, Backing>.left($0), RewardCellContext.projectPage) }
+      .map { (project, Either<Reward, Backing>.left($0), RewardCellContext.liveStream) }
 
     if !rewardData.isEmpty {
       self.set(values: [project], cellClass: RewardsTitleCell.self, inSection: Section.rewardsTitle.rawValue)
@@ -68,45 +37,10 @@ internal final class ProjectPamphletContentDataSource: ValueCellDataSource {
     } else if let backing = project.personalization.backing {
 
       self.set(values: [project], cellClass: PledgeTitleCell.self, inSection: Section.pledgeTitle.rawValue)
-      self.set(values: [(project, .right(backing), .projectPage)],
+      self.set(values: [(project, .right(backing), .liveStream)],
                cellClass: RewardCell.self,
                inSection: Section.calloutReward.rawValue)
     }
-  }
-
-  private func liveStreamSubpages(forLiveStreamEvents liveStreamEvents: [LiveStreamEvent]) ->
-    [ProjectPamphletSubpage] {
-
-    guard AppEnvironment.current.config?.features["ios_live_streams"] != .some(false) else { return [] }
-
-    return liveStreamEvents
-      .sorted(comparator: LiveStreamEvent.canonicalLiveStreamEventComparator(
-        now: AppEnvironment.current.dateType.init().date)
-      )
-      .enumerated()
-      .map { idx, liveStreamEvent in
-        ProjectPamphletSubpage.liveStream(liveStreamEvent: liveStreamEvent, idx == 0 ? .first : .middle)
-    }
-  }
-
-  internal func indexPathForMainCell() -> IndexPath {
-    return IndexPath(item: 0, section: Section.main.rawValue)
-  }
-
-  internal func indexPathIsCommentsSubpage(_ indexPath: IndexPath) -> Bool {
-    return (self[indexPath] as? ProjectPamphletSubpage)?.isComments == true
-  }
-
-  internal func indexPathIsUpdatesSubpage(_ indexPath: IndexPath) -> Bool {
-    return (self[indexPath] as? ProjectPamphletSubpage)?.isUpdates == true
-  }
-
-  internal func indexPathIsLiveStreamSubpage(indexPath: IndexPath) -> Bool {
-    return (self[indexPath] as? ProjectPamphletSubpage)?.isLiveStream == true
-  }
-
-  internal func liveStream(forIndexPath indexPath: IndexPath) -> LiveStreamEvent? {
-    return (self[indexPath] as? ProjectPamphletSubpage)?.liveStreamEvent
   }
 
   internal func indexPathIsPledgeAnyAmountCell(_ indexPath: IndexPath) -> Bool {
@@ -124,12 +58,6 @@ internal final class ProjectPamphletContentDataSource: ValueCellDataSource {
 
     switch (cell, value) {
     case let (cell as RewardCell, value as (Project, Either<Reward, Backing>, RewardCellContext)):
-      cell.configureWith(value: value)
-    case let (cell as ProjectPamphletMainCell, value as Project):
-      cell.configureWith(value: value)
-    case let (cell as ProjectPamphletMinimalCell, value as Project):
-      cell.configureWith(value: value)
-    case let (cell as ProjectPamphletSubpageCell, value as ProjectPamphletSubpage):
       cell.configureWith(value: value)
     case let (cell as PledgeTitleCell, value as Project):
       cell.configureWith(value: value)
@@ -167,6 +95,6 @@ private func isMainReward(reward: Reward, project: Project) -> Bool {
   let now = AppEnvironment.current.dateType.init().timeIntervalSince1970
   let startsAt = reward.startsAt ?? 0
   let endsAt = (reward.endsAt == .some(0) ? nil : reward.endsAt) ?? project.dates.deadline
-
+  
   return startsAt <= now && now <= endsAt
 }

@@ -54,8 +54,8 @@ internal final class RewardCell: UITableViewCell, ValueCell {
     self.viewModel.inputs.tapped()
   }
 
-  internal func configureWith(value: (Project, Either<Reward, Backing>)) {
-    self.viewModel.inputs.configureWith(project: value.0, rewardOrBacking: value.1)
+  internal func configureWith(value: (Project, Either<Reward, Backing>, RewardCellContext)) {
+    self.viewModel.inputs.configureWith(project: value.0, rewardOrBacking: value.1, context: value.2)
   }
 
   // swiftlint:disable function_body_length

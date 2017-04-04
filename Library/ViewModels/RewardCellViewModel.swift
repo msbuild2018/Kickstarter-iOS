@@ -5,7 +5,7 @@ import Result
 
 public protocol RewardCellViewModelInputs {
   func boundStyles()
-  func configureWith(project: Project, rewardOrBacking: Either<Reward, Backing>)
+  func configureWith(project: Project, rewardOrBacking: Either<Reward, Backing>, context: RewardCellContext)
   func tapped()
 }
 
@@ -49,6 +49,7 @@ RewardCellViewModelOutputs {
   // swiftlint:disable function_body_length
   public init() {
     let projectAndRewardOrBacking = self.projectAndRewardOrBackingProperty.signal.skipNil()
+      .map { project, rewardOrBacking, _ in (project, rewardOrBacking) }
     let project = projectAndRewardOrBacking.map(first)
     let reward = projectAndRewardOrBacking
       .map { project, rewardOrBacking -> Reward in
@@ -57,6 +58,7 @@ RewardCellViewModelOutputs {
           ?? backingReward(fromProject: project)
           ?? Reward.noReward
     }
+    let context = self.projectAndRewardOrBackingProperty.signal.skipNil().map { _, _, context in context }
     let projectAndReward = Signal.zip(project, reward)
 
     self.conversionLabelHidden = project.map {
@@ -166,8 +168,14 @@ RewardCellViewModelOutputs {
           || userIsBacking(reward: reward, inProject: project)
     }
 
-    self.contentViewBackgroundColor = project
-      .map { backgroundColor(forCategoryId: $0.category.rootId) }
+    self.contentViewBackgroundColor = Signal.combineLatest(project, context)
+      .map { project, context in
+        if context == .liveStream {
+          return .ksr_navy_700
+        }
+
+        return backgroundColor(forCategoryId: project.category.rootId)
+    }
 
     let allGoneAndNotABacker = Signal.zip(reward, youreABacker)
       .map { reward, youreABacker in reward.remaining == 0 && !youreABacker }
@@ -248,9 +256,11 @@ RewardCellViewModelOutputs {
     self.boundStylesProperty.value = ()
   }
 
-  private let projectAndRewardOrBackingProperty = MutableProperty<(Project, Either<Reward, Backing>)?>(nil)
-  public func configureWith(project: Project, rewardOrBacking: Either<Reward, Backing>) {
-    self.projectAndRewardOrBackingProperty.value = (project, rewardOrBacking)
+  private let projectAndRewardOrBackingProperty = MutableProperty<(Project, Either<Reward, Backing>,
+    RewardCellContext)?>(nil)
+  public func configureWith(project: Project, rewardOrBacking: Either<Reward, Backing>,
+                            context: RewardCellContext) {
+    self.projectAndRewardOrBackingProperty.value = (project, rewardOrBacking, context)
   }
 
   private let tappedProperty = MutableProperty()
@@ -287,6 +297,12 @@ RewardCellViewModelOutputs {
 
   public var inputs: RewardCellViewModelInputs { return self }
   public var outputs: RewardCellViewModelOutputs { return self }
+}
+
+public enum RewardCellContext {
+  case liveStream
+  case projectPage
+  case rewardPledge
 }
 
 private func minimumRewardAmountTextColor(project: Project, reward: Reward) -> UIColor {

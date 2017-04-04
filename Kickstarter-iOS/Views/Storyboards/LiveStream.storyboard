@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
         <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -453,6 +453,34 @@ Mikke Snow</string>
             </objects>
             <point key="canvasLocation" x="2542" y="141"/>
         </scene>
+        <!--Live Stream Rewards View Controller-->
+        <scene sceneID="xHG-ej-405">
+            <objects>
+                <tableViewController storyboardIdentifier="LiveStreamRewardsViewController" id="fyM-cu-znH" customClass="LiveStreamRewardsViewController" customModule="Kickstarter_Framework" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="BhT-3q-04b">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="eaT-EW-9x3">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="eaT-EW-9x3" id="7jF-3Y-L9Z">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="fyM-cu-znH" id="WDe-uj-SxT"/>
+                            <outlet property="delegate" destination="fyM-cu-znH" id="HWu-wh-uHD"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mdo-37-bmj" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3344" y="138"/>
+        </scene>
         <!--Live Stream Event Details View Controller-->
         <scene sceneID="KIW-v9-734">
             <objects>
@@ -619,11 +647,15 @@ Mikke Snow</string>
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="208"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0gz-JY-cXI">
-                                                <rect key="frame" x="0.0" y="0.0" width="187.5" height="208"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="125" height="208"/>
                                                 <state key="normal" title="Button"/>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yr0-97-x2a">
-                                                <rect key="frame" x="187.5" y="0.0" width="187.5" height="208"/>
+                                                <rect key="frame" x="125" y="0.0" width="125" height="208"/>
+                                                <state key="normal" title="Button"/>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uuf-s7-pD1">
+                                                <rect key="frame" x="250" y="0.0" width="125" height="208"/>
                                                 <state key="normal" title="Button"/>
                                             </button>
                                         </subviews>
@@ -632,7 +664,7 @@ Mikke Snow</string>
                                         <rect key="frame" x="0.0" y="208" width="375" height="1"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="g4w-Rs-CJI">
-                                                <rect key="frame" x="0.0" y="0.0" width="187.5" height="1"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="124" height="1"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             </view>
                                         </subviews>
@@ -640,7 +672,7 @@ Mikke Snow</string>
                                         <constraints>
                                             <constraint firstItem="g4w-Rs-CJI" firstAttribute="height" secondItem="TIW-6z-ak1" secondAttribute="height" id="0g0-NF-GUG"/>
                                             <constraint firstItem="g4w-Rs-CJI" firstAttribute="bottom" secondItem="TIW-6z-ak1" secondAttribute="bottom" id="Kxu-UV-cpB"/>
-                                            <constraint firstItem="g4w-Rs-CJI" firstAttribute="width" secondItem="TIW-6z-ak1" secondAttribute="width" multiplier="0.5" id="ZJe-uA-U2A"/>
+                                            <constraint firstItem="g4w-Rs-CJI" firstAttribute="width" secondItem="TIW-6z-ak1" secondAttribute="width" multiplier="0.33" id="ZJe-uA-U2A"/>
                                             <constraint firstAttribute="height" constant="1" id="evE-q3-rd8"/>
                                             <constraint firstItem="g4w-Rs-CJI" firstAttribute="leading" secondItem="TIW-6z-ak1" secondAttribute="leading" id="gvA-f5-Xek"/>
                                             <constraint firstItem="g4w-Rs-CJI" firstAttribute="top" secondItem="TIW-6z-ak1" secondAttribute="top" id="nWz-mV-f4K"/>
@@ -669,6 +701,7 @@ Mikke Snow</string>
                         <outlet property="indicatorLineViewXConstraint" destination="gvA-f5-Xek" id="R1k-qm-PPJ"/>
                         <outlet property="infoPagerButton" destination="0gz-JY-cXI" id="Nw6-cR-dtV"/>
                         <outlet property="pagerTabStripStackView" destination="ahW-tE-kk8" id="RwQ-Uk-y87"/>
+                        <outlet property="rewardsPagerButton" destination="uuf-s7-pD1" id="XAr-71-Mg5"/>
                         <outlet property="separatorView" destination="TIW-6z-ak1" id="w3d-OH-ZyF"/>
                     </connections>
                 </viewController>

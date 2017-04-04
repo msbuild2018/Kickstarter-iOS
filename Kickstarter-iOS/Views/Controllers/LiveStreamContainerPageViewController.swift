@@ -12,6 +12,7 @@ internal final class LiveStreamContainerPageViewController: UIViewController {
   @IBOutlet private weak var indicatorLineViewXConstraint: NSLayoutConstraint!
   @IBOutlet private weak var infoPagerButton: UIButton!
   @IBOutlet private weak var pagerTabStripStackView: UIStackView!
+  @IBOutlet private weak var rewardsPagerButton: UIButton!
   @IBOutlet private weak var separatorView: UIView!
 
   fileprivate var pagesDataSource = LiveStreamContainerPagesDataSource()
@@ -33,6 +34,7 @@ internal final class LiveStreamContainerPageViewController: UIViewController {
 
     self.chatPagerButton.addTarget(self, action: #selector(chatButtonTapped), for: .touchUpInside)
     self.infoPagerButton.addTarget(self, action: #selector(infoButtonTapped), for: .touchUpInside)
+    self.rewardsPagerButton.addTarget(self, action: #selector(rewardsButtonTapped), for: .touchUpInside)
 
     self.pageViewController = self.childViewControllers
       .flatMap { $0 as? UIPageViewController }
@@ -66,6 +68,9 @@ internal final class LiveStreamContainerPageViewController: UIViewController {
 
     _ = self.chatPagerButton
       |> UIButton.lens.title(forState: .normal) .~ localizedString(key: "Chat", defaultValue: "Chat")
+
+    _ = self.rewardsPagerButton
+      |> UIButton.lens.title(forState: .normal) .~ localizedString(key: "Rewards", defaultValue: "Rewards")
   }
 
   internal override func bindViewModel() {
@@ -101,6 +106,18 @@ internal final class LiveStreamContainerPageViewController: UIViewController {
         self?.infoPagerButton.titleLabel?.font = $0
     }
 
+    self.viewModel.outputs.rewardsButtonTextColor
+      .observeForUI()
+      .observeValues { [weak self] in
+        self?.rewardsPagerButton.setTitleColor($0, for: .normal)
+    }
+
+    self.viewModel.outputs.rewardsButtonTitleFont
+      .observeForUI()
+      .observeValues { [weak self] in
+        self?.rewardsPagerButton.titleLabel?.font = $0
+    }
+
     self.viewModel.outputs.indicatorLineViewXPosition
       .observeForUI()
       .observeValues { [weak self] in
@@ -123,6 +140,10 @@ internal final class LiveStreamContainerPageViewController: UIViewController {
 
   @objc internal func chatButtonTapped() {
     self.viewModel.inputs.chatButtonTapped()
+  }
+
+  @objc internal func rewardsButtonTapped() {
+    self.viewModel.inputs.rewardsButtonTapped()
   }
 
   private func loadViewControllersIntoPagesDataSource(pages: [LiveStreamContainerPage]) {

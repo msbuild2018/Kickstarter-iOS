@@ -22,6 +22,11 @@ internal final class LiveStreamContainerPagesDataSource: NSObject {
           refTag: refTag,
           presentedFromProject: presentedFromProject
         )
+      case .rewards(let project, let liveStreamEvent):
+        return LiveStreamRewardsViewController.configured(
+          withProject: project,
+          liveStreamEvent: liveStreamEvent
+        )
       }
     }
   }
