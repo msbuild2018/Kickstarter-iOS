@@ -11,29 +11,33 @@ import XCTest
 internal final class LiveStreamChatViewModelTests: TestCase {
   private let vm: LiveStreamChatViewModelType = LiveStreamChatViewModel()
 
+  private let chatInputViewPlaceholderText = TestObserver<String, NoError>()
+  private let clearTextFieldAndResignFirstResponder = TestObserver<(), NoError>()
   private let collapseChatInputView = TestObserver<Bool, NoError>()
   private let dismissKeyboard = TestObserver<(), NoError>()
-  private let didConnectToChat = TestObserver<Bool, NoError>()
   private let prependChatMessagesToDataSourceMessages = TestObserver<[LiveStreamChatMessage], NoError>()
   private let prependChatMessagesToDataSourceReload = TestObserver<Bool, NoError>()
   private let presentLoginToutViewController = TestObserver<LoginIntent, NoError>()
+  private let sendButtonEnabled = TestObserver<Bool, NoError>()
   private let showErrorAlert = TestObserver<String, NoError>()
-  private let willConnectToChat = TestObserver<(), NoError>()
 
   override func setUp() {
     super.setUp()
 
+    self.vm.outputs.chatInputViewPlaceholderText.map { $0.string }
+      .observe(self.chatInputViewPlaceholderText.observer)
+    self.vm.outputs.clearTextFieldAndResignFirstResponder
+      .observe(self.clearTextFieldAndResignFirstResponder.observer)
     self.vm.outputs.collapseChatInputView.observe(self.collapseChatInputView.observer)
     self.vm.outputs.dismissKeyboard.observe(self.dismissKeyboard.observer)
-    self.vm.outputs.didConnectToChat.observe(self.didConnectToChat.observer)
     self.vm.outputs.prependChatMessagesToDataSourceAndReload.map(first).observe(
       self.prependChatMessagesToDataSourceMessages.observer)
     self.vm.outputs.prependChatMessagesToDataSourceAndReload.map(second).observe(
       self.prependChatMessagesToDataSourceReload.observer)
     self.vm.outputs.presentLoginToutViewController.observe(self.presentLoginToutViewController.observer)
+    self.vm.outputs.sendButtonEnabled.observe(self.sendButtonEnabled.observer)
     self.vm.outputs.showErrorAlert.observe(
       self.showErrorAlert.observer)
-    self.vm.outputs.willConnectToChat.observe(self.willConnectToChat.observer)
   }
 
   func testPrependMessagesToDataSource() {
@@ -85,12 +89,13 @@ internal final class LiveStreamChatViewModelTests: TestCase {
     }
   }
 
-  func testChatInputViewRequestedLogin() {
+  func testPresentLoginToutViewController() {
     self.presentLoginToutViewController.assertValueCount(0)
 
     self.vm.inputs.configureWith(project: .template, liveStreamEvent: .template)
     self.vm.inputs.viewDidLoad()
-    self.vm.inputs.chatInputViewRequestedLogin()
+    let shouldBegin = self.vm.inputs.textFieldShouldBeginEditing()
+    XCTAssertFalse(shouldBegin)
 
     self.presentLoginToutViewController.assertValues([.liveStreamChat])
   }
@@ -161,9 +166,6 @@ internal final class LiveStreamChatViewModelTests: TestCase {
   }
 
   func testConnectingToChat_LoggedIn() {
-    self.willConnectToChat.assertValueCount(0)
-    self.didConnectToChat.assertValueCount(0)
-
     let initialLiveStreamEvent = .template
       |> LiveStreamEvent.lens.firebase .~ nil
 
@@ -182,23 +184,18 @@ internal final class LiveStreamChatViewModelTests: TestCase {
 
       self.scheduler.advance()
 
-      self.willConnectToChat.assertValueCount(2)
-      self.didConnectToChat.assertValueCount(1)
+      self.showErrorAlert.assertValueCount(0)
     }
   }
 
   func testConnectingToChat_LoggedOut() {
-    self.willConnectToChat.assertValueCount(0)
-    self.didConnectToChat.assertValueCount(0)
-
     let initialLiveStreamEvent = .template
       |> LiveStreamEvent.lens.firebase .~ nil
 
-    let liveStreamEvent = LiveStreamEvent.template
+    let liveStreamEventWithToken = LiveStreamEvent.template
 
     let liveStreamService = MockLiveStreamService(
-      fetchEventResult: Result(liveStreamEvent),
-      signInToFirebaseWithCustomTokenResult: Result(["deadbeef"])
+      fetchEventResult: Result(initialLiveStreamEvent)
     )
 
     withEnvironment(liveStreamService: liveStreamService) {
@@ -206,21 +203,24 @@ internal final class LiveStreamChatViewModelTests: TestCase {
       self.vm.inputs.viewDidLoad()
 
       self.scheduler.advance()
+    }
 
-      self.willConnectToChat.assertValueCount(2)
-      self.didConnectToChat.assertValueCount(0)
+    let liveStreamServiceWithToken = MockLiveStreamService(
+      fetchEventResult: Result(liveStreamEventWithToken),
+      signInToFirebaseWithCustomTokenResult: Result(["deadbeef"])
+    )
 
+    withEnvironment(liveStreamService: liveStreamServiceWithToken) {
       AppEnvironment.login(AccessTokenEnvelope.init(accessToken: "deadbeef", user: User.template))
-      self.vm.inputs.userSessionChanged(session: .loggedIn(token: "feedbeef"))
+      self.vm.inputs.userSessionStarted()
 
-      self.didConnectToChat.assertValueCount(1)
+      self.scheduler.advance()
+
+      self.showErrorAlert.assertValueCount(0)
     }
   }
 
   func testConnectingToChat_Failed() {
-    self.willConnectToChat.assertValueCount(0)
-    self.didConnectToChat.assertValueCount(0)
-
     let initialLiveStreamEvent = .template
       |> LiveStreamEvent.lens.firebase .~ nil
 
@@ -238,9 +238,6 @@ internal final class LiveStreamChatViewModelTests: TestCase {
       self.vm.inputs.viewDidLoad()
 
       self.scheduler.advance()
-
-      self.willConnectToChat.assertValueCount(2)
-      self.didConnectToChat.assertValueCount(0)
 
       self.showErrorAlert.assertValues(["We were unable to connect to the live stream chat."])
     }
@@ -264,7 +261,8 @@ internal final class LiveStreamChatViewModelTests: TestCase {
 
       self.scheduler.advance()
 
-      self.vm.inputs.didSendMessage(message: "Test message")
+      self.vm.inputs.textDidChange(toText: "Test message")
+      self.vm.inputs.sendButtonTapped()
 
       self.showErrorAlert.assertValueCount(0)
     }
@@ -289,9 +287,61 @@ internal final class LiveStreamChatViewModelTests: TestCase {
 
       self.scheduler.advance()
 
-      self.vm.inputs.didSendMessage(message: "Test message")
+      self.vm.inputs.textDidChange(toText: "Test message")
+      self.vm.inputs.sendButtonTapped()
 
       self.showErrorAlert.assertValues(["Your chat message wasn't sent successfully."])
     }
+  }
+
+  func testSendButtonEnabled() {
+    self.sendButtonEnabled.assertValueCount(0)
+
+    self.vm.inputs.viewDidLoad()
+
+    self.sendButtonEnabled.assertValues([false])
+
+    self.vm.inputs.textDidChange(toText: "Typing")
+
+    self.sendButtonEnabled.assertValues([false, true])
+
+    self.vm.inputs.textDidChange(toText: "    ")
+
+    self.sendButtonEnabled.assertValues([false, true, false])
+
+    self.vm.inputs.textDidChange(toText: "")
+
+    self.sendButtonEnabled.assertValues([false, true, false, false])
+
+    self.vm.inputs.textDidChange(toText: "Typing")
+
+    self.sendButtonEnabled.assertValues([false, true, false, false, true])
+
+    self.vm.inputs.sendButtonTapped()
+
+    self.sendButtonEnabled.assertValues([false, true, false, false, true, false])
+
+    self.vm.inputs.textDidChange(toText: nil)
+
+    self.sendButtonEnabled.assertValues([false, true, false, false, true, false, false])
+  }
+
+  func testPlaceholderText() {
+    self.chatInputViewPlaceholderText.assertValueCount(0)
+
+    self.vm.inputs.viewDidLoad()
+
+    self.chatInputViewPlaceholderText.assertValues(["Say something kind..."])
+  }
+
+  func testClearTextFieldAndResignFirstResponder() {
+    self.clearTextFieldAndResignFirstResponder.assertValueCount(0)
+
+    self.vm.inputs.viewDidLoad()
+
+    self.vm.inputs.textDidChange(toText: "Typing")
+    self.vm.inputs.sendButtonTapped()
+
+    self.clearTextFieldAndResignFirstResponder.assertValueCount(1)
   }
 }

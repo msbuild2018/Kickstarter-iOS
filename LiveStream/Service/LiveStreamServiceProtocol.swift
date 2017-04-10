@@ -1,45 +1,15 @@
 import FirebaseDatabase
 import ReactiveSwift
 
-public enum LiveApiError: Error {
-  case chatMessageDecodingFailed
-  case failedToInitializeFirebase
-  case firebaseAnonymousAuthFailed
-  case firebaseCustomTokenAuthFailed
-  case sendChatMessageFailed
-  case snapshotDecodingFailed(path: String)
-  case genericFailure
-  case invalidJson
-  case invalidRequest
-}
+public protocol NewLiveStreamChatMessageProtocol {
+  var message: String { get }
+  var name: String { get }
+  var profilePic: String { get }
+  var userId: String { get }
 
-extension LiveApiError: Equatable {
-  public static func == (lhs: LiveApiError, rhs: LiveApiError) -> Bool {
-    switch (lhs, rhs) {
-    case (.chatMessageDecodingFailed, .chatMessageDecodingFailed):
-      return true
-    case (failedToInitializeFirebase, .failedToInitializeFirebase):
-      return true
-    case (firebaseAnonymousAuthFailed, .firebaseAnonymousAuthFailed):
-      return true
-    case (firebaseCustomTokenAuthFailed, .firebaseCustomTokenAuthFailed):
-      return true
-    case (sendChatMessageFailed, .sendChatMessageFailed):
-      return true
-    case (snapshotDecodingFailed(let lhsPath), .snapshotDecodingFailed(let rhsPath)):
-      return lhsPath == rhsPath
-    case (genericFailure, .genericFailure):
-      return true
-    case (invalidJson, .invalidJson):
-      return true
-    case (invalidRequest, .invalidRequest):
-      return true
-    case (chatMessageDecodingFailed, _), (failedToInitializeFirebase, _), (firebaseAnonymousAuthFailed, _),
-         (firebaseCustomTokenAuthFailed, _), (sendChatMessageFailed, _), (snapshotDecodingFailed, _),
-         (genericFailure, _), (invalidJson, _), (invalidRequest, _):
-      return false
-    }
-  }
+  init(message: String, name: String, profilePic: String, userId: String)
+
+  func toFirebaseDictionary() -> [String:Any]
 }
 
 public protocol LiveStreamServiceProtocol {
@@ -49,19 +19,19 @@ public protocol LiveStreamServiceProtocol {
   func setup()
 
   /// Emits chat messages added since a given time interval.
-  func chatMessagesAdded(withPath path: String, addedSinceTimeInterval timeInterval: TimeInterval) ->
-    SignalProducer<LiveStreamChatMessage, LiveApiError>
+  func chatMessagesAdded(withPath path: String, addedSince timeInterval: TimeInterval)
+    -> SignalProducer<LiveStreamChatMessage, LiveApiError>
 
   /// Fetches an event with personalization added for the user.
-  func fetchEvent(eventId: Int, uid: Int?, liveAuthToken: String?) ->
-    SignalProducer<LiveStreamEvent, LiveApiError>
+  func fetchEvent(eventId: Int, uid: Int?, liveAuthToken: String?)
+    -> SignalProducer<LiveStreamEvent, LiveApiError>
 
   /// Fetches an array of live streaming events.
   func fetchEvents() -> SignalProducer<[LiveStreamEvent], LiveApiError>
 
   /// Fetches an array of events with personalization added for the user.
-  func fetchEvents(forProjectId projectId: Int, uid: Int?) -> SignalProducer<LiveStreamEventsEnvelope,
-    LiveApiError>
+  func fetchEvents(forProjectId projectId: Int, uid: Int?)
+    -> SignalProducer<LiveStreamEventsEnvelope, LiveApiError>
 
   /// Emits the green room off status for a live stream.
   func greenRoomOffStatus(withPath path: String) -> SignalProducer<Bool, LiveApiError>
@@ -70,24 +40,21 @@ public protocol LiveStreamServiceProtocol {
   func hlsUrl(withPath path: String) -> SignalProducer<String, LiveApiError>
 
   /// Fetches the initial limited value of the chat messages.
-  func initialChatMessages(withPath path: String, limitedToLast limit: UInt) ->
-    SignalProducer<[LiveStreamChatMessage], LiveApiError>
+  func initialChatMessages(withPath path: String, limitedToLast limit: UInt)
+    -> SignalProducer<[LiveStreamChatMessage], LiveApiError>
 
   /// Emits the number of people watching for a normal live stream event.
-  func numberOfPeopleWatching(withPath path: String) ->
-    SignalProducer<Int, LiveApiError>
+  func numberOfPeopleWatching(withPath path: String) -> SignalProducer<Int, LiveApiError>
 
   /// Writes a value to increment the number of people watching.
-  func incrementNumberOfPeopleWatching(withPath path: String) ->
-    SignalProducer<(), LiveApiError>
+  func incrementNumberOfPeopleWatching(withPath path: String) -> SignalProducer<(), LiveApiError>
 
   /// Emits the number of people watching for a scale live stream event.
-  func scaleNumberOfPeopleWatching(withPath path: String) ->
-    SignalProducer<Int, LiveApiError>
+  func scaleNumberOfPeopleWatching(withPath path: String) -> SignalProducer<Int, LiveApiError>
 
   /// Sends a new chat message to the live chat.
-  func sendChatMessage(withPath path: String,
-                       chatMessage message: NewLiveStreamChatMessage) -> SignalProducer<(), LiveApiError>
+  func sendChatMessage(withPath path: String, chatMessage message: NewLiveStreamChatMessageProtocol)
+    -> SignalProducer<(), LiveApiError>
 
   /// Acquires an anonymous Firebase user id to be used in the case that a user is not logged-in.
   func signInToFirebaseAnonymously() -> SignalProducer<String, LiveApiError>
@@ -96,6 +63,6 @@ public protocol LiveStreamServiceProtocol {
   func signInToFirebase(withCustomToken customToken: String) -> SignalProducer<String, LiveApiError>
 
   /// Subscribes/unsubscribes a user to an event.
-  func subscribeTo(eventId: Int, uid: Int, isSubscribed: Bool) ->
-    SignalProducer<LiveStreamSubscribeEnvelope, LiveApiError>
+  func subscribeTo(eventId: Int, uid: Int, isSubscribed: Bool)
+    -> SignalProducer<LiveStreamSubscribeEnvelope, LiveApiError>
 }

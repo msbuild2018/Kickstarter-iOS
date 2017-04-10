@@ -1,7 +1,8 @@
 import UIKit
 
 public enum Nib: String {
-  case LiveStreamChatInputView
+  case BackerDashboardEmptyStateCell
+  case BackerDashboardProjectCell
   case LiveStreamNavTitleView
   case NoRewardCell
   case PledgeTitleCell
