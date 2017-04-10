@@ -222,9 +222,12 @@ RewardCellViewModelOutputs {
 
     self.cardViewDropShadowHidden = Signal.combineLatest(
       tappable.map(negate),
-      self.boundStylesProperty.signal
+      self.boundStylesProperty.signal,
+      context
       )
-      .map(first)
+      .map { tappable, _, context in
+        return context == .liveStream || tappable
+      }
 
     self.cardViewBackgroundColor = Signal.combineLatest(allGoneAndNotABacker, self.boundStylesProperty.signal)
       .map(first)

@@ -18,6 +18,11 @@ internal final class NoRewardCell: UITableViewCell, ValueCell {
     self.contentView.backgroundColor = context == .liveStream
       ? .ksr_navy_700
       : Library.backgroundColor(forCategoryId: project.category.rootId)
+
+    if context != .liveStream {
+      _ = self.cardView
+        |> dropShadowStyle()
+    }
   }
 
   // swiftlint:disable function_body_length
@@ -34,7 +39,6 @@ internal final class NoRewardCell: UITableViewCell, ValueCell {
     }
 
     _ = self.cardView
-      |> dropShadowStyle()
       |> UIView.lens.backgroundColor .~ .white
 
     _ = self.pledgeButton
