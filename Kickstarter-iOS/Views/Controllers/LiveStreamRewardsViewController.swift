@@ -9,7 +9,8 @@ internal final class LiveStreamRewardsViewController: UITableViewController {
   private let viewModel = LiveStreamRewardsViewModel()
   private let dataSource = LiveStreamRewardsDataSource()
 
-  internal static func configured(withProject project: Project, liveStreamEvent: LiveStreamEvent) -> LiveStreamRewardsViewController {
+  internal static func configured(withProject project: Project, liveStreamEvent: LiveStreamEvent) ->
+    LiveStreamRewardsViewController {
     let vc = Storyboard.LiveStream.instantiate(LiveStreamRewardsViewController.self)
     vc.viewModel.inputs.configure(withProject: project, liveStreamEvent: liveStreamEvent)
     return vc
@@ -42,7 +43,7 @@ internal final class LiveStreamRewardsViewController: UITableViewController {
       |> UITableViewController.lens.tableView.rowHeight .~ UITableViewAutomaticDimension
       |> UITableViewController.lens.tableView.estimatedRowHeight .~ 450
   }
-  
+
   internal override func bindViewModel() {
     super.bindViewModel()
 

@@ -58,7 +58,7 @@ RewardCellViewModelOutputs {
           ?? backingReward(fromProject: project)
           ?? Reward.noReward
     }
-    let context = self.projectAndRewardOrBackingProperty.signal.skipNil().map { _, _, context in context }
+    let context = self.projectAndRewardOrBackingProperty.signal.skipNil().map { $0.2 }
     let projectAndReward = Signal.zip(project, reward)
 
     self.conversionLabelHidden = project.map {
@@ -168,7 +168,7 @@ RewardCellViewModelOutputs {
           || userIsBacking(reward: reward, inProject: project)
     }
 
-    self.contentViewBackgroundColor = Signal.combineLatest(project, context)
+    self.contentViewBackgroundColor = Signal.zip(project, context)
       .map { project, context in
         if context == .liveStream {
           return .ksr_navy_700

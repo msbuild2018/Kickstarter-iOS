@@ -99,6 +99,6 @@ private func isMainReward(reward: Reward, project: Project) -> Bool {
   let now = AppEnvironment.current.dateType.init().timeIntervalSince1970
   let startsAt = reward.startsAt ?? 0
   let endsAt = (reward.endsAt == .some(0) ? nil : reward.endsAt) ?? project.dates.deadline
-  
+
   return startsAt <= now && now <= endsAt
 }

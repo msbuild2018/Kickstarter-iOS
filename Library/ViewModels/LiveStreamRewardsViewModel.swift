@@ -17,7 +17,10 @@ public protocol LiveStreamRewardsViewModelInputs {
   /// Call when the viewDidLoad.
   func viewDidLoad()
 
+  /// Call when pledge any amount is tapped.
   func tappedPledgeAnyAmount()
+
+  /// Call when reward or backing is tapped.
   func tapped(rewardOrBacking: Either<Reward, Backing>)
 }
 
@@ -25,8 +28,10 @@ public protocol LiveStreamRewardsViewModelOutputs {
   /// Emits the Project to be loaded into the data source.
   var loadProjectIntoDataSource: Signal<Project, NoError> { get }
 
+  /// Emits when we should navigate to Backing.
   var goToBacking: Signal<Project, NoError> { get }
 
+  /// Emits when we should navigate to Reward Pledge.
   var goToRewardPledge: Signal<(Project, Reward), NoError> { get }
 }
 
@@ -41,7 +46,6 @@ LiveStreamRewardsViewModelInputs, LiveStreamRewardsViewModelOutputs {
       .map(first)
 
     let project = configData.map(first)
-//    let liveStreamEvent = configData.map(second)
 
     let rewardOrBackingTapped = Signal.merge(
       self.tappedRewardOrBackingProperty.signal.skipNil(),
@@ -119,6 +123,6 @@ private func goToBackingData(forProject project: Project, rewardOrBacking: Eithe
     guard project.state != .live && rewardOrBacking.right != nil else {
       return nil
     }
-    
+
     return project
 }
