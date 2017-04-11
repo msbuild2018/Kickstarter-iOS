@@ -133,6 +133,15 @@ final class RewardCellViewModelTests: TestCase {
     self.cardViewDropShadowHidden.assertValues([true])
   }
 
+  func testCardViewDropShadowHidden_LiveStreamContext() {
+    self.vm.inputs.configureWith(project: .template |> Project.lens.state .~ .successful,
+                                 rewardOrBacking: .left(.template),
+                                 context: .liveStream)
+    self.vm.inputs.boundStyles()
+
+    self.cardViewDropShadowHidden.assertValues([true])
+  }
+
   func testCardViewDropShadowHidden_LiveProject_Backer_NotAllGone() {
     let reward = Reward.template
     let project = .template
@@ -255,6 +264,19 @@ final class RewardCellViewModelTests: TestCase {
       UIColor.ksr_red_100.withAlphaComponent(0.65),
       UIColor.ksr_beige_400.withAlphaComponent(0.65),
       UIColor.ksr_violet_200.withAlphaComponent(0.65),
+      ])
+
+    self.vm.inputs.configureWith(
+      project: .template |> Project.lens.category .~ .games,
+      rewardOrBacking: .left(.template),
+      context: .liveStream
+    )
+
+    self.contentViewBackgroundColor.assertValues([
+      UIColor.ksr_red_100.withAlphaComponent(0.65),
+      UIColor.ksr_beige_400.withAlphaComponent(0.65),
+      UIColor.ksr_violet_200.withAlphaComponent(0.65),
+      UIColor.ksr_navy_700
       ])
   }
 
