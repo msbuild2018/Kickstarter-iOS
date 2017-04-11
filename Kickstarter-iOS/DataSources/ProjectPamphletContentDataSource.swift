@@ -56,7 +56,7 @@ internal final class ProjectPamphletContentDataSource: ValueCellDataSource {
       .map { (project, Either<Reward, Backing>.left($0), RewardCellContext.projectPage) }
 
     if !rewardData.isEmpty {
-      self.set(values: [(project, .liveStream)],
+      self.set(values: [(project, .projectPage)],
                cellClass: RewardsTitleCell.self, inSection: Section.rewardsTitle.rawValue)
       self.set(values: rewardData, cellClass: RewardCell.self, inSection: Section.rewards.rawValue)
     }

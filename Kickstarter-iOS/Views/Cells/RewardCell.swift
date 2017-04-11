@@ -108,6 +108,9 @@ internal final class RewardCell: UITableViewCell, ValueCell {
       |> UILabel.lens.font .~ .ksr_headline(size: 12)
       |> UILabel.lens.text %~ { _ in Strings.All_gone() }
 
+    _ = self.cardView
+      |> dropShadowStyle()
+
     _ = self.minimumLabel
       |> UILabel.lens.font .~ .ksr_title2(size: 24)
 
