@@ -225,8 +225,8 @@ RewardCellViewModelOutputs {
       self.boundStylesProperty.signal,
       context
       )
-      .map { tappable, _, context in
-        return context == .liveStream || tappable
+      .map { notTappable, _, context in
+        return context == .liveStream || notTappable
       }
 
     self.cardViewBackgroundColor = Signal.combineLatest(allGoneAndNotABacker, self.boundStylesProperty.signal)
