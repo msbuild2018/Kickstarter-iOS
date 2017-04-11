@@ -163,7 +163,10 @@ internal final class LiveStreamContainerPageViewModelTests: TestCase {
       refTag: refTag,
       presentedFromProject: presentedFromProject
     )
+
     let chatPage = LiveStreamContainerPage.chat(project: project, liveStreamEvent: liveStreamEvent)
+
+    let rewardsPage = LiveStreamContainerPage.rewards(project: project, liveStreamEvent: liveStreamEvent)
 
     self.vm.inputs.configureWith(project: project,
                                  liveStreamEvent: liveStreamEvent,
@@ -172,7 +175,7 @@ internal final class LiveStreamContainerPageViewModelTests: TestCase {
 
     self.vm.inputs.viewDidLoad()
 
-    self.loadViewControllersIntoPagesDataSource.assertValues([[infoPage, chatPage]])
+    self.loadViewControllersIntoPagesDataSource.assertValues([[infoPage, chatPage, rewardsPage]])
   }
 
   func testIndicatorLineViewXPosition() {

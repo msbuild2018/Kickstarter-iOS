@@ -1,12 +1,13 @@
 import Prelude
 import Result
+import XCTest
 @testable import Kickstarter_Framework
 @testable import KsApi
 @testable import Library
 @testable import LiveStream
 
 internal final class LiveStreamContainerViewControllerTests: TestCase {
-  fileprivate var cosmicSurgery: Project!
+  fileprivate var cosmicSurgery: Project?
 
   override func setUp() {
     super.setUp()
@@ -22,7 +23,7 @@ internal final class LiveStreamContainerViewControllerTests: TestCase {
     self.cosmicSurgery = project
 
     AppEnvironment.pushEnvironment(
-      config: .template |> Config.lens.countryCode .~ self.cosmicSurgery.country.countryCode,
+      config: .template |> Config.lens.countryCode .~ project.country.countryCode,
       mainBundle: Bundle.framework
     )
 
@@ -319,7 +320,10 @@ internal final class LiveStreamContainerViewControllerTests: TestCase {
   }
 
   func testRewards() {
-    let project = self.cosmicSurgery!
+    guard let project = self.cosmicSurgery else {
+      XCTFail("Project should exist")
+      return
+    }
 
     let liveStreamEvent = .template
       |> LiveStreamEvent.lens.startDate .~ (MockDate().addingTimeInterval(-86_400)).date
