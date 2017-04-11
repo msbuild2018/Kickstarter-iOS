@@ -33,6 +33,32 @@ final class LiveStreamRewardsViewModelTests: TestCase {
     self.loadProjectIntoDataSource.assertValues([project])
   }
 
+  func testLoadProjectIntoDataSource_ViewDidAppear() {
+    let project1 = Project.template
+      |> Project.lens.id .~ 1
+
+    let project2 = Project.template
+      |> Project.lens.id .~ 2
+
+    self.vm.inputs.configure(withProject: project1, liveStreamEvent: .template)
+    self.vm.inputs.viewDidLoad()
+    self.vm.inputs.viewDidAppear()
+
+    self.loadProjectIntoDataSource.assertValues([project1])
+
+    let apiService = MockService(fetchProjectResponse: project2)
+
+    withEnvironment(apiService: apiService) {
+      self.vm.inputs.viewDidAppear()
+
+      self.loadProjectIntoDataSource.assertValues([project1])
+
+      self.scheduler.advance()
+
+      self.loadProjectIntoDataSource.assertValues([project1, project2])
+    }
+  }
+
   func testGoToBacking() {
     let project = Project.template
       |> Project.lens.state .~ .successful

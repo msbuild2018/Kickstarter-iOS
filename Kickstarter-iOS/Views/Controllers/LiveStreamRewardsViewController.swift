@@ -29,6 +29,12 @@ internal final class LiveStreamRewardsViewController: UITableViewController {
     self.viewModel.inputs.viewDidLoad()
   }
 
+  internal override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+
+    self.viewModel.inputs.viewDidAppear()
+  }
+
   internal override func bindStyles() {
     super.bindStyles()
 

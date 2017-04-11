@@ -14,6 +14,9 @@ public protocol LiveStreamRewardsViewModelInputs {
   /// Call to configure with the Project and LiveStreamEvent.
   func configure(withProject project: Project, liveStreamEvent: LiveStreamEvent)
 
+  /// Call when the viewDidAppear.
+  func viewDidAppear()
+
   /// Call when the viewDidLoad.
   func viewDidLoad()
 
@@ -45,7 +48,18 @@ LiveStreamRewardsViewModelInputs, LiveStreamRewardsViewModelOutputs {
       )
       .map(first)
 
-    let project = configData.map(first)
+    let freshProject = configData.map(first)
+      .takeWhen(self.viewDidAppearProperty.signal.skip(first: 1))
+      .flatMap { project in
+        AppEnvironment.current.apiService.fetchProject(project: project)
+          .ksr_delay(AppEnvironment.current.apiDelayInterval, on: AppEnvironment.current.scheduler)
+          .demoteErrors()
+    }
+
+    let project = Signal.merge(
+      configData.map(first),
+      freshProject
+    )
 
     let rewardOrBackingTapped = Signal.merge(
       self.tappedRewardOrBackingProperty.signal.skipNil(),
@@ -70,14 +84,19 @@ LiveStreamRewardsViewModelInputs, LiveStreamRewardsViewModelOutputs {
     self.configDataProperty.value = (project, liveStreamEvent)
   }
 
-  fileprivate let tappedPledgeAnyAmountProperty = MutableProperty()
+  private let tappedPledgeAnyAmountProperty = MutableProperty()
   public func tappedPledgeAnyAmount() {
     self.tappedPledgeAnyAmountProperty.value = ()
   }
 
-  fileprivate let tappedRewardOrBackingProperty = MutableProperty<Either<Reward, Backing>?>(nil)
+  private let tappedRewardOrBackingProperty = MutableProperty<Either<Reward, Backing>?>(nil)
   public func tapped(rewardOrBacking: Either<Reward, Backing>) {
     self.tappedRewardOrBackingProperty.value = rewardOrBacking
+  }
+
+  private let viewDidAppearProperty = MutableProperty()
+  public func viewDidAppear() {
+    self.viewDidAppearProperty.value = ()
   }
 
   private let viewDidLoadProperty = MutableProperty()
