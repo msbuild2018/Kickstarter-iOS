@@ -6,10 +6,26 @@ import Result
 @testable import LiveStream
 
 internal final class LiveStreamContainerViewControllerTests: TestCase {
+  fileprivate var cosmicSurgery: Project!
 
   override func setUp() {
     super.setUp()
-    AppEnvironment.pushEnvironment(mainBundle: Bundle.framework)
+
+    let deadline = self.dateType.init().timeIntervalSince1970 + 60.0 * 60.0 * 24.0 * 14.0
+    let launchedAt = self.dateType.init().timeIntervalSince1970 - 60.0 * 60.0 * 24.0 * 14.0
+    let project = Project.cosmicSurgery
+      |> Project.lens.photo.full .~ ""
+      |> (Project.lens.creator.avatar • User.Avatar.lens.small) .~ ""
+      |> Project.lens.dates.deadline .~ deadline
+      |> Project.lens.dates.launchedAt .~ launchedAt
+
+    self.cosmicSurgery = project
+
+    AppEnvironment.pushEnvironment(
+      config: .template |> Config.lens.countryCode .~ self.cosmicSurgery.country.countryCode,
+      mainBundle: Bundle.framework
+    )
+
     UIView.setAnimationsEnabled(false)
   }
 
@@ -294,6 +310,44 @@ internal final class LiveStreamContainerViewControllerTests: TestCase {
 
         self.scheduler.advance(by: .seconds(3))
         vc.liveVideoViewControllerPlaybackStateChanged(controller: nil, state: .loading)
+
+        FBSnapshotVerifyView(
+          parent.view, identifier: "lang_\(lang)_device_\(device)_orientation_\(orientation)"
+        )
+      }
+    }
+  }
+
+  func testRewards() {
+    let project = self.cosmicSurgery!
+
+    let liveStreamEvent = .template
+      |> LiveStreamEvent.lens.startDate .~ (MockDate().addingTimeInterval(-86_400)).date
+      |> LiveStreamEvent.lens.liveNow .~ true
+      |> LiveStreamEvent.lens.name .~ "Title of the live stream goes here and can be 60 chr max"
+      |> LiveStreamEvent.lens.description .~ ("175 char max. 175 char max 175 char max message with " +
+        "a max character count. Hi everyone! We’re doing an exclusive performance of one of our new tracks!")
+
+    let devices = [Device.phone4_7inch, .phone4inch, .pad]
+    let orientations = [Orientation.landscape, .portrait]
+
+    let liveStreamService = MockLiveStreamService(
+      fetchEventResult: Result(liveStreamEvent)
+    )
+
+    combos(Language.allLanguages, devices, orientations).forEach { lang, device, orientation in
+      withEnvironment(apiDelayInterval: .seconds(3), language: lang, liveStreamService: liveStreamService) {
+        let vc = LiveStreamContainerViewController.configuredWith(project: project,
+                                                                  liveStreamEvent: liveStreamEvent,
+                                                                  refTag: .projectPage,
+                                                                  presentedFromProject: false)
+
+        let (parent, _) = traitControllers(device: device, orientation: orientation, child: vc)
+        parent.view.frame.size.height = device == .pad ? 2_400 : 2_000
+
+        vc.liveStreamContainerPageViewController?.rewardsButtonTapped()
+
+        self.scheduler.advance(by: .seconds(3))
 
         FBSnapshotVerifyView(
           parent.view, identifier: "lang_\(lang)_device_\(device)_orientation_\(orientation)"
