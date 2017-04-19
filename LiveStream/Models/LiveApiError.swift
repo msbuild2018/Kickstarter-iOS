@@ -1,34 +1,70 @@
 public enum LiveApiError: Error {
-  case chatMessageDecodingFailed
-  case failedToInitializeFirebase
-  case firebaseAnonymousAuthFailed
-  case firebaseCustomTokenAuthFailed
-  case sendChatMessageFailed
-  case snapshotDecodingFailed(path: String)
   case timedOut
   case genericFailure
-  case invalidJson
-  case invalidRequest
+  case huzzaApi(HuzzaApiError)
+  case firebase(FirebaseError)
+
+  public enum HuzzaApiError: Error {
+    case invalidJson
+    case invalidRequest
+  }
+
+  public enum FirebaseError {
+    case chatMessageDecodingFailed
+    case failedToInitialize
+    case anonymousAuthFailed
+    case customTokenAuthFailed
+    case sendChatMessageFailed
+    case snapshotDecodingFailed(path: String)
+  }
 }
+
 
 extension LiveApiError: Equatable {
   public static func == (lhs: LiveApiError, rhs: LiveApiError) -> Bool {
     switch (lhs, rhs) {
-    case (.chatMessageDecodingFailed, .chatMessageDecodingFailed),
-         (failedToInitializeFirebase, .failedToInitializeFirebase),
-         (firebaseAnonymousAuthFailed, .firebaseAnonymousAuthFailed),
-         (firebaseCustomTokenAuthFailed, .firebaseCustomTokenAuthFailed),
-         (sendChatMessageFailed, .sendChatMessageFailed),
-         (genericFailure, .genericFailure),
-         (invalidJson, .invalidJson),
-         (invalidRequest, .invalidRequest),
-         (timedOut, timedOut):
+    case (.genericFailure, .genericFailure),
+         (.timedOut, .timedOut):
       return true
-    case let (snapshotDecodingFailed(lhs), .snapshotDecodingFailed(rhs)):
+    case (.huzzaApi(let lhs), .huzzaApi(let rhs)):
       return lhs == rhs
-    case (chatMessageDecodingFailed, _), (failedToInitializeFirebase, _), (firebaseAnonymousAuthFailed, _),
-         (firebaseCustomTokenAuthFailed, _), (sendChatMessageFailed, _), (snapshotDecodingFailed, _),
-         (genericFailure, _), (invalidJson, _), (invalidRequest, _), (timedOut, _):
+    case (.firebase(let lhs), .firebase(let rhs)):
+      return lhs == rhs
+    case (genericFailure, _), (timedOut, _), (.huzzaApi, _), (.firebase, _):
+      return false
+    }
+  }
+}
+
+extension LiveApiError.HuzzaApiError: Equatable {
+  public static func == (lhs: LiveApiError.HuzzaApiError, rhs: LiveApiError.HuzzaApiError) -> Bool {
+    switch (lhs, rhs) {
+    case (.invalidJson, .invalidJson),
+         (.invalidRequest, .invalidRequest):
+      return true
+    case (.invalidJson, _), (invalidRequest, _):
+      return false
+    }
+  }
+}
+
+extension LiveApiError.FirebaseError: Equatable {
+  public static func == (lhs: LiveApiError.FirebaseError, rhs: LiveApiError.FirebaseError) -> Bool {
+    switch (lhs, rhs) {
+    case (.chatMessageDecodingFailed, .chatMessageDecodingFailed),
+         (.failedToInitialize, .failedToInitialize),
+         (.anonymousAuthFailed, .anonymousAuthFailed),
+         (.customTokenAuthFailed, .customTokenAuthFailed),
+         (.sendChatMessageFailed, .sendChatMessageFailed):
+      return true
+    case (.snapshotDecodingFailed(let lhsPath), .snapshotDecodingFailed(let rhsPath)):
+      return lhsPath == rhsPath
+    case (.chatMessageDecodingFailed, _),
+         (.failedToInitialize, _),
+         (.anonymousAuthFailed, _),
+         (.customTokenAuthFailed, _),
+         (.sendChatMessageFailed, _),
+         (.snapshotDecodingFailed, _):
       return false
     }
   }

@@ -68,7 +68,7 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
       }
 
       guard let url = components?.url else {
-        observer.send(error: .invalidRequest)
+        observer.send(error: .huzzaApi(.invalidRequest))
         return
       }
 
@@ -151,7 +151,7 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
         components?.queryItems = uid.map { uid in [URLQueryItem(name: "uid", value: "\(uid)")] }
 
         guard let url = components?.url else {
-          observer.send(error: .invalidRequest)
+          observer.send(error: .huzzaApi(.invalidRequest))
           return
         }
 
@@ -194,7 +194,7 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
         let components = apiUrl.flatMap { URLComponents(url: $0, resolvingAgainstBaseURL: false) }
 
         guard let url = components?.url else {
-          observer.send(error: .invalidRequest)
+          observer.send(error: .huzzaApi(.invalidRequest))
           return
         }
 
@@ -238,7 +238,7 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
 
       return SignalProducer { (observer, disposable) in
         guard let ref = firebaseDbRef else {
-          observer.action(.failed(.failedToInitializeFirebase))
+          observer.action(.failed(.firebase(.failedToInitialize)))
           return
         }
 
@@ -251,7 +251,7 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
             .map([LiveStreamChatMessage].decode)
             .flatMap { $0.value }
             .map(Event<[LiveStreamChatMessage], LiveApiError>.value)
-            .coalesceWith(.failed(.chatMessageDecodingFailed))
+            .coalesceWith(.failed(.firebase(.chatMessageDecodingFailed)))
 
           observer.action(chatMessages)
           observer.sendCompleted()
@@ -270,7 +270,7 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
 
       return SignalProducer { (observer, disposable) in
         guard let ref = firebaseDbRef else {
-          observer.action(.failed(.failedToInitializeFirebase))
+          observer.action(.failed(.firebase(.failedToInitialize)))
           return
         }
 
@@ -287,7 +287,7 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
             .map(LiveStreamChatMessage.decode)
             .flatMap { $0.value }
             .map(Event<LiveStreamChatMessage, LiveApiError>.value)
-            .coalesceWith(.failed(.chatMessageDecodingFailed))
+            .coalesceWith(.failed(.firebase(.chatMessageDecodingFailed)))
 
           observer.action(chatMessage)
         })
@@ -300,59 +300,17 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
   }
 
   public func greenRoomOffStatus(withPath path: String) -> SignalProducer<Bool, LiveApiError> {
-    return SignalProducer { (observer, disposable) in
-      guard let ref = firebaseDbRef else {
-        observer.action(.failed(.failedToInitializeFirebase))
-        return
-      }
-
-      let query = ref.child(path).queryOrderedByKey()
-
-      query.observe(.value, with: { snapshot in
-        let value = snapshot.value
-          .flatMap { $0 as? Bool }
-          .map(Event<Bool, LiveApiError>.value)
-          .coalesceWith(.failed(.snapshotDecodingFailed(path: path)))
-
-        observer.action(value)
-      })
-
-      disposable.add({
-        query.removeAllObservers()
-        observer.sendInterrupted()
-      })
-    }
+    return observe(.greenRoomOffStatus(path: path))
   }
 
   public func hlsUrl(withPath path: String) -> SignalProducer<String, LiveApiError> {
-    return SignalProducer { (observer, disposable) in
-      guard let ref = firebaseDbRef else {
-        observer.action(.failed(.failedToInitializeFirebase))
-        return
-      }
-
-      let query = ref.child(path).queryOrderedByKey()
-
-      query.observe(.value, with: { snapshot in
-        let value = snapshot.value
-          .flatMap { $0 as? String }
-          .map(Event<String, LiveApiError>.value)
-          .coalesceWith(.failed(.snapshotDecodingFailed(path: path)))
-
-        observer.action(value)
-      })
-
-      disposable.add({
-        query.removeAllObservers()
-        observer.sendInterrupted()
-      })
-    }
+    return observe(.hlsUrl(path: path))
   }
 
   public func numberOfPeopleWatching(withPath path: String) -> SignalProducer<Int, LiveApiError> {
     return SignalProducer { (observer, disposable) in
       guard let ref = firebaseDbRef else {
-        observer.action(.failed(.failedToInitializeFirebase))
+        observer.action(.failed(.firebase(.failedToInitialize)))
         return
       }
 
@@ -363,7 +321,7 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
           .flatMap { $0 as? NSDictionary }
           .map { $0.allKeys.count }
           .map(Event<Int, LiveApiError>.value)
-          .coalesceWith(.failed(.snapshotDecodingFailed(path: path)))
+          .coalesceWith(.failed(.firebase(.snapshotDecodingFailed(path: path))))
 
         observer.action(value)
       })
@@ -378,7 +336,7 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
   public func incrementNumberOfPeopleWatching(withPath path: String) -> SignalProducer<(), LiveApiError> {
     return SignalProducer { (observer, disposable) in
       guard let ref = firebaseDbRef else {
-        observer.action(.failed(.failedToInitializeFirebase))
+        observer.action(.failed(.firebase(.failedToInitialize)))
         return
       }
 
@@ -398,7 +356,7 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
   public func scaleNumberOfPeopleWatching(withPath path: String) -> SignalProducer<Int, LiveApiError> {
     return SignalProducer { (observer, disposable) in
       guard let ref = firebaseDbRef else {
-        observer.action(.failed(.failedToInitializeFirebase))
+        observer.action(.failed(.firebase(.failedToInitialize)))
         return
       }
 
@@ -408,7 +366,7 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
         let value = snapshot.value
           .flatMap { $0 as? Int }
           .map(Event<Int, LiveApiError>.value)
-          .coalesceWith(.failed(.snapshotDecodingFailed(path: path)))
+          .coalesceWith(.failed(.firebase(.snapshotDecodingFailed(path: path))))
 
         observer.action(value)
       })
@@ -423,7 +381,7 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
   public func signInToFirebaseAnonymously() -> SignalProducer<String, LiveApiError> {
     return SignalProducer { (observer, disposable) in
       guard let auth = firebaseAuth else {
-        observer.action(.failed(.failedToInitializeFirebase))
+        observer.action(.failed(.firebase(.failedToInitialize)))
         return
       }
 
@@ -431,7 +389,7 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
         let value = user
           .map { $0.uid }
           .map(Event<String, LiveApiError>.value)
-          .coalesceWith(.failed(.firebaseAnonymousAuthFailed))
+          .coalesceWith(.failed(.firebase(.anonymousAuthFailed)))
 
         observer.action(value)
         observer.sendCompleted()
@@ -446,7 +404,7 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
   public func signInToFirebase(withCustomToken customToken: String) -> SignalProducer<String, LiveApiError> {
     return SignalProducer { (observer, disposable) in
       guard let auth = firebaseAuth else {
-        observer.action(.failed(.failedToInitializeFirebase))
+        observer.action(.failed(.firebase(.failedToInitialize)))
         return
       }
 
@@ -454,7 +412,7 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
         let value = user
           .map { $0.uid }
           .map(Event<String, LiveApiError>.value)
-          .coalesceWith(.failed(.firebaseCustomTokenAuthFailed))
+          .coalesceWith(.failed(.firebase(.customTokenAuthFailed)))
 
         observer.action(value)
         observer.sendCompleted()
@@ -472,7 +430,7 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
 
     return SignalProducer { (observer, disposable) in
       guard let ref = firebaseDbRef else {
-        observer.action(.failed(.failedToInitializeFirebase))
+        observer.action(.failed(.firebase(.failedToInitialize)))
         return
       }
 
@@ -483,7 +441,7 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
       let chatRef = ref.child(path).childByAutoId()
       chatRef.setValue(messageWithTimestamp) { (error, _) in
         guard error == nil else {
-          observer.send(error: .sendChatMessageFailed)
+          observer.send(error: .firebase(.sendChatMessageFailed))
           return
         }
 
@@ -495,6 +453,53 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
         observer.sendInterrupted()
       })
     }
+  }
+
+  private enum FirebasePath {
+    case hlsUrl(path: String)
+    case greenRoomOffStatus(path: String)
+
+    internal var properties: (path: String, orderedQuery: ((FIRDatabaseQuery) -> FIRDatabaseQuery),
+      completing: Bool, eventType: FIRDataEventType) {
+      switch self {
+      case .hlsUrl(let path):
+        return (path, { query in query.queryOrderedByKey() }, false, .value)
+      case .greenRoomOffStatus(let path):
+        return (path, { query in query.queryOrderedByKey() }, false, .value)
+      }
+    }
+  }
+
+  private func observe<T>(_ firebasePath: FirebasePath) ->
+    SignalProducer<T, LiveApiError> {
+      return SignalProducer { (observer, disposable) in
+        guard let ref = firebaseDbRef else {
+          observer.action(.failed(.firebase(.failedToInitialize)))
+          return
+        }
+
+        //fixme: do all of this in the closure?
+        let childRef = ref.child(firebasePath.properties.path)
+        let query = firebasePath.properties.orderedQuery(childRef)
+
+        query.observe(firebasePath.properties.eventType, with: { snapshot in
+          let value = snapshot.value
+            .flatMap { $0 as? T }
+            .map(Event<T, LiveApiError>.value)
+            .coalesceWith(.failed(.firebase(.snapshotDecodingFailed(path: firebasePath.properties.path))))
+
+          observer.action(value)
+
+          if firebasePath.properties.completing {
+            observer.sendCompleted()
+          }
+        })
+
+        disposable.add({
+          query.removeAllObservers()
+          observer.sendInterrupted()
+        })
+      }
   }
 }
 
