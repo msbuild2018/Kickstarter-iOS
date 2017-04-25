@@ -14,12 +14,21 @@ internal final class ProfileDataSource: ValueCellDataSource {
   }
 
   internal func load(projects: [Project]) {
-    self.set(values: projects, cellClass: ProfileProjectCell.self, inSection: Section.projects.rawValue)
+//    self.set(values: projects, cellClass: ProfileProjectCell.self, inSection: Section.projects.rawValue)
+  }
+
+  internal func load(projects: [ProfileQueryResult.User.UserBackedProjectsConnection.Project]) {
+
+    self.set(
+      values: projects,
+      cellClass: ProfileProjectCell.self,
+      inSection: Section.projects.rawValue
+    )
   }
 
   internal override func configureCell(collectionCell cell: UICollectionViewCell, withValue value: Any) {
     switch (cell, value) {
-    case let (cell as ProfileProjectCell, value as Project):
+    case let (cell as ProfileProjectCell, value as ProfileQueryResult.User.UserBackedProjectsConnection.Project):
       cell.configureWith(value: value)
     default:
       fatalError("Unrecognized (\(cell), \(value)) combo.")

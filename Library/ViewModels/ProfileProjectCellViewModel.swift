@@ -5,7 +5,7 @@ import Result
 
 public protocol ProfileProjectCellViewModelInputs {
   /// Call with a backed project.
-  func project(_ project: Project)
+  func project(_ project: ProfileQueryResult.User.UserBackedProjectsConnection.Project)
 }
 
 public protocol ProfileProjectCellViewModelOutputs {
@@ -51,27 +51,28 @@ public final class ProfileProjectCellViewModel: ProfileProjectCellViewModelType,
     let project = projectProperty.signal.skipNil()
 
     self.projectName = project.map { $0.name }
-    self.photoURL = project.map { URL(string: $0.photo.full) }
-    self.progress = project.map { $0.stats.fundingProgress }
-    self.progressHidden = project.map { $0.state != .live }
+    self.photoURL = project.map { URL(string: $0.imageUrl) }
+    self.progress = project.map { $0.fundingRatio }
+    self.progressHidden = project.map { $0.state != .LIVE }
     self.stateLabelText = project.map(stateString(forProject:))
     self.stateBackgroundColor = project.map {
-      $0.state == .successful ? .ksr_green_400 : .ksr_navy_600
+      $0.state == .SUCCESSFUL ? .ksr_green_400 : .ksr_navy_600
     }
-    self.stateHidden = project.map { $0.state == .live }
+    self.stateHidden = project.map { $0.state == .LIVE }
 
     self.cellAccessibilityLabel = project.map { "\($0.name) \($0.state.rawValue)" }
 
-    self.metadataIsHidden = project.map { $0.state != .live }
+    self.metadataIsHidden = project.map { $0.state != .LIVE }
 
     self.metadataText = project
-      .filter { $0.state == .live }
-      .map { Format.duration(secondsInUTC: $0.dates.deadline, useToGo: true) }
+      .filter { $0.state == .LIVE }
+      .filterMap { $0.deadlineAt }
+      .map { Format.duration(secondsInUTC: $0, useToGo: true) }
       .map { "\($0.time) \($0.unit)" }
   }
 
-  fileprivate let projectProperty = MutableProperty<Project?>(nil)
-  public func project(_ project: Project) {
+  fileprivate let projectProperty = MutableProperty<ProfileQueryResult.User.UserBackedProjectsConnection.Project?>(nil)
+  public func project(_ project: ProfileQueryResult.User.UserBackedProjectsConnection.Project) {
     self.projectProperty.value = project
   }
 
@@ -90,15 +91,15 @@ public final class ProfileProjectCellViewModel: ProfileProjectCellViewModelType,
   public var outputs: ProfileProjectCellViewModelOutputs { return self }
 }
 
-private func stateString(forProject project: Project) -> String {
+private func stateString(forProject project: ProfileQueryResult.User.UserBackedProjectsConnection.Project) -> String {
   switch project.state {
-  case .canceled:
+  case .CANCELED:
     return Strings.profile_projects_status_canceled()
-  case .successful:
+  case .SUCCESSFUL:
     return Strings.profile_projects_status_successful()
-  case .suspended:
+  case .SUSPENDED:
     return Strings.profile_projects_status_suspended()
-  case .failed:
+  case .FAILED:
     return Strings.profile_projects_status_unsuccessful()
   default:
     return ""

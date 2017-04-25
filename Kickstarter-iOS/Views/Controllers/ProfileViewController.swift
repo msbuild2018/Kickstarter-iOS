@@ -42,7 +42,15 @@ internal final class ProfileViewController: UICollectionViewController {
         self?.dataSource.load(projects: ps)
         self?.collectionView?.reloadData()
         self?.updateProjectPlaylist(ps)
-      }
+    }
+
+    self.viewModel.outputs.newStyleProjects
+      .observeForUI()
+      .observeValues { [weak self] ps in
+        self?.dataSource.load(projects: ps)
+        self?.collectionView?.reloadData()
+        //self?.updateProjectPlaylist(ps)
+    }
 
     self.viewModel.outputs.user
       .observeForUI()

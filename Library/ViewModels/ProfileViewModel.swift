@@ -46,6 +46,8 @@ public protocol ProfileViewModelOutputs {
 
   /// Emits a boolean that determines if the non-backer empty state is visible.
   var showEmptyState: Signal<Bool, NoError> { get }
+
+  var newStyleProjects: Signal<[ProfileQueryResult.User.UserBackedProjectsConnection.Project], NoError> { get }
 }
 
 public protocol ProfileViewModelType {
@@ -54,6 +56,7 @@ public protocol ProfileViewModelType {
 }
 
 public final class ProfileViewModel: ProfileViewModelType, ProfileViewModelInputs, ProfileViewModelOutputs {
+
   public init() {
     let requestFirstPageWith = Signal.merge(
       viewWillAppearProperty.signal.filter(isFalse).ignoreValues(),
@@ -73,15 +76,32 @@ public final class ProfileViewModel: ProfileViewModelType, ProfileViewModelInput
       .filter(isTrue)
       .ignoreValues()
 
-    let isLoading: Signal<Bool, NoError>
-    (self.backedProjects, isLoading, _) = paginate(
+    let (graphqlProjects, _, _) = paginate(
       requestFirstPageWith: requestFirstPageWith,
       requestNextPageWhen: requestNextPageWhen,
       clearOnNewRequest: false,
-      valuesFromEnvelope: { $0.projects },
-      cursorFromEnvelope: { $0.urls.api.moreProjects },
-      requestFromParams: { AppEnvironment.current.apiService.fetchDiscovery(params: $0) },
-      requestFromCursor: { AppEnvironment.current.apiService.fetchDiscovery(paginationUrl: $0) })
+      valuesFromEnvelope: { $0.me.backedProjects.nodes },
+      cursorFromEnvelope: { $0.me.backedProjects.pageInfo.endCursor },
+      requestFromParams: { _ in
+        fetch(query: profileQuery()) as SignalProducer<ProfileQueryResult, ApiError>
+      },
+      requestFromCursor: {
+        fetch(query: profileQuery(endCursor: $0)) as SignalProducer<ProfileQueryResult, ApiError>
+    })
+
+    let asdf = graphqlProjects
+    self.newStyleProjects = asdf
+
+    let isLoading: Signal<Bool, NoError> = .empty
+    self.backedProjects = .empty
+//    (self.backedProjects, isLoading, _) = paginate(
+//      requestFirstPageWith: requestFirstPageWith,
+//      requestNextPageWhen: requestNextPageWhen,
+//      clearOnNewRequest: false,
+//      valuesFromEnvelope: { $0.projects },
+//      cursorFromEnvelope: { $0.urls.api.moreProjects },
+//      requestFromParams: { AppEnvironment.current.apiService.fetchDiscovery(params: $0) },
+//      requestFromCursor: { AppEnvironment.current.apiService.fetchDiscovery(paginationUrl: $0) })
 
     self.isRefreshing = isLoading
 
@@ -143,6 +163,7 @@ public final class ProfileViewModel: ProfileViewModelType, ProfileViewModelInput
   public let goToSettings: Signal<Void, NoError>
   public let scrollToProjectItem: Signal<Int, NoError>
   public let showEmptyState: Signal<Bool, NoError>
+  public let newStyleProjects: Signal<[ProfileQueryResult.User.UserBackedProjectsConnection.Project], NoError>
 
   public var inputs: ProfileViewModelInputs { return self }
   public var outputs: ProfileViewModelOutputs { return self }

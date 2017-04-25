@@ -17,7 +17,7 @@ internal final class ProfileProjectCell: UICollectionViewCell, ValueCell {
   @IBOutlet fileprivate weak var stateBannerView: UIView!
   @IBOutlet fileprivate weak var stateLabel: UILabel!
 
-  internal func configureWith(value: Project) {
+  internal func configureWith(value: ProfileQueryResult.User.UserBackedProjectsConnection.Project) {
     self.viewModel.inputs.project(value)
   }
 
