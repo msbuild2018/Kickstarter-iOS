@@ -7,7 +7,13 @@ extension PKPaymentAuthorizationViewController {
   }
 
   public static var supportedNetworks: [PKPaymentNetwork] {
-    return [.amex, .masterCard, .visa, .discover]
+    let supported = [PKPaymentNetwork.amex, .masterCard, .visa]
+
+    if AppEnvironment.current.config?.features["ios_apple_pay_discover"] != .some(false) {
+      return supported + [.discover]
+    }
+
+    return supported
   }
 
   public static func applePayCapable() -> Bool {

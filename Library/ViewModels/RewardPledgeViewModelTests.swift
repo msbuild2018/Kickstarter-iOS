@@ -466,6 +466,34 @@ internal final class RewardPledgeViewModelTests: TestCase {
     }
   }
 
+  func testSupportedPaymentNetworks_DiscoverNotSet() {
+    self.vm.inputs.configureWith(project: .template, reward: .template, applePayCapable: true)
+    self.vm.inputs.viewDidLoad()
+
+    XCTAssertEqual([.amex, .masterCard, .visa, .discover],
+                   PKPaymentAuthorizationViewController.supportedNetworks)
+  }
+
+  func testSupportedPaymentNetworks_DiscoverDisabled() {
+    withEnvironment(config: .template |> Config.lens.features .~ ["ios_apple_pay_discover": false]) {
+      self.vm.inputs.configureWith(project: .template, reward: .template, applePayCapable: true)
+      self.vm.inputs.viewDidLoad()
+
+      XCTAssertEqual([.amex, .masterCard, .visa],
+                     PKPaymentAuthorizationViewController.supportedNetworks)
+    }
+  }
+
+  func testSupportedPaymentNetworks_DiscoverEnabled() {
+    withEnvironment(config: .template |> Config.lens.features .~ ["ios_apple_pay_discover": true]) {
+      self.vm.inputs.configureWith(project: .template, reward: .template, applePayCapable: true)
+      self.vm.inputs.viewDidLoad()
+
+      XCTAssertEqual([.amex, .masterCard, .visa, .discover],
+                     PKPaymentAuthorizationViewController.supportedNetworks)
+    }
+  }
+
   func testGoToPaymentAuthorization_NoShipping_WithRewardTitle() {
     let project = Project.template
     let reward = Reward.template |> Reward.lens.title .~ "The thing!"
