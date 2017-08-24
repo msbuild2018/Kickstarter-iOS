@@ -84,7 +84,7 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
           .map(JSON.init)
           .map(LiveStreamEvent.decode)
           .flatMap { $0.value }
-          .map(Event<LiveStreamEvent, LiveApiError>.value)
+          .map(Signal<LiveStreamEvent, LiveApiError>.Event.value)
           .coalesceWith(.failed(.genericFailure))
 
         observer.action(event)
@@ -93,10 +93,10 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
 
       task.resume()
 
-      disposable.add({
+      disposable.observeEnded {
         task.cancel()
         observer.sendInterrupted()
-      })
+      }
     }
   }
 
@@ -123,7 +123,7 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
           .map(JSON.init)
           .map([LiveStreamEvent].decode)
           .flatMap { $0.value }
-          .map(Event<[LiveStreamEvent], LiveApiError>.value)
+          .map(Signal<[LiveStreamEvent], LiveApiError>.Event.value)
           .coalesceWith(.failed(.genericFailure))
 
         observer.action(event)
@@ -132,10 +132,10 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
 
       task.resume()
 
-      disposable.add({
+      disposable.observeEnded {
         task.cancel()
         observer.sendInterrupted()
-      })
+      }
     }
   }
 
@@ -167,7 +167,7 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
             .map(JSON.init)
             .map(LiveStreamEventsEnvelope.decode)
             .flatMap { $0.value }
-            .map(Event<LiveStreamEventsEnvelope, LiveApiError>.value)
+            .map(Signal<LiveStreamEventsEnvelope, LiveApiError>.Event.value)
             .coalesceWith(.failed(.genericFailure))
 
           observer.action(envelope)
@@ -176,10 +176,10 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
 
         task.resume()
 
-        disposable.add({
+        disposable.observeEnded {
           task.cancel()
           observer.sendInterrupted()
-        })
+        }
       }
   }
 
@@ -214,7 +214,7 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
             .map(JSON.init)
             .map(LiveStreamSubscribeEnvelope.decode)
             .flatMap { $0.value }
-            .map(Event<LiveStreamSubscribeEnvelope, LiveApiError>.value)
+            .map(Signal<LiveStreamSubscribeEnvelope, LiveApiError>.Event.value)
             .coalesceWith(.failed(.genericFailure))
 
           observer.action(envelope)
@@ -223,10 +223,10 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
 
         task.resume()
 
-        disposable.add({
+        disposable.observeEnded {
           task.cancel()
           observer.sendInterrupted()
-        })
+        }
       }
   }
 
@@ -249,17 +249,17 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
           let chatMessages = (snapshot.children.allObjects as? [FIRDataSnapshot] ?? [])
             .map([LiveStreamChatMessage].decode)
             .flatMap { $0.value }
-            .map(Event<[LiveStreamChatMessage], LiveApiError>.value)
+            .map(Signal<[LiveStreamChatMessage], LiveApiError>.Event.value)
             .coalesceWith(.failed(.chatMessageDecodingFailed))
 
           observer.action(chatMessages)
           observer.sendCompleted()
         })
 
-        disposable.add({
+        disposable.observeEnded {
           query.removeAllObservers()
           observer.sendInterrupted()
-        })
+        }
         }
         .start(on: self.backgroundScheduler)
   }
@@ -285,17 +285,17 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
             .flatMap { $0 }
             .map(LiveStreamChatMessage.decode)
             .flatMap { $0.value }
-            .map(Event<LiveStreamChatMessage, LiveApiError>.value)
+            .map(Signal<LiveStreamChatMessage, LiveApiError>.Event.value)
 
           guard let chatMessage = tryChatMessage else { return }
 
           observer.action(chatMessage)
         })
 
-        disposable.add({
+        disposable.observeEnded {
           query.removeAllObservers()
           observer.sendInterrupted()
-        })
+        }
       }
   }
 
@@ -311,16 +311,16 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
       query.observe(.value, with: { snapshot in
         let value = snapshot.value
           .flatMap { $0 as? Bool }
-          .map(Event<Bool, LiveApiError>.value)
+          .map(Signal<Bool, LiveApiError>.Event.value)
           .coalesceWith(.failed(.snapshotDecodingFailed(path: path)))
 
         observer.action(value)
       })
 
-      disposable.add({
+      disposable.observeEnded {
         query.removeAllObservers()
         observer.sendInterrupted()
-      })
+      }
     }
   }
 
@@ -336,16 +336,16 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
       query.observe(.value, with: { snapshot in
         let value = snapshot.value
           .flatMap { $0 as? String }
-          .map(Event<String, LiveApiError>.value)
+          .map(Signal<String, LiveApiError>.Event.value)
           .coalesceWith(.failed(.snapshotDecodingFailed(path: path)))
 
         observer.action(value)
       })
 
-      disposable.add({
+      disposable.observeEnded {
         query.removeAllObservers()
         observer.sendInterrupted()
-      })
+      }
     }
   }
 
@@ -362,16 +362,16 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
         let value = snapshot.value
           .flatMap { $0 as? NSDictionary }
           .map { $0.allKeys.count }
-          .map(Event<Int, LiveApiError>.value)
+          .map(Signal<Int, LiveApiError>.Event.value)
           .coalesceWith(.failed(.snapshotDecodingFailed(path: path)))
 
         observer.action(value)
       })
 
-      disposable.add({
+      disposable.observeEnded {
         query.removeAllObservers()
         observer.sendInterrupted()
-      })
+      }
     }
   }
 
@@ -386,12 +386,12 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
       presenceRef.setValue(true)
       presenceRef.onDisconnectRemoveValue()
 
-      observer.action(Event<(), LiveApiError>.value(()))
+      observer.action(Signal<(), LiveApiError>.Event.value(()))
 
-      disposable.add({
+      disposable.observeEnded {
         presenceRef.removeAllObservers()
         observer.sendInterrupted()
-      })
+      }
     }
   }
 
@@ -407,16 +407,16 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
       query.observe(.value, with: { snapshot in
         let value = snapshot.value
           .flatMap { $0 as? Int }
-          .map(Event<Int, LiveApiError>.value)
+          .map(Signal<Int, LiveApiError>.Event.value)
           .coalesceWith(.failed(.snapshotDecodingFailed(path: path)))
 
         observer.action(value)
       })
 
-      disposable.add({
+      disposable.observeEnded {
         query.removeAllObservers()
         observer.sendInterrupted()
-      })
+      }
     }
   }
 
@@ -430,16 +430,16 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
       auth.signInAnonymously { user, _ in
         let value = user
           .map { $0.uid }
-          .map(Event<String, LiveApiError>.value)
+          .map(Signal<String, LiveApiError>.Event.value)
           .coalesceWith(.failed(.firebaseAnonymousAuthFailed))
 
         observer.action(value)
         observer.sendCompleted()
       }
 
-      disposable.add({
+      disposable.observeEnded {
         observer.sendInterrupted()
-      })
+      }
     }
   }
 
@@ -453,16 +453,16 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
       auth.signIn(withCustomToken: customToken) { user, _ in
         let value = user
           .map { $0.uid }
-          .map(Event<String, LiveApiError>.value)
+          .map(Signal<String, LiveApiError>.Event.value)
           .coalesceWith(.failed(.firebaseCustomTokenAuthFailed))
 
         observer.action(value)
         observer.sendCompleted()
       }
 
-      disposable.add({
+      disposable.observeEnded {
         observer.sendInterrupted()
-      })
+      }
     }
   }
 
@@ -490,10 +490,10 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
         observer.sendCompleted()
       }
 
-      disposable.add({
+      disposable.observeEnded {
         chatRef.removeAllObservers()
         observer.sendInterrupted()
-      })
+      }
     }
   }
 }

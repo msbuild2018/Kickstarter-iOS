@@ -136,7 +136,7 @@ extension URLSession {
           observer.send(value: (data, response))
           observer.sendCompleted()
         }
-        disposable += task.cancel
+        disposable.observeEnded(task.cancel)
         task.resume()
       }
   }

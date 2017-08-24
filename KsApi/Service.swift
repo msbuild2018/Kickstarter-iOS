@@ -463,7 +463,7 @@ public struct Service: ServiceType {
   private func decodeModel<M: Argo.Decodable>(_ json: Any) ->
     SignalProducer<M, ErrorEnvelope> where M == M.DecodedType {
 
-      return SignalProducer(value: json)
+      return SignalProducer<Any, ErrorEnvelope>(value: json)
         .map { json in decode(json) as Decoded<M> }
         .flatMap(.concat) { (decoded: Decoded<M>) -> SignalProducer<M, ErrorEnvelope> in
           switch decoded {
@@ -479,7 +479,7 @@ public struct Service: ServiceType {
   private func decodeModels<M: Argo.Decodable>(_ json: Any) ->
     SignalProducer<[M], ErrorEnvelope> where M == M.DecodedType {
 
-      return SignalProducer(value: json)
+      return SignalProducer<Any, ErrorEnvelope>(value: json)
         .map { json in decode(json) as Decoded<[M]> }
         .flatMap(.concat) { (decoded: Decoded<[M]>) -> SignalProducer<[M], ErrorEnvelope> in
           switch decoded {

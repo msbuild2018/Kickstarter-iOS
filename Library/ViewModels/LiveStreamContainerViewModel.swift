@@ -98,8 +98,8 @@ LiveStreamContainerViewModelInputs, LiveStreamContainerViewModelOutputs {
       initialEvent,
       initialEvent.takeWhen(self.userSessionStartedProperty.signal)
       )
-      .switchMap { initialEvent -> SignalProducer<Event<LiveStreamEvent, LiveApiError>, NoError> in
-        timer(interval: .seconds(5), on: AppEnvironment.current.scheduler)
+      .switchMap { initialEvent -> SignalProducer<Signal<LiveStreamEvent, LiveApiError>.Event, NoError> in
+        SignalProducer.timer(interval: .seconds(5), on: AppEnvironment.current.scheduler)
           .prefix(value: Date())
           .flatMap { _ in
             AppEnvironment.current.liveStreamService
@@ -190,7 +190,7 @@ LiveStreamContainerViewModelInputs, LiveStreamContainerViewModelOutputs {
 
     let numberOfPeopleWatchingTimeOutSignal = startNumberOfPeopleWatchingProducer
       .flatMap { _ in
-        timer(interval: .seconds(10), on: AppEnvironment.current.scheduler)
+        SignalProducer.timer(interval: .seconds(10), on: AppEnvironment.current.scheduler)
       }
       .take(until: numberOfPeopleWatchingEvent.values().ignoreValues())
 
@@ -212,7 +212,7 @@ LiveStreamContainerViewModelInputs, LiveStreamContainerViewModelOutputs {
         return (hlsUrl, firebase.hlsUrlPath)
       }
       .skipNil()
-      .flatMap { hlsUrl, hlsUrlPath -> SignalProducer<Event<String, LiveApiError>, NoError> in
+      .flatMap { hlsUrl, hlsUrlPath -> SignalProducer<Signal<String, LiveApiError>.Event, NoError> in
         guard let hlsUrlPath = hlsUrlPath else { return SignalProducer(value: hlsUrl).materialize() }
 
         return AppEnvironment.current.liveStreamService.hlsUrl(withPath: hlsUrlPath)
@@ -387,7 +387,7 @@ LiveStreamContainerViewModelInputs, LiveStreamContainerViewModelOutputs {
 
     let numberOfMinutesWatched = isPlaying
       .filter(isTrue)
-      .flatMap { _ in timer(interval: .seconds(60), on: AppEnvironment.current.scheduler) }
+      .flatMap { _ in SignalProducer.timer(interval: .seconds(60), on: AppEnvironment.current.scheduler) }
       .mapConst(1)
 
     self.videoViewControllerHidden = Signal.merge(
