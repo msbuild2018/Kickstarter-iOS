@@ -208,7 +208,7 @@ public final class ProjectPamphletContentViewController: UITableViewController {
 
     self.delegate?.projectPamphletContent(
       self,
-      didScrollToTop: scrollView.contentOffset.y == 0
+      didScrollToTop: scrollView.contentOffset.y <= 0
     )
   }
 

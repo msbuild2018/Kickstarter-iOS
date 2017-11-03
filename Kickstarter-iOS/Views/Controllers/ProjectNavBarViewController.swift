@@ -26,7 +26,7 @@ public final class ProjectNavBarViewController: UIViewController {
   }
 
   internal func setDidScrollToTop(_ didScrollToTop: Bool) {
-    self.viewModel.inputs.projectImageIsVisible(didScrollToTop)
+    self.viewModel.inputs.projectPageDidScrollToTop(didScrollToTop)
   }
 
   internal func setProjectImageIsVisible(_ visible: Bool) {
@@ -125,7 +125,7 @@ public final class ProjectNavBarViewController: UIViewController {
     self.viewModel.outputs.navBarShadowVisible
       .observeForUI()
       .observeValues { [weak self] didScrollToTop in
-        UIView.animate(withDuration: 0.2) {
+        UIView.animate(withDuration: 0.0) {
           self?.backgroundView.layer.shadowOpacity = didScrollToTop ? 0 : 1
         }
       }
