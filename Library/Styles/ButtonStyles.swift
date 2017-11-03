@@ -103,7 +103,7 @@ public let navyButtonStyle =
 
 public let saveButtonStyle =
   UIButton.lens.title(forState: .normal) .~ nil
-  <> UIButton.lens.tintColor .~ .white
+  <> UIButton.lens.tintColor .~ .black
   <> UIButton.lens.contentEdgeInsets .~ .init(all: Styles.grid(2))
   <> UIButton.lens.image(forState: .normal) .~ image(named: "icon-heart-unfilled")
   <> UIButton.lens.image(forState: .selected) .~ image(named: "icon-heart-filled")
@@ -111,7 +111,7 @@ public let saveButtonStyle =
 
 public let shareButtonStyle =
   UIButton.lens.title(forState: .normal) .~ nil
-  <> UIButton.lens.tintColor .~ .white
+  <> UIButton.lens.tintColor .~ .black
   <> UIButton.lens.contentEdgeInsets
     .~ .init(top: Styles.grid(2), left: Styles.grid(2), bottom: Styles.grid(2),
              right: Styles.grid(1))

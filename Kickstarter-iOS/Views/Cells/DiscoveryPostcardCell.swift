@@ -178,9 +178,11 @@ internal final class DiscoveryPostcardCell: UITableViewCell, ValueCell {
 
     _ = self.saveButton
       |> saveButtonStyle
+      <> UIButton.lens.tintColor .~ .white
 
     _ = self.shareButton
       |> shareButtonStyle
+      <> UIButton.lens.tintColor .~ .white
   }
 
   internal override func bindViewModel() {
