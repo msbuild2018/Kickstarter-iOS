@@ -75,7 +75,8 @@ public let discoveryOnboardingTitleStyle =
 public let discoveryOnboardingLogoStyle =
   UIImageView.lens.contentMode .~ .scaleAspectFit
     <> UIImageView.lens.contentHuggingPriorityForAxis(.vertical) .~ UILayoutPriority.required.rawValue
-    <> UIImageView.lens.contentCompressionResistancePriorityForAxis(.vertical) .~ UILayoutPriority.required.rawValue
+    <> UIImageView.lens.contentCompressionResistancePriorityForAxis(.vertical)
+      .~ UILayoutPriority.required.rawValue
 
 public let discoveryOnboardingStackViewStyle =
   UIStackView.lens.spacing .~ 16.0

@@ -60,7 +60,7 @@ internal final class ProjectPamphletSubpageCell: UITableViewCell, ValueCell {
       |> UILabel.lens.numberOfLines .~ 2
       |> UILabel.lens.font .~ .ksr_body(size: 14)
       |> UIView.lens.contentHuggingPriorityForAxis(.horizontal) .~ UILayoutPriority.defaultLow.rawValue
-      |> UIView.lens.contentCompressionResistancePriorityForAxis(.horizontal) 
+      |> UIView.lens.contentCompressionResistancePriorityForAxis(.horizontal)
         .~ UILayoutPriority.defaultLow.rawValue
 
     self.setNeedsLayout()
