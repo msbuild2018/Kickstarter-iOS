@@ -10,16 +10,16 @@ private func swizzle(_ v: UIView.Type) {
 
       let didAddViewDidLoadMethod = class_addMethod(v,
                                                     original,
-                                                    method_getImplementation(swizzledMethod),
-                                                    method_getTypeEncoding(swizzledMethod))
+                                                    method_getImplementation(swizzledMethod!),
+                                                    method_getTypeEncoding(swizzledMethod!))
 
       if didAddViewDidLoadMethod {
         class_replaceMethod(v,
                             swizzled,
-                            method_getImplementation(originalMethod),
-                            method_getTypeEncoding(originalMethod))
+                            method_getImplementation(originalMethod!),
+                            method_getTypeEncoding(originalMethod!))
       } else {
-        method_exchangeImplementations(originalMethod, swizzledMethod)
+        method_exchangeImplementations(originalMethod!, swizzledMethod!)
       }
   }
 }
@@ -52,7 +52,7 @@ extension UIView {
       .joined(separator: ".")
   }
 
-  internal func ksr_traitCollectionDidChange(_ previousTraitCollection: UITraitCollection) {
+  @objc internal func ksr_traitCollectionDidChange(_ previousTraitCollection: UITraitCollection) {
     self.ksr_traitCollectionDidChange(previousTraitCollection)
     self.bindStyles()
   }

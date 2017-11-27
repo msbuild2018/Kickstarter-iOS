@@ -22,17 +22,17 @@ public protocol SimpleHTMLLabelProtocol: UILabelProtocol {
 }
 
 public final class SimpleHTMLLabel: UILabel, SimpleHTMLLabelProtocol {
-  public var baseAttributes: [String: AnyObject] = [NSFontAttributeName: defaultFont] {
+  public var baseAttributes: [String: AnyObject] = [NSAttributedStringKey.font.rawValue: defaultFont] {
     didSet {
       self.setNeedsLayout()
     }
   }
-  public var boldAttributes: [String: AnyObject] = [NSFontAttributeName: defaultFont] {
+  public var boldAttributes: [String: AnyObject] = [NSAttributedStringKey.font.rawValue: defaultFont] {
     didSet {
       self.setNeedsLayout()
     }
   }
-  public var italicAttributes: [String: AnyObject] = [NSFontAttributeName: defaultFont] {
+  public var italicAttributes: [String: AnyObject] = [NSAttributedStringKey.font.rawValue: defaultFont] {
     didSet {
       self.setNeedsLayout()
     }
@@ -40,56 +40,56 @@ public final class SimpleHTMLLabel: UILabel, SimpleHTMLLabelProtocol {
 
   public var baseFont: UIFont {
     get {
-      return (self.baseAttributes[NSFontAttributeName] as? UIFont) ?? defaultFont
+      return (self.baseAttributes[NSAttributedStringKey.font] as? UIFont) ?? defaultFont
     }
     set {
-      self.baseAttributes = self.baseAttributes.withAllValuesFrom([NSFontAttributeName: newValue])
+      self.baseAttributes = self.baseAttributes.withAllValuesFrom([NSAttributedStringKey.font.rawValue: newValue])
     }
   }
 
   public var baseColor: UIColor {
     get {
-      return (self.baseAttributes[NSForegroundColorAttributeName] as? UIColor) ?? defaultColor
+      return (self.baseAttributes[NSAttributedStringKey.foregroundColor] as? UIColor) ?? defaultColor
     }
     set {
-      self.baseAttributes = self.baseAttributes.withAllValuesFrom([NSForegroundColorAttributeName: newValue])
+      self.baseAttributes = self.baseAttributes.withAllValuesFrom([NSAttributedStringKey.foregroundColor.rawValue: newValue])
     }
   }
 
   public var boldFont: UIFont {
     get {
-      return (self.boldAttributes[NSFontAttributeName] as? UIFont) ?? defaultFont
+      return (self.boldAttributes[NSAttributedStringKey.font] as? UIFont) ?? defaultFont
     }
     set {
-      self.boldAttributes = self.boldAttributes.withAllValuesFrom([NSFontAttributeName: newValue])
+      self.boldAttributes = self.boldAttributes.withAllValuesFrom([NSAttributedStringKey.font.rawValue: newValue])
     }
   }
 
   public var boldColor: UIColor {
     get {
-      return (self.boldAttributes[NSForegroundColorAttributeName] as? UIColor) ?? defaultColor
+      return (self.boldAttributes[NSAttributedStringKey.foregroundColor] as? UIColor) ?? defaultColor
     }
     set {
-      self.boldAttributes = self.boldAttributes.withAllValuesFrom([NSForegroundColorAttributeName: newValue])
+      self.boldAttributes = self.boldAttributes.withAllValuesFrom([NSAttributedStringKey.foregroundColor.rawValue: newValue])
     }
   }
 
   public var italicFont: UIFont {
     get {
-      return (self.italicAttributes[NSFontAttributeName] as? UIFont) ?? defaultFont
+      return (self.italicAttributes[NSAttributedStringKey.font] as? UIFont) ?? defaultFont
     }
     set {
-      self.italicAttributes = self.italicAttributes.withAllValuesFrom([NSFontAttributeName: newValue])
+      self.italicAttributes = self.italicAttributes.withAllValuesFrom([NSAttributedStringKey.font.rawValue: newValue])
     }
   }
 
   public var italicColor: UIColor {
     get {
-      return (self.italicAttributes[NSForegroundColorAttributeName] as? UIColor) ?? defaultColor
+      return (self.italicAttributes[NSAttributedStringKey.foregroundColor] as? UIColor) ?? defaultColor
     }
     set {
       self.italicAttributes = self.italicAttributes.withAllValuesFrom(
-        [NSForegroundColorAttributeName: newValue]
+        [NSAttributedStringKey.foregroundColor.rawValue: newValue]
       )
     }
   }

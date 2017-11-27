@@ -157,7 +157,7 @@ extension Project: CustomDebugStringConvertible {
 
 extension Project: Argo.Decodable {
   static public func decode(_ json: JSON) -> Decoded<Project> {
-    let create = curry(Project.init)
+    let create = Curry.curry(Project.init)
     let tmp1 = create
       <^> json <| "blurb"
       <*> ((json <| "category" >>- decodeToGraphCategory) as Decoded<RootCategoriesEnvelope.Category>)
@@ -199,7 +199,7 @@ extension Project.UrlsEnvelope.WebEnvelope: Argo.Decodable {
 
 extension Project.Stats: Argo.Decodable {
   public static func decode(_ json: JSON) -> Decoded<Project.Stats> {
-    let create = curry(Project.Stats.init)
+    let create = Curry.curry(Project.Stats.init)
     let tmp1 = create
       <^> json <| "backers_count"
       <*> json <|? "comments_count"
@@ -215,7 +215,7 @@ extension Project.Stats: Argo.Decodable {
 
 extension Project.MemberData: Argo.Decodable {
   public static func decode(_ json: JSON) -> Decoded<Project.MemberData> {
-    let create = curry(Project.MemberData.init)
+    let create = Curry.curry(Project.MemberData.init)
     return create
       <^> json <|? "last_update_published_at"
       <*> (removeUnknowns <^> (json <|| "permissions") <|> .success([]))
@@ -226,7 +226,7 @@ extension Project.MemberData: Argo.Decodable {
 
 extension Project.Dates: Argo.Decodable {
   public static func decode(_ json: JSON) -> Decoded<Project.Dates> {
-    return curry(Project.Dates.init)
+    return Curry.curry(Project.Dates.init)
       <^> json <| "deadline"
       <*> json <|? "featured_at"
       <*> json <| "launched_at"
@@ -236,7 +236,7 @@ extension Project.Dates: Argo.Decodable {
 
 extension Project.Personalization: Argo.Decodable {
   public static func decode(_ json: JSON) -> Decoded<Project.Personalization> {
-    return curry(Project.Personalization.init)
+    return Curry.curry(Project.Personalization.init)
       <^> json <|? "backing"
       <*> json <||? "friends"
       <*> json <|? "is_backing"
@@ -246,7 +246,7 @@ extension Project.Personalization: Argo.Decodable {
 
 extension Project.Photo: Argo.Decodable {
   static public func decode(_ json: JSON) -> Decoded<Project.Photo> {
-    let create = curry(Project.Photo.init)
+    let create = Curry.curry(Project.Photo.init)
 
     let url1024: Decoded<String?> = ((json <| "1024x768") <|> (json <| "1024x576"))
       // swiftlint:disable:next syntactic_sugar

@@ -233,12 +233,12 @@ public final class ThanksViewModel: ThanksViewModelType, ThanksViewModelInputs, 
   public var outputs: ThanksViewModelOutputs { return self }
 
   // MARK: ThanksViewModelInputs
-  fileprivate let viewDidLoadProperty = MutableProperty()
+  fileprivate let viewDidLoadProperty = MutableProperty(())
   public func viewDidLoad() {
     viewDidLoadProperty.value = ()
   }
 
-  fileprivate let closeButtonTappedProperty = MutableProperty()
+  fileprivate let closeButtonTappedProperty = MutableProperty(())
   public func closeButtonTapped() {
     closeButtonTappedProperty.value = ()
   }
@@ -258,7 +258,7 @@ public final class ThanksViewModel: ThanksViewModelType, ThanksViewModelInputs, 
     projectTappedProperty.value = project
   }
 
-  fileprivate let gamesNewsletterSignupButtonTappedProperty = MutableProperty()
+  fileprivate let gamesNewsletterSignupButtonTappedProperty = MutableProperty(())
   public func gamesNewsletterSignupButtonTapped() {
     gamesNewsletterSignupButtonTappedProperty.value = ()
   }
@@ -268,17 +268,17 @@ public final class ThanksViewModel: ThanksViewModelType, ThanksViewModelInputs, 
     self.facebookIsAvailableProperty.value = available
   }
 
-  fileprivate let rateNowButtonTappedProperty = MutableProperty()
+  fileprivate let rateNowButtonTappedProperty = MutableProperty(())
   public func rateNowButtonTapped() {
     rateNowButtonTappedProperty.value = ()
   }
 
-  fileprivate let rateRemindLaterButtonTappedProperty = MutableProperty()
+  fileprivate let rateRemindLaterButtonTappedProperty = MutableProperty(())
   public func rateRemindLaterButtonTapped() {
     rateRemindLaterButtonTappedProperty.value = ()
   }
 
-  fileprivate let rateNoThanksButtonTappedProperty = MutableProperty()
+  fileprivate let rateNoThanksButtonTappedProperty = MutableProperty(())
   public func rateNoThanksButtonTapped() {
     rateNoThanksButtonTappedProperty.value = ()
   }
@@ -288,7 +288,7 @@ public final class ThanksViewModel: ThanksViewModelType, ThanksViewModelInputs, 
     self.twitterIsAvailableProperty.value = available
   }
 
-  fileprivate let userUpdatedProperty = MutableProperty()
+  fileprivate let userUpdatedProperty = MutableProperty(())
   public func userUpdated() {
     userUpdatedProperty.value = ()
   }

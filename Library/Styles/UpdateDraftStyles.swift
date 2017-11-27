@@ -43,9 +43,9 @@ public let updateBackersOnlyButtonStyle =
 
 public let updateAddAttachmentButtonStyle =
   UIButton.lens.backgroundColor .~ .ksr_navy_200
-    <> UIButton.lens.contentCompressionResistancePriorityForAxis(.vertical) .~ UILayoutPriorityRequired
+    <> UIButton.lens.contentCompressionResistancePriorityForAxis(.vertical) .~ UILayoutPriority.required.rawValue
     <> UIButton.lens.contentEdgeInsets .~ .init(top: 11, left: 9, bottom: 12, right: 9)
-    <> UIButton.lens.contentHuggingPriorityForAxis(.vertical) .~ UILayoutPriorityRequired
+    <> UIButton.lens.contentHuggingPriorityForAxis(.vertical) .~ UILayoutPriority.required.rawValue
     <> UIButton.lens.image(forState: .normal) %~ { _ in image(named: "update-draft-add-attachment-icon") }
     <> UIButton.lens.layer.borderColor .~ UIColor.ksr_navy_300.cgColor
     <> UIButton.lens.layer.borderWidth .~ 1

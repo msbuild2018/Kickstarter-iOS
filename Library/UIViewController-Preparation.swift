@@ -16,16 +16,16 @@ private func swizzle(_ vc: UIViewController.Type) {
 
       let didAddViewDidLoadMethod = class_addMethod(vc,
                                                     original,
-                                                    method_getImplementation(swizzledMethod),
-                                                    method_getTypeEncoding(swizzledMethod))
+                                                    method_getImplementation(swizzledMethod!),
+                                                    method_getTypeEncoding(swizzledMethod!))
 
       if didAddViewDidLoadMethod {
         class_replaceMethod(vc,
                             swizzled,
-                            method_getImplementation(originalMethod),
-                            method_getTypeEncoding(originalMethod))
+                            method_getImplementation(originalMethod!),
+                            method_getTypeEncoding(originalMethod!))
       } else {
-        method_exchangeImplementations(originalMethod, swizzledMethod)
+        method_exchangeImplementations(originalMethod!, swizzledMethod!)
       }
   }
 }
@@ -40,12 +40,12 @@ extension UIViewController {
     swizzle(self)
   }
 
-  internal func ksr_viewDidLoad() {
+  @objc internal func ksr_viewDidLoad() {
     self.ksr_viewDidLoad()
     self.bindViewModel()
   }
 
-  internal func ksr_viewWillAppear(_ animated: Bool) {
+  @objc internal func ksr_viewWillAppear(_ animated: Bool) {
     self.ksr_viewWillAppear(animated)
 
     if !self.hasViewAppeared {
@@ -66,7 +66,7 @@ extension UIViewController {
   open func bindStyles() {
   }
 
-  public func ksr_traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+  @objc public func ksr_traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
     self.ksr_traitCollectionDidChange(previousTraitCollection)
     self.bindStyles()
   }

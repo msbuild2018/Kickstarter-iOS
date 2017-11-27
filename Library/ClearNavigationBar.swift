@@ -23,8 +23,8 @@ public class ClearNavigationBar: UINavigationBar {
 
     _ = self
       |> UINavigationBar.lens.titleTextAttributes .~ [
-        NSForegroundColorAttributeName: UIColor.white,
-        NSFontAttributeName: UIFont.ksr_callout()
+        NSAttributedStringKey.foregroundColor.rawValue: UIColor.white,
+        NSAttributedStringKey.font.rawValue: UIFont.ksr_callout()
       ]
       |> UINavigationBar.lens.translucent .~ true
       |> UINavigationBar.lens.barTintColor .~ .white

@@ -74,8 +74,8 @@ public let discoveryOnboardingTitleStyle =
 
 public let discoveryOnboardingLogoStyle =
   UIImageView.lens.contentMode .~ .scaleAspectFit
-    <> UIImageView.lens.contentHuggingPriorityForAxis(.vertical) .~ UILayoutPriorityRequired
-    <> UIImageView.lens.contentCompressionResistancePriorityForAxis(.vertical) .~ UILayoutPriorityRequired
+    <> UIImageView.lens.contentHuggingPriorityForAxis(.vertical) .~ UILayoutPriority.required.rawValue
+    <> UIImageView.lens.contentCompressionResistancePriorityForAxis(.vertical) .~ UILayoutPriority.required.rawValue
 
 public let discoveryOnboardingStackViewStyle =
   UIStackView.lens.spacing .~ 16.0
@@ -97,17 +97,17 @@ public func discoverySortPagerButtonStyle <B: UIButtonProtocol> (sort: Discovery
   let sortString = string(forSort: sort)
 
   let normalTitleString = NSAttributedString(string: sortString, attributes: [
-    NSFontAttributeName: isRegularRegular
+    NSAttributedStringKey.font: isRegularRegular
       ? UIFont.ksr_subhead(size: 16.0)
       : UIFont.ksr_subhead(size: 15.0),
-    NSForegroundColorAttributeName: discoverySecondaryColor().withAlphaComponent(0.6)
+    NSAttributedStringKey.foregroundColor: discoverySecondaryColor().withAlphaComponent(0.6)
   ])
 
   let selectedTitleString = NSAttributedString(string: sortString, attributes: [
-    NSFontAttributeName: isRegularRegular
+    NSAttributedStringKey.font: isRegularRegular
       ? UIFont.ksr_subhead(size: 16.0).bolded
       : UIFont.ksr_subhead(size: 15.0),
-    NSForegroundColorAttributeName: UIColor.black
+    NSAttributedStringKey.foregroundColor: UIColor.black
   ])
 
   return

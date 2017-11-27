@@ -21,21 +21,21 @@ public final class CountBadgeView: UIView {
   }
 
   public override func bindStyles() {
-    let required = UILayoutPriorityRequired
+    let required = UILayoutPriority.required
 
     _ = self
       |> roundedStyle(cornerRadius: floor(self.bounds.size.height / 2.0))
       |> CountBadgeView.lens.backgroundColor .~ .ksr_navy_400
       |> CountBadgeView.lens.layoutMargins .~ .init(topBottom: 4.0, leftRight: 8.0)
-      |> CountBadgeView.lens.contentHuggingPriorityForAxis(.horizontal) .~ required
-      |> CountBadgeView.lens.contentCompressionResistancePriorityForAxis(.horizontal) .~ required
+      |> CountBadgeView.lens.contentHuggingPriorityForAxis(.horizontal) .~ required.rawValue
+      |> CountBadgeView.lens.contentCompressionResistancePriorityForAxis(.horizontal) .~ required.rawValue
       |> CountBadgeView.lens.translatesAutoresizingMaskIntoConstraints .~ false
 
     _ = self.label
       |> UILabel.lens.font .~ .ksr_footnote()
       |> UILabel.lens.textColor .~ .ksr_text_dark_grey_900
-      |> UILabel.lens.contentHuggingPriorityForAxis(.horizontal) .~ required
-      |> UILabel.lens.contentCompressionResistancePriorityForAxis(.horizontal) .~ required
+      |> UILabel.lens.contentHuggingPriorityForAxis(.horizontal) .~ required.rawValue
+      |> UILabel.lens.contentCompressionResistancePriorityForAxis(.horizontal) .~ required.rawValue
       |> UILabel.lens.translatesAutoresizingMaskIntoConstraints .~ false
   }
 }

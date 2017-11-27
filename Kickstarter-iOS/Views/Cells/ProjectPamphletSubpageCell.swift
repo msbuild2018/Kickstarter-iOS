@@ -38,8 +38,8 @@ internal final class ProjectPamphletSubpageCell: UITableViewCell, ValueCell {
 
     _ = self.countLabel
       |> UILabel.lens.font .~ .ksr_headline(size: 13)
-      |> UIView.lens.contentHuggingPriorityForAxis(.horizontal) .~ UILayoutPriorityRequired
-      |> UIView.lens.contentCompressionResistancePriorityForAxis(.horizontal) .~ UILayoutPriorityRequired
+      |> UIView.lens.contentHuggingPriorityForAxis(.horizontal) .~ UILayoutPriority.required.rawValue
+      |> UIView.lens.contentCompressionResistancePriorityForAxis(.horizontal) .~ UILayoutPriority.required.rawValue
 
     _ = self.rootStackView
       |> UIStackView.lens.spacing .~ Styles.grid(1)
@@ -48,8 +48,8 @@ internal final class ProjectPamphletSubpageCell: UITableViewCell, ValueCell {
 
     _ = self.liveNowImageView
       |> UIImageView.lens.tintColor .~ .ksr_green_500
-      |> UIImageView.lens.contentHuggingPriorityForAxis(.horizontal) .~ UILayoutPriorityRequired
-      |> UIImageView.lens.contentCompressionResistancePriorityForAxis(.horizontal) .~ UILayoutPriorityRequired
+      |> UIImageView.lens.contentHuggingPriorityForAxis(.horizontal) .~ UILayoutPriority.required.rawValue
+      |> UIImageView.lens.contentCompressionResistancePriorityForAxis(.horizontal) .~ UILayoutPriority.required.rawValue
 
     _ = [self.separatorView, self.topSeparatorView]
       ||> separatorStyle
@@ -57,8 +57,8 @@ internal final class ProjectPamphletSubpageCell: UITableViewCell, ValueCell {
     _ = self.subpageLabel
       |> UILabel.lens.numberOfLines .~ 2
       |> UILabel.lens.font .~ .ksr_body(size: 14)
-      |> UIView.lens.contentHuggingPriorityForAxis(.horizontal) .~ UILayoutPriorityDefaultLow
-      |> UIView.lens.contentCompressionResistancePriorityForAxis(.horizontal) .~ UILayoutPriorityDefaultLow
+      |> UIView.lens.contentHuggingPriorityForAxis(.horizontal) .~ UILayoutPriority.defaultLow.rawValue
+      |> UIView.lens.contentCompressionResistancePriorityForAxis(.horizontal) .~ UILayoutPriority.defaultLow.rawValue
 
     self.setNeedsLayout()
   }

@@ -127,7 +127,7 @@ MessageThreadsViewModelOutputs {
   }
   // swiftlint:enable function_body_length
 
-  fileprivate let mailboxButtonPressedProperty = MutableProperty()
+  fileprivate let mailboxButtonPressedProperty = MutableProperty(())
   public func mailboxButtonPressed() {
     self.mailboxButtonPressedProperty.value = ()
   }
@@ -135,11 +135,11 @@ MessageThreadsViewModelOutputs {
   public func configureWith(project: Project?) {
     self.projectProperty.value = project
   }
-  fileprivate let refreshProperty = MutableProperty()
+  fileprivate let refreshProperty = MutableProperty(())
   public func refresh() {
     self.refreshProperty.value = ()
   }
-  fileprivate let searchButtonPressedProperty = MutableProperty()
+  fileprivate let searchButtonPressedProperty = MutableProperty(())
   public func searchButtonPressed() {
     self.searchButtonPressedProperty.value = ()
   }
@@ -147,7 +147,7 @@ MessageThreadsViewModelOutputs {
   public func switchTo(mailbox: Mailbox) {
     self.switchToMailbox.value = mailbox
   }
-  fileprivate let viewDidLoadProperty = MutableProperty()
+  fileprivate let viewDidLoadProperty = MutableProperty(())
   public func viewDidLoad() {
     self.viewDidLoadProperty.value = ()
   }
