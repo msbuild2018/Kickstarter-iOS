@@ -43,7 +43,9 @@ public final class SimpleHTMLLabel: UILabel, SimpleHTMLLabelProtocol {
       return (self.baseAttributes[NSAttributedStringKey.font] as? UIFont) ?? defaultFont
     }
     set {
-      self.baseAttributes = self.baseAttributes.withAllValuesFrom([NSAttributedStringKey.font.rawValue: newValue])
+      self.baseAttributes = self.baseAttributes.withAllValuesFrom(
+        [NSAttributedStringKey.font.rawValue: newValue]
+      )
     }
   }
 
@@ -52,7 +54,9 @@ public final class SimpleHTMLLabel: UILabel, SimpleHTMLLabelProtocol {
       return (self.baseAttributes[NSAttributedStringKey.foregroundColor] as? UIColor) ?? defaultColor
     }
     set {
-      self.baseAttributes = self.baseAttributes.withAllValuesFrom([NSAttributedStringKey.foregroundColor.rawValue: newValue])
+      self.baseAttributes = self.baseAttributes.withAllValuesFrom(
+        [NSAttributedStringKey.foregroundColor.rawValue: newValue]
+      )
     }
   }
 
@@ -61,7 +65,9 @@ public final class SimpleHTMLLabel: UILabel, SimpleHTMLLabelProtocol {
       return (self.boldAttributes[NSAttributedStringKey.font] as? UIFont) ?? defaultFont
     }
     set {
-      self.boldAttributes = self.boldAttributes.withAllValuesFrom([NSAttributedStringKey.font.rawValue: newValue])
+      self.boldAttributes = self.boldAttributes.withAllValuesFrom(
+        [NSAttributedStringKey.font.rawValue: newValue]
+      )
     }
   }
 
@@ -70,7 +76,9 @@ public final class SimpleHTMLLabel: UILabel, SimpleHTMLLabelProtocol {
       return (self.boldAttributes[NSAttributedStringKey.foregroundColor] as? UIColor) ?? defaultColor
     }
     set {
-      self.boldAttributes = self.boldAttributes.withAllValuesFrom([NSAttributedStringKey.foregroundColor.rawValue: newValue])
+      self.boldAttributes = self.boldAttributes.withAllValuesFrom(
+        [NSAttributedStringKey.foregroundColor.rawValue: newValue]
+      )
     }
   }
 
@@ -79,7 +87,9 @@ public final class SimpleHTMLLabel: UILabel, SimpleHTMLLabelProtocol {
       return (self.italicAttributes[NSAttributedStringKey.font] as? UIFont) ?? defaultFont
     }
     set {
-      self.italicAttributes = self.italicAttributes.withAllValuesFrom([NSAttributedStringKey.font.rawValue: newValue])
+      self.italicAttributes = self.italicAttributes.withAllValuesFrom(
+        [NSAttributedStringKey.font.rawValue: newValue]
+      )
     }
   }
 

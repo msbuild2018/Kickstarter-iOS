@@ -115,7 +115,8 @@ public final class LiveStreamCountdownViewController: UIViewController {
       ||> UILabel.lens.textAlignment .~ .center
 
     _ = [self.minutesSubtitleLabel, self.secondsSubtitleLabel]
-      ||> UILabel.lens.contentCompressionResistancePriorityForAxis(.horizontal) .~ UILayoutPriority.defaultLow.rawValue
+      ||> UILabel.lens.contentCompressionResistancePriorityForAxis(.horizontal)
+        .~ UILayoutPriority.defaultLow.rawValue
       ||> UILabel.lens.lineBreakMode .~ .byTruncatingTail
 
     _ = self.countdownRootStackView

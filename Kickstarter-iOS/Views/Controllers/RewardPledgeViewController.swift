@@ -372,7 +372,8 @@ internal final class RewardPledgeViewController: UIViewController {
     _ = self.shippingAmountLabel
       |> UILabel.lens.font .~ .ksr_caption1(size: 12)
       |> UILabel.lens.textColor .~ .ksr_text_dark_grey_400
-      |> UILabel.lens.contentCompressionResistancePriorityForAxis(.horizontal) .~ UILayoutPriority.required.rawValue
+      |> UILabel.lens.contentCompressionResistancePriorityForAxis(.horizontal)
+        .~ UILayoutPriority.required.rawValue
 
     _ = self.shippingInputStackView
       |> UIStackView.lens.spacing .~ Styles.grid(2)
@@ -557,9 +558,9 @@ internal final class RewardPledgeViewController: UIViewController {
   }
 
   fileprivate func goToPaymentAuthorization(request: PKPaymentRequest) {
-    let vc = PKPaymentAuthorizationViewController(paymentRequest: request)
-    vc?.delegate = self
-    self.present(vc!, animated: true, completion: nil)
+    guard let vc = PKPaymentAuthorizationViewController(paymentRequest: request) else { return }
+    vc.delegate = self
+    self.present(vc, animated: true, completion: nil)
   }
 
   fileprivate func goToShippingPicker(project: Project,

@@ -262,7 +262,7 @@ public enum Format {
   }
 }
 
-fileprivate let defaultThresholdInDays = 30 // days
+internal let defaultThresholdInDays = 30 // days
 
 private struct DateFormatterConfig {
   fileprivate let template: String?

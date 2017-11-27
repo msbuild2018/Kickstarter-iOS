@@ -243,7 +243,6 @@ extension Project.Personalization: Argo.Decodable {
 
 extension Project.Photo: Argo.Decodable {
   static public func decode(_ json: JSON) -> Decoded<Project.Photo> {
-    
     let url1024: Decoded<String?> = ((json <| "1024x768") <|> (json <| "1024x576"))
       // swiftlint:disable:next syntactic_sugar
       .map(Optional<String>.init)
