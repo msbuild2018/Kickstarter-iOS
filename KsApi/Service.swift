@@ -4,8 +4,8 @@ import Prelude
 import ReactiveExtensions
 import ReactiveSwift
 
-private extension Bundle {
-  var _buildVersion: String {
+public extension Bundle {
+  public var _buildVersion: String {
     return (self.infoDictionary?["CFBundleVersion"] as? String) ?? "1"
   }
 }
