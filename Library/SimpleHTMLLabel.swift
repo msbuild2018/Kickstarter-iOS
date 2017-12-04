@@ -9,30 +9,34 @@ private let defaultFont = UIFont.systemFont(ofSize: 12)
 private let defaultColor = UIColor.ksr_text_dark_grey_900
 
 public protocol SimpleHTMLLabelProtocol: UILabelProtocol {
-  var baseAttributes: [String: AnyObject] { get set }
+  var baseAttributes: [NSAttributedStringKey: AnyObject] { get set }
   var baseColor: UIColor { get set }
   var baseFont: UIFont { get set }
-  var boldAttributes: [String: AnyObject] { get set }
+  var boldAttributes: [NSAttributedStringKey: AnyObject] { get set }
   var boldColor: UIColor { get set }
   var boldFont: UIFont { get set }
   var html: String { get set }
-  var italicAttributes: [String: AnyObject] { get set }
+  var italicAttributes: [NSAttributedStringKey: AnyObject] { get set }
   var italicColor: UIColor { get set }
   var italicFont: UIFont { get set }
 }
 
 public final class SimpleHTMLLabel: UILabel, SimpleHTMLLabelProtocol {
-  public var baseAttributes: [String: AnyObject] = [NSAttributedStringKey.font.rawValue: defaultFont] {
+
+  public var baseAttributes: [NSAttributedStringKey: AnyObject] =
+    [NSAttributedStringKey(rawValue: NSAttributedStringKey.font.rawValue): defaultFont] {
     didSet {
       self.setNeedsLayout()
     }
   }
-  public var boldAttributes: [String: AnyObject] = [NSAttributedStringKey.font.rawValue: defaultFont] {
+  public var boldAttributes: [NSAttributedStringKey: AnyObject] =
+    [NSAttributedStringKey(rawValue: NSAttributedStringKey.font.rawValue): defaultFont] {
     didSet {
       self.setNeedsLayout()
     }
   }
-  public var italicAttributes: [String: AnyObject] = [NSAttributedStringKey.font.rawValue: defaultFont] {
+  public var italicAttributes: [NSAttributedStringKey: AnyObject] =
+    [NSAttributedStringKey(rawValue: NSAttributedStringKey.font.rawValue): defaultFont] {
     didSet {
       self.setNeedsLayout()
     }
@@ -44,7 +48,7 @@ public final class SimpleHTMLLabel: UILabel, SimpleHTMLLabelProtocol {
     }
     set {
       self.baseAttributes = self.baseAttributes.withAllValuesFrom(
-        [NSAttributedStringKey.font.rawValue: newValue]
+        [NSAttributedStringKey(rawValue: NSAttributedStringKey.font.rawValue): newValue]
       )
     }
   }
@@ -55,7 +59,7 @@ public final class SimpleHTMLLabel: UILabel, SimpleHTMLLabelProtocol {
     }
     set {
       self.baseAttributes = self.baseAttributes.withAllValuesFrom(
-        [NSAttributedStringKey.foregroundColor.rawValue: newValue]
+        [NSAttributedStringKey(rawValue: NSAttributedStringKey.foregroundColor.rawValue): newValue]
       )
     }
   }
@@ -66,7 +70,7 @@ public final class SimpleHTMLLabel: UILabel, SimpleHTMLLabelProtocol {
     }
     set {
       self.boldAttributes = self.boldAttributes.withAllValuesFrom(
-        [NSAttributedStringKey.font.rawValue: newValue]
+        [NSAttributedStringKey(rawValue: NSAttributedStringKey.font.rawValue): newValue]
       )
     }
   }
@@ -77,7 +81,7 @@ public final class SimpleHTMLLabel: UILabel, SimpleHTMLLabelProtocol {
     }
     set {
       self.boldAttributes = self.boldAttributes.withAllValuesFrom(
-        [NSAttributedStringKey.foregroundColor.rawValue: newValue]
+        [NSAttributedStringKey(rawValue: NSAttributedStringKey.foregroundColor.rawValue): newValue]
       )
     }
   }
@@ -88,7 +92,7 @@ public final class SimpleHTMLLabel: UILabel, SimpleHTMLLabelProtocol {
     }
     set {
       self.italicAttributes = self.italicAttributes.withAllValuesFrom(
-        [NSAttributedStringKey.font.rawValue: newValue]
+        [NSAttributedStringKey(rawValue: NSAttributedStringKey.font.rawValue): newValue]
       )
     }
   }
@@ -99,7 +103,7 @@ public final class SimpleHTMLLabel: UILabel, SimpleHTMLLabelProtocol {
     }
     set {
       self.italicAttributes = self.italicAttributes.withAllValuesFrom(
-        [NSAttributedStringKey.foregroundColor.rawValue: newValue]
+        [NSAttributedStringKey(rawValue: NSAttributedStringKey.foregroundColor.rawValue): newValue]
       )
     }
   }
@@ -126,7 +130,7 @@ public final class SimpleHTMLLabel: UILabel, SimpleHTMLLabelProtocol {
 
 extension LensHolder where Object: SimpleHTMLLabelProtocol {
 
-  public var baseAttributes: Lens<Object, [String: AnyObject]> {
+  public var baseAttributes: Lens<Object, [NSAttributedStringKey: AnyObject]> {
     return Lens(
       view: { $0.baseAttributes },
       set: { $1.baseAttributes = $0; return $1 }
@@ -147,7 +151,7 @@ extension LensHolder where Object: SimpleHTMLLabelProtocol {
     )
   }
 
-  public var boldAttributes: Lens<Object, [String: AnyObject]> {
+  public var boldAttributes: Lens<Object, [NSAttributedStringKey: AnyObject]> {
     return Lens(
       view: { $0.boldAttributes },
       set: { $1.boldAttributes = $0; return $1 }
@@ -175,7 +179,7 @@ extension LensHolder where Object: SimpleHTMLLabelProtocol {
     )
   }
 
-  public var italicAttributes: Lens<Object, [String: AnyObject]> {
+  public var italicAttributes: Lens<Object, [NSAttributedStringKey: AnyObject]> {
     return Lens(
       view: { $0.italicAttributes },
       set: { $1.italicAttributes = $0; return $1 }

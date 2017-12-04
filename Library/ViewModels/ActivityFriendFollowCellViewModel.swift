@@ -36,12 +36,16 @@ ActivityFriendFollowCellViewModelOutputs {
     self.title = friend.map {
       let string = Strings.activity_user_name_is_now_following_you(user_name: "<b>\($0.name)</b>")
       return string.simpleHtmlAttributedString(base: [
-        NSAttributedStringKey(rawValue: NSAttributedStringKey.font.rawValue): UIFont.ksr_subhead(size: 14.0),
-        NSAttributedStringKey(rawValue: NSAttributedStringKey.foregroundColor.rawValue): UIColor.ksr_text_dark_grey_900
+        NSAttributedStringKey(rawValue:
+          NSAttributedStringKey.font.rawValue): UIFont.ksr_subhead(size: 14.0),
+        NSAttributedStringKey(rawValue:
+          NSAttributedStringKey.foregroundColor.rawValue): UIColor.ksr_text_dark_grey_900
         ],
         bold: [
-          NSAttributedStringKey(rawValue: NSAttributedStringKey.font.rawValue): UIFont.ksr_headline(size: 14.0),
-          NSAttributedStringKey.foregroundColor.rawValue: UIColor.ksr_text_dark_grey_900
+          NSAttributedStringKey(rawValue:
+            NSAttributedStringKey.font.rawValue): UIFont.ksr_headline(size: 14.0),
+          NSAttributedStringKey(rawValue:
+            NSAttributedStringKey.foregroundColor.rawValue): UIColor.ksr_text_dark_grey_900
         ]) ?? NSAttributedString(string: "")
     }
 

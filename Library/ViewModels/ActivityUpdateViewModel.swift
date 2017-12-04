@@ -104,12 +104,16 @@ private func updatePostedString(forActivity activity: Activity) -> NSAttributedS
 
   let attributedString = fullString.simpleHtmlAttributedString(
       base: [
-        NSAttributedStringKey(rawValue: NSAttributedStringKey.font.rawValue): UIFont.ksr_footnote(),
-        NSAttributedStringKey.foregroundColor.rawValue: UIColor.ksr_text_dark_grey_900
+        NSAttributedStringKey(rawValue:
+          NSAttributedStringKey.font.rawValue): UIFont.ksr_footnote(),
+        NSAttributedStringKey(rawValue:
+          NSAttributedStringKey.foregroundColor.rawValue): UIColor.ksr_text_dark_grey_900
       ],
       bold: [
-        NSAttributedStringKey.font.rawValue: UIFont.ksr_headline(size: 13.0),
-        NSAttributedStringKey.foregroundColor.rawValue: UIColor.ksr_text_dark_grey_900
+        NSAttributedStringKey(rawValue:
+          NSAttributedStringKey.font.rawValue): UIFont.ksr_headline(size: 13.0),
+        NSAttributedStringKey(rawValue:
+          NSAttributedStringKey.foregroundColor.rawValue): UIColor.ksr_text_dark_grey_900
       ]
     )
     ?? .init(string: "")
