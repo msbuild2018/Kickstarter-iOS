@@ -212,7 +212,9 @@ public enum Format {
    */
   public static func relative(secondsInUTC seconds: TimeInterval,
                               abbreviate: Bool = false,
-                              threshold thresholdInDays: Int = 30,//defaultThresholdInDays,
+                              /* This number is hardcoded due a bug in Swift that doesn't allow us
+                                 to set internal variables as default value*/
+                              threshold thresholdInDays: Int = 30,
                               timeZone: TimeZone? = nil,
                               env: Environment = AppEnvironment.current) -> String {
 
