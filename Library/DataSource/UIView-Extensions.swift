@@ -40,7 +40,7 @@ extension UIView {
     self.bindViewModel()
   }
 
-  open func bindStyles() {
+  @objc open func bindStyles() {
   }
 
   open func bindViewModel() {

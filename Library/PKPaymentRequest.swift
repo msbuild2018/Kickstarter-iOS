@@ -36,8 +36,8 @@ extension PKPaymentRequest: Argo.Decodable {
     self.supportedNetworks = supportedNetworks
   }
 
-  public static func decode(_ json: JSON) -> Decoded<PKPaymentRequest> {
-    let create = curry(PKPaymentRequest.init)
+  public static func decode(_ json: JSON) -> Decoded<PassKit.PKPaymentRequest> {
+    let create = curry(PKPaymentRequest.init(countryCode: currencyCode: merchantCapabilities: merchantIdentifier: paymentSummaryItems: shippingType: supportedNetworks:))
     let tmp = create
       <^> json <|  "country_code"
       <*> json <|  "currency_code"
@@ -48,7 +48,7 @@ extension PKPaymentRequest: Argo.Decodable {
       <*> (json <|  "shipping_type" <|> .success(.shipping))
       <*> json <|| "supported_networks"
 
-    let camelCase = { () -> Decoded<PKPaymentRequest> in
+    let camelCase = { () -> Decoded<PassKit.PKPaymentRequest> in
       let tmp = create
         <^> json <|  "countryCode"
         <*> json <|  "currencyCode"

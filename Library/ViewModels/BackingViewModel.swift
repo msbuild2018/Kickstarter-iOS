@@ -321,12 +321,16 @@ private func pledgeTitle(for project: Project, backing: Backing, backerIsCurrent
 
   return titleString.simpleHtmlAttributedString(
     base: [
-      NSAttributedStringKey.font.rawValue: UIFont.ksr_subhead(size: 13),
-      NSAttributedStringKey.foregroundColor.rawValue: UIColor.ksr_dark_grey_900
+      NSAttributedStringKey(rawValue:
+        NSAttributedStringKey.font.rawValue): UIFont.ksr_subhead(size: 13),
+      NSAttributedStringKey(rawValue:
+        NSAttributedStringKey.foregroundColor.rawValue): UIColor.ksr_dark_grey_900
     ],
     bold: [
-      NSAttributedStringKey.font.rawValue: UIFont.ksr_headline(size: 15),
-      NSAttributedStringKey.foregroundColor.rawValue: UIColor.ksr_dark_grey_900
+      NSAttributedStringKey(rawValue:
+        NSAttributedStringKey.font.rawValue): UIFont.ksr_headline(size: 15),
+      NSAttributedStringKey(rawValue:
+        NSAttributedStringKey.foregroundColor.rawValue): UIColor.ksr_dark_grey_900
     ])
     ?? .init()
 }
@@ -346,12 +350,16 @@ private func rewardTitle(for reward: Reward?, project: Project, backerIsCurrentU
 
   return titleString.simpleHtmlAttributedString(
     base: [
-      NSAttributedStringKey.font.rawValue: UIFont.ksr_subhead(size: 13),
-      NSAttributedStringKey.foregroundColor.rawValue: UIColor.ksr_dark_grey_900
+      NSAttributedStringKey(rawValue:
+        NSAttributedStringKey.font.rawValue): UIFont.ksr_subhead(size: 13),
+      NSAttributedStringKey(rawValue:
+        NSAttributedStringKey.foregroundColor.rawValue): UIColor.ksr_dark_grey_900
     ],
     bold: [
-      NSAttributedStringKey.font.rawValue: UIFont.ksr_headline(size: 15),
-      NSAttributedStringKey.foregroundColor.rawValue: UIColor.ksr_dark_grey_900
+      NSAttributedStringKey(rawValue:
+        NSAttributedStringKey.font.rawValue): UIFont.ksr_headline(size: 15),
+      NSAttributedStringKey(rawValue:
+        NSAttributedStringKey.foregroundColor.rawValue): UIColor.ksr_dark_grey_900
     ])
     ?? .init()
 }

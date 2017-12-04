@@ -2,7 +2,7 @@ import UIKit
 import Foundation
 
 public extension String {
-  public typealias Attributes = [String: Any]
+  public typealias Attributes = [NSAttributedStringKey: Any]
 
   /**
    Interprets `self` as an HTML string to produce an attributed string.
@@ -28,9 +28,11 @@ public extension String {
 
     guard let data = self.data(using: String.Encoding.utf8) else { return nil }
 
-    let options: [String: Any] = [
-      NSAttributedString.DocumentAttributeKey.documentType.rawValue: NSAttributedString.DocumentType.html,
-      NSAttributedString.DocumentAttributeKey.characterEncoding.rawValue: String.Encoding.utf8.rawValue
+    let options: [NSAttributedString.DocumentReadingOptionKey: Any] = [
+      NSAttributedString.DocumentReadingOptionKey(rawValue:
+        NSAttributedString.DocumentAttributeKey.documentType.rawValue): NSAttributedString.DocumentType.html,
+      NSAttributedString.DocumentReadingOptionKey(rawValue:
+        NSAttributedString.DocumentAttributeKey.characterEncoding.rawValue): String.Encoding.utf8.rawValue
     ]
     guard let string = try? NSMutableAttributedString(data: data, options: options, documentAttributes: nil)
       else {
@@ -76,7 +78,7 @@ public extension String {
                                          italic optionalItalic: UIFont? = nil) -> NSAttributedString? {
 
     return self.simpleHtmlAttributedString(
-      base: [NSAttributedStringKey.font.rawValue: font],
+      base: [NSAttributedStringKey(rawValue: NSAttributedStringKey.font.rawValue): font],
       bold: optionalBold.flatMap { [NSAttributedStringKey.font: $0] },
       italic: optionalItalic.flatMap { [NSAttributedStringKey.font: $0] })
   }
@@ -93,9 +95,11 @@ public extension String {
 
     guard let data = self.data(using: String.Encoding.utf8) else { return nil }
 
-    let options: [String: Any] = [
-      NSAttributedString.DocumentAttributeKey.documentType.rawValue: NSAttributedString.DocumentType.html,
-      NSAttributedString.DocumentAttributeKey.characterEncoding.rawValue: String.Encoding.utf8.rawValue
+    let options: [NSAttributedString.DocumentReadingOptionKey: Any] = [
+      NSAttributedString.DocumentReadingOptionKey(rawValue:
+        NSAttributedString.DocumentAttributeKey.documentType.rawValue): NSAttributedString.DocumentType.html,
+      NSAttributedString.DocumentReadingOptionKey(rawValue:
+        NSAttributedString.DocumentAttributeKey.characterEncoding.rawValue): String.Encoding.utf8.rawValue
     ]
 
     let string = try? NSAttributedString(data: data, options: options, documentAttributes: nil)

@@ -212,7 +212,7 @@ public enum Format {
    */
   public static func relative(secondsInUTC seconds: TimeInterval,
                               abbreviate: Bool = false,
-                              threshold thresholdInDays: Int = defaultThresholdInDays,
+                              threshold thresholdInDays: Int = 30,//defaultThresholdInDays,
                               timeZone: TimeZone? = nil,
                               env: Environment = AppEnvironment.current) -> String {
 

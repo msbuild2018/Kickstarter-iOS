@@ -58,16 +58,22 @@ ActivityFriendBackingViewModelInputs, ActivityFriendBackingViewModelOutputs {
         let title = string(forCategoryId: categoryId, friendName: activity.user?.name ?? "")
         return title.simpleHtmlAttributedString(
           base: [
-            NSAttributedStringKey.font.rawValue: UIFont.ksr_subhead(size: 12),
-            NSAttributedStringKey.foregroundColor.rawValue: UIColor.ksr_text_dark_grey_500
+            NSAttributedStringKey(rawValue:
+              NSAttributedStringKey.font.rawValue): UIFont.ksr_subhead(size: 12),
+            NSAttributedStringKey(rawValue:
+              NSAttributedStringKey.foregroundColor.rawValue): UIColor.ksr_text_dark_grey_500
           ],
           bold: [
-            NSAttributedStringKey.font.rawValue: UIFont.ksr_subhead(size: 12),
-            NSAttributedStringKey.foregroundColor.rawValue: UIColor.ksr_text_dark_grey_900
+            NSAttributedStringKey(rawValue:
+              NSAttributedStringKey.font.rawValue): UIFont.ksr_subhead(size: 12),
+            NSAttributedStringKey(rawValue:
+              NSAttributedStringKey.foregroundColor.rawValue): UIColor.ksr_text_dark_grey_900
           ],
           italic: [
-            NSAttributedStringKey.font.rawValue: UIFont.ksr_subhead(size: 12),
-            NSAttributedStringKey.foregroundColor.rawValue: UIColor.ksr_text_dark_grey_900
+            NSAttributedStringKey(rawValue:
+              NSAttributedStringKey.font.rawValue): UIFont.ksr_subhead(size: 12),
+            NSAttributedStringKey(rawValue:
+              NSAttributedStringKey.foregroundColor.rawValue): UIColor.ksr_text_dark_grey_900
           ])
           ?? .init()
     }
