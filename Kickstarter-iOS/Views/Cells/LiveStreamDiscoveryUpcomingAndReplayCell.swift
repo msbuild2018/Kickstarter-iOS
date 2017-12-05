@@ -44,9 +44,9 @@ internal final class LiveStreamDiscoveryUpcomingAndReplayCell: UITableViewCell, 
     _ = self.creatorLabel
       |> SimpleHTMLLabel.lens.boldFont .~ UIFont.ksr_title3(size: 14).bolded
       |> SimpleHTMLLabel.lens.baseAttributes .~ [
-        NSAttributedStringKey.paragraphStyle.rawValue: paragraphStyle,
-        NSAttributedStringKey.foregroundColor.rawValue: UIColor.white,
-        NSAttributedStringKey.font.rawValue: UIFont.ksr_title3(size: 14)
+        NSAttributedStringKey(rawValue: NSAttributedStringKey.paragraphStyle.rawValue): paragraphStyle,
+        NSAttributedStringKey(rawValue: NSAttributedStringKey.foregroundColor.rawValue): UIColor.white,
+        NSAttributedStringKey(rawValue: NSAttributedStringKey.font.rawValue): UIFont.ksr_title3(size: 14)
       ]
       |> SimpleHTMLLabel.lens.numberOfLines .~ 0
 

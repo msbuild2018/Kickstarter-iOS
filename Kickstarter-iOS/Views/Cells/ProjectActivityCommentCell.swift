@@ -84,12 +84,16 @@ internal final class ProjectActivityCommentCell: UITableViewCell, ValueCell {
 
         titleLabel.attributedText = title.simpleHtmlAttributedString(
           base: [
-            NSAttributedStringKey.font.rawValue: UIFont.ksr_title3(size: 14),
-            NSAttributedStringKey.foregroundColor.rawValue: UIColor.ksr_text_dark_grey_400
+            NSAttributedStringKey(rawValue:
+              NSAttributedStringKey.font.rawValue): UIFont.ksr_title3(size: 14),
+            NSAttributedStringKey(rawValue:
+              NSAttributedStringKey.foregroundColor.rawValue): UIColor.ksr_text_dark_grey_400
           ],
           bold: [
-            NSAttributedStringKey.font.rawValue: UIFont.ksr_title3(size: 14),
-            NSAttributedStringKey.foregroundColor.rawValue: UIColor.ksr_text_dark_grey_900
+            NSAttributedStringKey(rawValue:
+              NSAttributedStringKey.font.rawValue): UIFont.ksr_title3(size: 14),
+            NSAttributedStringKey(rawValue:
+              NSAttributedStringKey.foregroundColor.rawValue): UIColor.ksr_text_dark_grey_900
           ],
           italic: nil
           )

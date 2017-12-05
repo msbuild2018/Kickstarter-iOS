@@ -7,7 +7,7 @@ import UIKit
 internal final class RewardPledgeViewController: UIViewController {
   internal let viewModel: RewardPledgeViewModelType = RewardPledgeViewModel()
 
-  fileprivate var applePayButton = PKPaymentButton(type: .plain, style: .black)
+  fileprivate var applePayButton = PKPaymentButton(paymentButtonType: .plain, paymentButtonStyle: .black)
   @IBOutlet fileprivate weak var applePayButtonContainerView: UIStackView!
   @IBOutlet fileprivate weak var bottomConstraint: NSLayoutConstraint!
   @IBOutlet fileprivate weak var cancelPledgeButton: UIButton!
