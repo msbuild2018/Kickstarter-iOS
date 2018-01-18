@@ -8,7 +8,6 @@ import Result
 
 public protocol DiscoveryViewModelInputs {
 
-
   func shakeMotionDetected()
 
   /// Call when params have been selected.
@@ -137,9 +136,8 @@ DiscoveryViewModelOutputs {
       .map { $0.hasLiveStreams != .some(true) }
       .skipRepeats()
 
-
     self.randomProjectLoaderPageHidden = .empty
-    
+
     self.discoveryPagesViewHidden = self.liveStreamDiscoveryViewHidden
       .map(negate)
 
