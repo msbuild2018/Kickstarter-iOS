@@ -7,6 +7,10 @@ import ReactiveExtensions
 import Result
 
 public protocol DiscoveryViewModelInputs {
+
+
+  func shakeMotionDetected()
+
   /// Call when params have been selected.
   func filter(withParams params: DiscoveryParams)
 
@@ -50,6 +54,8 @@ public protocol DiscoveryViewModelOutputs {
 
   /// Emits when we should manually navigate to a sort's page.
   var navigateToSort: Signal<(DiscoveryParams.Sort, UIPageViewControllerNavigationDirection), NoError> { get }
+
+  var randomProjectLoaderPageHidden: Signal<Bool, NoError> { get }
 
   /// Emits a sort that should be passed on to the sort pager view controller.
   var selectSortPage: Signal<DiscoveryParams.Sort, NoError> { get }
@@ -131,6 +137,9 @@ DiscoveryViewModelOutputs {
       .map { $0.hasLiveStreams != .some(true) }
       .skipRepeats()
 
+
+    self.randomProjectLoaderPageHidden = .empty
+    
     self.discoveryPagesViewHidden = self.liveStreamDiscoveryViewHidden
       .map(negate)
 
@@ -144,6 +153,11 @@ DiscoveryViewModelOutputs {
     currentParams
       .takeWhen(self.viewWillAppearProperty.signal.skipNil().filter(isFalse))
       .observeValues { AppEnvironment.current.koala.trackDiscoveryViewed(params: $0) }
+  }
+
+  fileprivate let shakeMotionDetectedProperty = MutableProperty()
+  public func shakeMotionDetected() {
+    self.shakeMotionDetectedProperty.value = ()
   }
 
   fileprivate let filterWithParamsProperty = MutableProperty<DiscoveryParams?>(nil)
@@ -183,6 +197,7 @@ DiscoveryViewModelOutputs {
   public let liveStreamDiscoveryViewHidden: Signal<Bool, NoError>
   public let loadFilterIntoDataSource: Signal<DiscoveryParams, NoError>
   public let navigateToSort: Signal<(DiscoveryParams.Sort, UIPageViewControllerNavigationDirection), NoError>
+  public var randomProjectLoaderPageHidden: Signal<Bool, NoError>
   public let selectSortPage: Signal<DiscoveryParams.Sort, NoError>
   public let sortsAreEnabled: Signal<Bool, NoError>
   public let sortViewHidden: Signal<Bool, NoError>
