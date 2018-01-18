@@ -141,6 +141,8 @@ internal final class SettingsViewController: UIViewController {
 
     self.rateUsButton.addTarget(self, action: #selector(rateUsTapped), for: .touchUpInside)
 
+    shakeSwitch.isOn = UserDefaults.standard.bool(forKey: "has_switched")
+
     self.viewModel.inputs.viewDidLoad()
   }
 
@@ -671,6 +673,10 @@ internal final class SettingsViewController: UIViewController {
 
   @IBAction fileprivate func weeklyNewsletterTapped(_ newsletterSwitch: UISwitch) {
     self.viewModel.inputs.weeklyNewsletterTapped(on: newsletterSwitch.isOn)
+  }
+
+  @IBAction fileprivate func shakeTapped(_ shakeSwitch: UISwitch) {
+    UserDefaults.standard.set(shakeSwitch.isOn, forKey: "has_switched")
   }
 
   @objc fileprivate func betaFeedbackButtonTapped() {
