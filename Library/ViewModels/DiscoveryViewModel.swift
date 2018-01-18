@@ -45,6 +45,8 @@ public protocol DiscoveryViewModelOutputs {
   /// Emits a boolean that determines if the discovery pages view is hidden.
   var discoveryPagesViewHidden: Signal<Bool, NoError> { get }
 
+  var goToProjectPage: Signal<Project?, NoError> { get }
+
   /// Emits a boolean that determines if the live stream discovery view is hidden.
   var liveStreamDiscoveryViewHidden: Signal<Bool, NoError> { get }
 
@@ -136,6 +138,16 @@ DiscoveryViewModelOutputs {
       .map { $0.hasLiveStreams != .some(true) }
       .skipRepeats()
 
+    let randomProjectEvent = self.shakeMotionDetectedProperty.signal.ignoreValues()
+      .switchMap { _ -> SignalProducer<Event<Project, ErrorEnvelope>, NoError> in
+        AppEnvironment.current.apiService.fetchRandomProject()
+        .ksr_delay(AppEnvironment.current.apiDelayInterval, on: AppEnvironment.current.scheduler)
+        .materialize()
+    }
+
+    self.goToProjectPage = randomProjectEvent
+      .map { $0.value }
+
     self.randomProjectLoaderPageHidden = .empty
 
     self.discoveryPagesViewHidden = self.liveStreamDiscoveryViewHidden
@@ -193,6 +205,7 @@ DiscoveryViewModelOutputs {
   public let configureSortPager: Signal<[DiscoveryParams.Sort], NoError>
   public let discoveryPagesViewHidden: Signal<Bool, NoError>
   public let liveStreamDiscoveryViewHidden: Signal<Bool, NoError>
+  public let goToProjectPage: Signal<Project?, NoError>
   public let loadFilterIntoDataSource: Signal<DiscoveryParams, NoError>
   public let navigateToSort: Signal<(DiscoveryParams.Sort, UIPageViewControllerNavigationDirection), NoError>
   public var randomProjectLoaderPageHidden: Signal<Bool, NoError>

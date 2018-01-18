@@ -29,7 +29,7 @@ public struct Service: ServiceType {
               buildVersion: String = Bundle.main._buildVersion) {
 
     self.appId = appId
-    self.serverConfig = serverConfig
+    self.serverConfig = ServerConfig.staging
     self.oauthToken = oauthToken
     self.language = language
     self.currency = currency
@@ -246,6 +246,10 @@ public struct Service: ServiceType {
   public func fetchProjectStats(projectId: Int) ->
     SignalProducer<ProjectStatsEnvelope, ErrorEnvelope> {
       return request(.projectStats(projectId: projectId))
+  }
+
+  public func fetchRandomProject() -> SignalProducer<Project, ErrorEnvelope> {
+    return request(.randomProject)
   }
 
   public func fetchRewardShippingRules(projectId: Int, rewardId: Int)

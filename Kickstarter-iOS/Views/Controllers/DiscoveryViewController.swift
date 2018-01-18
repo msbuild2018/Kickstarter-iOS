@@ -54,7 +54,7 @@ internal final class DiscoveryViewController: UIViewController {
   override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
     super.motionEnded(motion, with: event)
     if motion == .motionShake {
-
+      self.viewModel.inputs.shakeMotionDetected()
     }
   }
 
