@@ -70,6 +70,11 @@ internal final class SettingsViewController: UIViewController {
   @IBOutlet fileprivate weak var rateUsButton: UIButton!
   @IBOutlet fileprivate weak var rateUsLabel: UILabel!
   @IBOutlet fileprivate weak var socialNotificationsTitleLabel: UILabel!
+
+  @IBOutlet fileprivate weak var appSettingsTitleLabel: UILabel!
+  @IBOutlet fileprivate weak var shakeLabel: UILabel!
+  @IBOutlet fileprivate weak var shakeSwitch: UISwitch!
+
   @IBOutlet fileprivate weak var termsOfUseButton: UIButton!
   @IBOutlet fileprivate weak var termsOfUseLabel: UILabel!
   @IBOutlet fileprivate weak var updatesButton: UIButton!
@@ -279,6 +284,14 @@ internal final class SettingsViewController: UIViewController {
     _ = self.newslettersTitleLabel
       |> settingsTitleLabelStyle
       |> UILabel.lens.text %~ { _ in Strings.profile_settings_newsletter_title() }
+
+    _ = self.appSettingsTitleLabel
+      |> settingsTitleLabelStyle
+      |> UILabel.lens.text %~ { _ in "Settings" }
+
+    _ = self.shakeLabel
+      |> settingsSectionLabelStyle
+      |> UILabel.lens.text %~ { _ in "Shake" }
 
     _ = self.privacyPolicyButton
       |> settingsSectionButtonStyle
