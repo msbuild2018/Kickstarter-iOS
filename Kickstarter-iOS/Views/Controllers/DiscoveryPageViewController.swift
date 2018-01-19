@@ -317,18 +317,19 @@ internal final class DiscoveryPageViewController: UITableViewController {
     videoLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
     view.layer.addSublayer(videoLayer)
 
-    self.parentViewController()?.view.addSubview(loaderImageView())
+    self.parentViewController()?.view.addSubview(loaderImageView)
+    self.animateScreenshot()
     self.viewModel.inputs.shakeMotionDetected()
   }
 
   private func animateScreenshot() {
-    var frame = loaderImageView().frame
-    frame.origin.x = -loaderImageView().frame.size.width
+    var frame = self.loaderImageView.frame
+    frame.origin.x = -loaderImageView.frame.size.width
 
     UIView.animate(
       withDuration: 0.3,
       animations: {
-      self.loaderImageView().frame = frame
+      self.loaderImageView.frame = frame
     },
       completion: { _ in
       self.avPlayer?.play()
@@ -347,26 +348,26 @@ internal final class DiscoveryPageViewController: UITableViewController {
   }
 
   private func captureScreen() -> UIImage? {
-
     let layer = UIApplication.shared.keyWindow?.layer
     let scale = UIScreen.main.scale
-    UIGraphicsBeginImageContextWithOptions((layer?.frame.size)!, false, scale)
+    guard let size = layer?.frame.size, let context = UIGraphicsGetCurrentContext()
+      else { return nil }
 
-    layer?.render(in: UIGraphicsGetCurrentContext()!)
+    UIGraphicsBeginImageContextWithOptions((size), false, scale)
+    layer?.render(in: context)
     let screenshot = UIGraphicsGetImageFromCurrentImageContext()
 
     UIGraphicsEndImageContext()
     return screenshot
   }
 
-  private func loaderImageView() -> UIImageView {
-    let imageView = UIImageView.init(frame: (self.parentViewController()?.view.frame)!)
+  private var loaderImageView: UIImageView {
+    let frame = self.parentViewController()?.view.frame ?? .zero
+    let imageView = UIImageView.init(frame: frame)
     imageView.image = captureScreen()
     return imageView
   }
 }
-
-
 
 extension DiscoveryPageViewController: ActivitySampleBackingCellDelegate, ActivitySampleFollowCellDelegate,
   ActivitySampleProjectCellDelegate {
