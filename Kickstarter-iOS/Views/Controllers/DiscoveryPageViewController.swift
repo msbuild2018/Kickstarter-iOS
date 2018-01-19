@@ -318,10 +318,10 @@ internal final class DiscoveryPageViewController: UITableViewController {
 
     UIView.animate(withDuration: 0.5, animations: { [weak self] in
       self?.playerView?.alpha = 0
-    }) { _ in
+      }, completion: { _ in
       self.avPlayer = nil
       self.playerView?.removeFromSuperview()
-    }
+    })
   }
 }
 
