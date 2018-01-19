@@ -29,8 +29,16 @@ internal final class DiscoveryPageViewController: UITableViewController {
   internal override func viewDidLoad() {
     super.viewDidLoad()
 
-    NotificationCenter.default.addObserver(self, selector: #selector(DiscoveryPageViewController.motionEnded(_:with:)), name: NSNotification.Name(rawValue: "did_shake"), object: nil)
-    NotificationCenter.default.addObserver(self, selector: #selector(DiscoveryPageViewController.hidePlayer), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
+    NotificationCenter.default.addObserver(
+      self, selector: #selector(DiscoveryPageViewController.motionEnded(_:with:)),
+      name: NSNotification.Name(rawValue: "did_shake"),
+      object: nil
+    )
+    NotificationCenter.default.addObserver(
+      self, selector: #selector(DiscoveryPageViewController.hidePlayer),
+      name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,
+      object: nil
+    )
 
     self.tableView.addSubview(self.loadingIndicatorView)
 
@@ -310,7 +318,7 @@ internal final class DiscoveryPageViewController: UITableViewController {
 
     UIView.animate(withDuration: 0.5, animations: { [weak self] in
       self?.playerView?.alpha = 0
-    }) { (finished) in
+    }) { _ in
       self.avPlayer = nil
       self.playerView?.removeFromSuperview()
     }
