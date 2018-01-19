@@ -55,8 +55,6 @@ internal final class DiscoveryPageViewController: UITableViewController {
       emptyVC.view.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
       ])
     emptyVC.didMove(toParentViewController: self)
-
-    captureScreen()
   }
 
   internal override func viewWillAppear(_ animated: Bool) {
@@ -311,7 +309,6 @@ internal final class DiscoveryPageViewController: UITableViewController {
     guard let view = self.playerView, let url = self.videoUrl()  else { return }
 
     view.backgroundColor = .white
-    view.layer.zPosition = 1
     self.parentViewController()?.view.addSubview(view)
     self.avPlayer = AVPlayer(url: url)
 
@@ -320,10 +317,25 @@ internal final class DiscoveryPageViewController: UITableViewController {
     videoLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
     view.layer.addSublayer(videoLayer)
 
-    self.avPlayer?.play()
-    self.avPlayer?.rate = 0.6
 
+
+    self.view.addSubview(loaderImageView())
     self.viewModel.inputs.shakeMotionDetected()
+  }
+
+  private func animateScreenshot() {
+    var frame = loaderImageView().frame
+    frame.origin.x = -loaderImageView().frame.size.width
+
+    UIView.animate(
+      withDuration: 0.3,
+      animations: {
+      self.loaderImageView().frame = frame
+    },
+      completion: { _ in
+      self.avPlayer?.play()
+      self.avPlayer?.rate = 0.6
+    })
   }
 
   @objc private func hidePlayer() {
@@ -335,20 +347,27 @@ internal final class DiscoveryPageViewController: UITableViewController {
       self.playerView?.removeFromSuperview()
     })
   }
+
+  private func captureScreen() -> UIImage? {
+
+    let layer = UIApplication.shared.keyWindow?.layer
+    let scale = UIScreen.main.scale
+    UIGraphicsBeginImageContextWithOptions((layer?.frame.size)!, false, scale)
+
+    layer?.render(in: UIGraphicsGetCurrentContext()!)
+    let screenshot = UIGraphicsGetImageFromCurrentImageContext()
+
+    UIGraphicsEndImageContext()
+    return screenshot
+  }
+
+  private func loaderImageView() -> UIImageView {
+    let imageView = UIImageView.init(frame: (self.parentViewController()?.view.frame)!)
+    imageView.image = captureScreen()
+    return imageView
+  }
 }
 
-func captureScreen() {
-
-  let layer = UIApplication.shared.keyWindow?.layer
-  let scale = UIScreen.main.scale
-  UIGraphicsBeginImageContextWithOptions((layer?.frame.size)!, false, scale)
-
-  layer?.render(in: UIGraphicsGetCurrentContext()!)
-  let screenshot = UIGraphicsGetImageFromCurrentImageContext()
-  UIGraphicsEndImageContext()
-
-  UIImageWriteToSavedPhotosAlbum(screenshot!, nil, nil, nil)
-}
 
 
 extension DiscoveryPageViewController: ActivitySampleBackingCellDelegate, ActivitySampleFollowCellDelegate,
