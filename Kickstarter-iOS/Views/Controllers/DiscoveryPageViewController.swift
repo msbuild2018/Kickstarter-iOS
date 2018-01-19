@@ -133,6 +133,10 @@ internal final class DiscoveryPageViewController: UITableViewController {
         }
     }
 
+    self.viewModel.outputs.randomProject
+      .observeForControllerAction()
+      .observeValues { [weak self] in self?.viewModel.inputs.tapped(project: $0) }
+
     self.viewModel.outputs.goToActivityProject
       .observeForControllerAction()
       .observeValues { [weak self] in self?.goTo(project: $0, refTag: $1) }
