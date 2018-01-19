@@ -28,6 +28,8 @@ public protocol DiscoveryPageViewModelInputs {
   /// Call when the controller has received a user session started notification.
   func userSessionStarted()
 
+  func videoDidFinishPlaying()
+
   /// Call when the view appears.
   func viewDidAppear()
 
@@ -164,7 +166,7 @@ public final class DiscoveryPageViewModel: DiscoveryPageViewModelType, Discovery
       .skipRepeats(==)
 
     self.randomProject = self.projects.signal
-      .takeWhen(self.shakeMotionDetectedProperty.signal)
+      .takeWhen(self.videoDidFinishPlayingProperty.signal)
       .map(randProject(projects:))
 
     self.asyncReloadData = self.projects.take(first: 1).ignoreValues()
@@ -295,6 +297,12 @@ public final class DiscoveryPageViewModel: DiscoveryPageViewModelType, Discovery
   public func userSessionEnded() {
     self.userSessionEndedProperty.value = ()
   }
+
+  fileprivate let videoDidFinishPlayingProperty = MutableProperty()
+  public func videoDidFinishPlaying() {
+    self.videoDidFinishPlayingProperty.value = ()
+  }
+
   fileprivate let viewDidAppearProperty = MutableProperty()
   public func viewDidAppear() {
     self.viewDidAppearProperty.value = ()

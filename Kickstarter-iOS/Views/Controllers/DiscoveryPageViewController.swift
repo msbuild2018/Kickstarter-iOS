@@ -91,6 +91,7 @@ internal final class DiscoveryPageViewController: UITableViewController {
                                               name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,
                                               object: nil)
 
+    self.playerView?.alpha = 0
     self.playerView?.removeFromSuperview()
     self.viewModel.inputs.viewDidDisappear(animated: animated)
   }
@@ -131,20 +132,11 @@ internal final class DiscoveryPageViewController: UITableViewController {
         }
     }
 
-    self.viewModel.outputs.goToProjectPage
-      .delay(4, on: AppEnvironment.current.scheduler)
-      .observeForUI()
-      .observeValues { [weak self] project in
-        if let proj = project {
-          self?.viewModel.inputs.tapped(project: proj)
-        } else {
-          self?.hidePlayer()
-        }
-    }
-
     self.viewModel.outputs.randomProject
       .observeForControllerAction()
-      .observeValues { [weak self] in self?.viewModel.inputs.tapped(project: $0) }
+      .observeValues { [weak self] in
+          self?.viewModel.inputs.tapped(project: $0)
+    }
 
     self.viewModel.outputs.goToActivityProject
       .observeForControllerAction()
@@ -337,13 +329,8 @@ internal final class DiscoveryPageViewController: UITableViewController {
   }
 
   @objc private func hidePlayer() {
-
-    UIView.animate(withDuration: 0.5, animations: { [weak self] in
-  
-      //self?.viewModel.inputs.tapped(project: (self?.randomProjects[1])!)
-      }, completion: { _ in
-      self.avPlayer = nil
-    })
+    self.viewModel.inputs.videoDidFinishPlaying()
+    self.avPlayer = nil
   }
 }
 
