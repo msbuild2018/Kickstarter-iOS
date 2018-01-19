@@ -317,9 +317,7 @@ internal final class DiscoveryPageViewController: UITableViewController {
     videoLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
     view.layer.addSublayer(videoLayer)
 
-
-
-    self.view.addSubview(loaderImageView())
+    self.parentViewController()?.view.addSubview(loaderImageView())
     self.viewModel.inputs.shakeMotionDetected()
   }
 
