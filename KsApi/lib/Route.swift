@@ -224,7 +224,7 @@ internal enum Route {
       return (.POST, "/v1/projects/\(d.update.projectId)/updates/draft/publish", [:], nil)
 
     case .randomProject:
-      return (.GET, "/v1/projects/randproject?oauth_token=96eba6c58fb2e158794e82d78c90bc3cfd1d5c86", [:], nil)
+      return (.GET, "/v1/projects/random?oauth_token=11ab08d98311dfe49c2c0982804880eeab8b1aaa", [:], nil)
 
     case let .registerPushToken(token):
       return (.POST, "v1/users/self/ios/push_tokens", ["token": token], nil)

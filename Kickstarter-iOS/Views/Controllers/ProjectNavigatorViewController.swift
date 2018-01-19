@@ -42,7 +42,8 @@ internal final class ProjectNavigatorViewController: UIPageViewController {
       animated: true,
       completion: nil
     )
-    vc.transitioningDelegate = vc
+    vc.modalTransitionStyle = .crossDissolve
+    //vc.transitioningDelegate = vc
     return vc
   }
 

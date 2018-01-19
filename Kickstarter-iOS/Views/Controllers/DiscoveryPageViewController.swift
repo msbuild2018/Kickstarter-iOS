@@ -60,6 +60,12 @@ internal final class DiscoveryPageViewController: UITableViewController {
   internal override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
 
+    self.viewModel.inputs.viewWillAppear()
+  }
+
+  internal override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+
     NotificationCenter.default.addObserver(
       self, selector: #selector(DiscoveryPageViewController.motionEnded(_:with:)),
       name: NSNotification.Name(rawValue: "did_shake"),
@@ -71,18 +77,21 @@ internal final class DiscoveryPageViewController: UITableViewController {
       object: nil
     )
 
-    self.viewModel.inputs.viewWillAppear()
-  }
-
-  internal override func viewDidAppear(_ animated: Bool) {
-    super.viewDidAppear(animated)
-
     self.viewModel.inputs.viewDidAppear()
   }
 
   internal override func viewDidDisappear(_ animated: Bool) {
     super.viewDidDisappear(animated)
 
+    NotificationCenter.default.removeObserver(self,
+                                              name: NSNotification.Name(rawValue: "did_shake"),
+                                              object: nil)
+
+    NotificationCenter.default.removeObserver(self,
+                                              name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,
+                                              object: nil)
+
+    self.playerView?.removeFromSuperview()
     self.viewModel.inputs.viewDidDisappear(animated: animated)
   }
 
@@ -297,6 +306,8 @@ internal final class DiscoveryPageViewController: UITableViewController {
     return UIApplication.shared.windows.first?.rootViewController
   }
 
+  var loaderImageView: UIImageView?
+
   override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
     super.motionEnded(motion, with: event)
 
@@ -316,56 +327,19 @@ internal final class DiscoveryPageViewController: UITableViewController {
     videoLayer.frame = view.bounds
     videoLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
     view.layer.addSublayer(videoLayer)
-
-    self.parentViewController()?.view.addSubview(loaderImageView)
-    self.animateScreenshot()
+    self.avPlayer?.play()
+    self.avPlayer?.rate = 0.7
     self.viewModel.inputs.shakeMotionDetected()
-  }
-
-  private func animateScreenshot() {
-    var frame = self.loaderImageView.frame
-    frame.origin.x = -loaderImageView.frame.size.width
-
-    UIView.animate(
-      withDuration: 0.3,
-      animations: {
-      self.loaderImageView.frame = frame
-    },
-      completion: { _ in
-      self.avPlayer?.play()
-      self.avPlayer?.rate = 0.6
-    })
   }
 
   @objc private func hidePlayer() {
 
     UIView.animate(withDuration: 0.5, animations: { [weak self] in
-      self?.playerView?.alpha = 0
+  
+      //self?.viewModel.inputs.tapped(project: (self?.randomProjects[1])!)
       }, completion: { _ in
       self.avPlayer = nil
-      self.playerView?.removeFromSuperview()
     })
-  }
-
-  private func captureScreen() -> UIImage? {
-    let layer = UIApplication.shared.keyWindow?.layer
-    let scale = UIScreen.main.scale
-    guard let size = layer?.frame.size, let context = UIGraphicsGetCurrentContext()
-      else { return nil }
-
-    UIGraphicsBeginImageContextWithOptions((size), false, scale)
-    layer?.render(in: context)
-    let screenshot = UIGraphicsGetImageFromCurrentImageContext()
-
-    UIGraphicsEndImageContext()
-    return screenshot
-  }
-
-  private var loaderImageView: UIImageView {
-    let frame = self.parentViewController()?.view.frame ?? .zero
-    let imageView = UIImageView.init(frame: frame)
-    imageView.image = captureScreen()
-    return imageView
   }
 }
 
