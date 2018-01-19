@@ -11,6 +11,8 @@ public protocol DiscoveryPageViewModelInputs {
   /// Call when the filter is changed.
   func selectedFilter(_ params: DiscoveryParams)
 
+  func shakeMotionDetected()
+
   /// Call when the user taps on the activity sample.
   func tapped(activity: Activity)
 
@@ -51,6 +53,8 @@ public protocol DiscoveryPageViewModelOutputs {
   /// Hack to emit when we should asynchronously reload the table view's data to properly display postcards.
   /// Hopefully in the future we can remove this when we can resolve postcard display issues.
   var asyncReloadData: Signal<Void, NoError> { get }
+
+  var goToProjectPage: Signal<Project?, NoError> { get }
 
   /// Emits when we should dismiss the empty state controller.
   var hideEmptyState: Signal<(), NoError> { get }
@@ -121,6 +125,16 @@ public final class DiscoveryPageViewModel: DiscoveryPageViewModelType, Discovery
       self.viewDidAppearProperty.signal.mapConst(true),
       self.viewDidDisappearProperty.signal.mapConst(false)
       ).skipRepeats()
+
+    let randomProjectEvent = self.shakeMotionDetectedProperty.signal.ignoreValues()
+      .switchMap { _ -> SignalProducer<Event<Project, ErrorEnvelope>, NoError> in
+        AppEnvironment.current.apiService.fetchRandomProject()
+          .ksr_delay(AppEnvironment.current.apiDelayInterval, on: AppEnvironment.current.scheduler)
+          .materialize()
+      }
+
+    self.goToProjectPage = randomProjectEvent
+      .map { $0.value }
 
     let requestFirstPageWith = Signal.combineLatest(currentUser, paramsChanged, isVisible)
       .filter { _, _, visible in visible }
@@ -242,6 +256,11 @@ public final class DiscoveryPageViewModel: DiscoveryPageViewModelType, Discovery
     )
   }
 
+  fileprivate let shakeMotionDetectedProperty = MutableProperty()
+  public func shakeMotionDetected() {
+    self.shakeMotionDetectedProperty.value = ()
+  }
+
   fileprivate let sortProperty = MutableProperty<DiscoveryParams.Sort?>(nil)
   public func configureWith(sort: DiscoveryParams.Sort) {
     self.sortProperty.value = sort
@@ -291,6 +310,7 @@ public final class DiscoveryPageViewModel: DiscoveryPageViewModelType, Discovery
   public var asyncReloadData: Signal<Void, NoError>
   public let hideEmptyState: Signal<(), NoError>
   public var goToActivityProject: Signal<(Project, RefTag), NoError>
+  public let goToProjectPage: Signal<Project?, NoError>
   public let goToProjectPlaylist: Signal<(Project, [Project], RefTag), NoError>
   public let goToProjectUpdate: Signal<(Project, Update), NoError>
   public let projects: Signal<[Project], NoError>

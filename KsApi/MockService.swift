@@ -800,6 +800,10 @@ internal struct MockService: ServiceType {
       return SignalProducer(value: .template)
   }
 
+  internal func fetchRandomProject() -> SignalProducer<Project, ErrorEnvelope> {
+    return .empty
+  }
+
   internal func fetchRewardShippingRules(projectId: Int, rewardId: Int)
     -> SignalProducer<ShippingRulesEnvelope, ErrorEnvelope> {
 

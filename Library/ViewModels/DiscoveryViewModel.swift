@@ -7,6 +7,7 @@ import ReactiveExtensions
 import Result
 
 public protocol DiscoveryViewModelInputs {
+
   /// Call when params have been selected.
   func filter(withParams params: DiscoveryParams)
 

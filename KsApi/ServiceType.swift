@@ -151,6 +151,8 @@ public protocol ServiceType {
   /// Fetches the stats for a particular project.
   func fetchProjectStats(projectId: Int) -> SignalProducer<ProjectStatsEnvelope, ErrorEnvelope>
 
+  func fetchRandomProject() -> SignalProducer<Project, ErrorEnvelope>
+
   /// Fetches a reward for a project and reward id.
   func fetchRewardShippingRules(projectId: Int, rewardId: Int)
     -> SignalProducer<ShippingRulesEnvelope, ErrorEnvelope>

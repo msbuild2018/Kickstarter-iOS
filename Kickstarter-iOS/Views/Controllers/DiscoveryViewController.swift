@@ -115,6 +115,13 @@ internal final class DiscoveryViewController: UIViewController {
       .observeValues { [weak self] in self?.sortPagerViewController.updateStyle(categoryId: $0) }
   }
 
+  override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
+    super.motionBegan(motion, with: event)
+    if motion == .motionShake {
+      NotificationCenter.default.post(name: NSNotification.Name(rawValue: "did_shake"), object: nil)
+    }
+  }
+
   internal func filter(with params: DiscoveryParams) {
     self.viewModel.inputs.filter(withParams: params)
   }
