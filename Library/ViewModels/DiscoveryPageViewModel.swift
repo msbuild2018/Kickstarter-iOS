@@ -85,6 +85,8 @@ public protocol DiscoveryPageViewModelOutputs {
 
   /// Emits a boolean that determines of the onboarding should be shown.
   var showOnboarding: Signal<Bool, NoError> { get }
+
+  var randomProject: Signal<Project, NoError> { get }
 }
 
 public protocol DiscoveryPageViewModelType {
@@ -160,6 +162,10 @@ public final class DiscoveryPageViewModel: DiscoveryPageViewModelType, Discovery
       )
       .skip { $0.isEmpty }
       .skipRepeats(==)
+
+    self.randomProject = self.projects.signal
+      .takeWhen(self.shakeMotionDetectedProperty.signal)
+      .map(randProject(projects:))
 
     self.asyncReloadData = self.projects.take(first: 1).ignoreValues()
 
@@ -320,8 +326,16 @@ public final class DiscoveryPageViewModel: DiscoveryPageViewModelType, Discovery
   public let showEmptyState: Signal<EmptyState, NoError>
   public let showOnboarding: Signal<Bool, NoError>
 
+  public let randomProject: Signal<Project, NoError>
+
   public var inputs: DiscoveryPageViewModelInputs { return self }
   public var outputs: DiscoveryPageViewModelOutputs { return self }
+}
+
+private func randProject(projects: [Project]) -> Project {
+  let randomIndex = Int(arc4random_uniform(UInt32(projects.count)))
+
+  return projects[randomIndex]
 }
 
 private func hasNotSeen(activity: Activity) -> Bool {
