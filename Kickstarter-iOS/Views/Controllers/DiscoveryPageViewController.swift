@@ -29,17 +29,6 @@ internal final class DiscoveryPageViewController: UITableViewController {
   internal override func viewDidLoad() {
     super.viewDidLoad()
 
-    NotificationCenter.default.addObserver(
-      self, selector: #selector(DiscoveryPageViewController.motionEnded(_:with:)),
-      name: NSNotification.Name(rawValue: "did_shake"),
-      object: nil
-    )
-    NotificationCenter.default.addObserver(
-      self, selector: #selector(DiscoveryPageViewController.hidePlayer),
-      name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,
-      object: nil
-    )
-
     self.tableView.addSubview(self.loadingIndicatorView)
 
     self.tableView.dataSource = self.dataSource
@@ -70,6 +59,17 @@ internal final class DiscoveryPageViewController: UITableViewController {
 
   internal override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
+
+    NotificationCenter.default.addObserver(
+      self, selector: #selector(DiscoveryPageViewController.motionEnded(_:with:)),
+      name: NSNotification.Name(rawValue: "did_shake"),
+      object: nil
+    )
+    NotificationCenter.default.addObserver(
+      self, selector: #selector(DiscoveryPageViewController.hidePlayer),
+      name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,
+      object: nil
+    )
 
     self.viewModel.inputs.viewWillAppear()
   }
@@ -293,24 +293,34 @@ internal final class DiscoveryPageViewController: UITableViewController {
     return URL(fileURLWithPath: path)
   }
 
+  private func parentViewController() -> UIViewController? {
+    return UIApplication.shared.windows.first?.rootViewController
+  }
+
   override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
     super.motionEnded(motion, with: event)
 
-    self.playerView = UIView(frame: self.view.frame)
+    guard let frame = self.parentViewController()?.view.frame else {
+      return
+    }
+
+    self.playerView = UIView(frame: frame)
 
     guard let view = self.playerView, let url = self.videoUrl()  else { return }
 
     view.backgroundColor = .white
-    UIApplication.shared.keyWindow?.addSubview(view)
+    view.layer.zPosition = 1
+    self.parentViewController()?.view.addSubview(view)
+    self.avPlayer = AVPlayer(url: url)
 
-    let playerItem = AVPlayerItem(url: url)
-    self.avPlayer = AVPlayer(playerItem: playerItem)
     let videoLayer = AVPlayerLayer(player: self.avPlayer)
     videoLayer.frame = view.bounds
     videoLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
     view.layer.addSublayer(videoLayer)
+
     self.avPlayer?.play()
     self.avPlayer?.rate = 0.6
+
     self.viewModel.inputs.shakeMotionDetected()
   }
 
