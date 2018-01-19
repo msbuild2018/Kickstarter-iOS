@@ -7,7 +7,6 @@ internal final class DiscoveryViewController: UIViewController {
   fileprivate let viewModel: DiscoveryViewModelType = DiscoveryViewModel()
   fileprivate var dataSource: DiscoveryPagesDataSource!
 
-  @IBOutlet private weak var randomProjectLoaderView: UIView!
   private weak var liveStreamDiscoveryViewController: LiveStreamDiscoveryViewController!
   private weak var navigationHeaderViewController: DiscoveryNavigationHeaderViewController!
   private weak var pageViewController: UIPageViewController!
@@ -51,13 +50,6 @@ internal final class DiscoveryViewController: UIViewController {
     self.navigationController?.setNavigationBarHidden(true, animated: animated)
   }
 
-  override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
-    super.motionEnded(motion, with: event)
-    if motion == .motionShake {
-      self.viewModel.inputs.shakeMotionDetected()
-    }
-  }
-
   override func bindViewModel() {
     super.bindViewModel()
 
@@ -72,12 +64,6 @@ internal final class DiscoveryViewController: UIViewController {
       .observeForUI()
       .observeValues { [weak self] in
         self?.pageViewController.view.superview?.isHidden = $0
-    }
-
-    self.viewModel.outputs.randomProjectLoaderPageHidden
-      .observeForUI()
-      .observeValues { [weak self] in
-        self?.randomProjectLoaderView.isHidden = $0
     }
 
     self.viewModel.outputs.sortViewHidden
@@ -127,6 +113,13 @@ internal final class DiscoveryViewController: UIViewController {
     self.viewModel.outputs.updateSortPagerStyle
       .observeForControllerAction()
       .observeValues { [weak self] in self?.sortPagerViewController.updateStyle(categoryId: $0) }
+  }
+
+  override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
+    super.motionBegan(motion, with: event)
+    if motion == .motionShake {
+      NotificationCenter.default.post(name: NSNotification.Name(rawValue: "did_shake"), object: nil)
+    }
   }
 
   internal func filter(with params: DiscoveryParams) {

@@ -49,33 +49,10 @@
                                     <segue destination="RCd-Hu-FaN" kind="embed" id="LIY-S4-2G6"/>
                                 </connections>
                             </containerView>
-                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nAs-1E-gdc">
-                                <rect key="frame" x="0.0" y="20" width="400" height="580"/>
-                                <subviews>
-                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="IiW-tO-lYG">
-                                        <rect key="frame" x="190" y="280" width="20" height="20"/>
-                                    </activityIndicatorView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Choosing a special project for you..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oiZ-zp-Mo3">
-                                        <rect key="frame" x="48" y="327" width="304" height="20.5"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="oiZ-zp-Mo3" secondAttribute="trailing" constant="48" id="BdV-RQ-P13"/>
-                                    <constraint firstItem="IiW-tO-lYG" firstAttribute="centerY" secondItem="nAs-1E-gdc" secondAttribute="centerY" id="FXK-Bu-s0S"/>
-                                    <constraint firstItem="oiZ-zp-Mo3" firstAttribute="top" secondItem="IiW-tO-lYG" secondAttribute="bottom" constant="27" id="RR1-4o-zKF"/>
-                                    <constraint firstItem="IiW-tO-lYG" firstAttribute="centerX" secondItem="nAs-1E-gdc" secondAttribute="centerX" id="Y2z-zj-gtn"/>
-                                    <constraint firstItem="oiZ-zp-Mo3" firstAttribute="leading" secondItem="nAs-1E-gdc" secondAttribute="leading" constant="48" id="pga-ox-is9"/>
-                                </constraints>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="dUb-ni-s34" firstAttribute="top" secondItem="bgp-rK-1DR" secondAttribute="top" id="5jZ-Uk-gLE"/>
-                            <constraint firstItem="nAs-1E-gdc" firstAttribute="trailing" secondItem="bgp-rK-1DR" secondAttribute="trailing" id="6ew-2R-f7h"/>
                             <constraint firstItem="FbJ-Sz-gTi" firstAttribute="leading" secondItem="dUb-ni-s34" secondAttribute="leading" id="6rH-us-STJ"/>
                             <constraint firstItem="FAX-pt-y2u" firstAttribute="top" secondItem="Doj-qA-CRz" secondAttribute="bottom" id="9Dr-uo-nMZ"/>
                             <constraint firstItem="dUb-ni-s34" firstAttribute="leading" secondItem="bgp-rK-1DR" secondAttribute="leading" id="Ato-za-9z9"/>
@@ -83,13 +60,10 @@
                             <constraint firstItem="bgp-rK-1DR" firstAttribute="trailing" secondItem="FAX-pt-y2u" secondAttribute="trailing" id="Haf-Tu-zCG"/>
                             <constraint firstItem="Doj-qA-CRz" firstAttribute="leading" secondItem="bgp-rK-1DR" secondAttribute="leading" id="JuW-Ce-Bj2"/>
                             <constraint firstItem="FbJ-Sz-gTi" firstAttribute="top" secondItem="dUb-ni-s34" secondAttribute="bottom" constant="-1" id="QAs-lR-vmg"/>
-                            <constraint firstItem="nAs-1E-gdc" firstAttribute="leading" secondItem="bgp-rK-1DR" secondAttribute="leading" id="Ugv-lG-V59"/>
                             <constraint firstItem="bgp-rK-1DR" firstAttribute="trailing" secondItem="Doj-qA-CRz" secondAttribute="trailing" id="ZjO-cl-xir"/>
                             <constraint firstItem="bgp-rK-1DR" firstAttribute="trailing" secondItem="dUb-ni-s34" secondAttribute="trailing" id="gmC-ma-ITZ"/>
                             <constraint firstItem="bgp-rK-1DR" firstAttribute="bottom" secondItem="FAX-pt-y2u" secondAttribute="bottom" id="hJB-FS-xfb"/>
                             <constraint firstItem="FAX-pt-y2u" firstAttribute="leading" secondItem="bgp-rK-1DR" secondAttribute="leading" id="kmN-nP-oOI"/>
-                            <constraint firstItem="nAs-1E-gdc" firstAttribute="top" secondItem="bgp-rK-1DR" secondAttribute="top" id="maX-eg-erF"/>
-                            <constraint firstItem="nAs-1E-gdc" firstAttribute="bottom" secondItem="bgp-rK-1DR" secondAttribute="bottom" id="ofj-TS-7i5"/>
                             <constraint firstItem="dUb-ni-s34" firstAttribute="bottom" secondItem="Doj-qA-CRz" secondAttribute="top" constant="-1" id="u4R-oC-L5u"/>
                             <constraint firstItem="FbJ-Sz-gTi" firstAttribute="trailing" secondItem="dUb-ni-s34" secondAttribute="trailing" id="yQO-9K-sdn"/>
                         </constraints>
@@ -101,9 +75,6 @@
                     <nil key="simulatedTopBarMetrics"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="400" height="600"/>
-                    <connections>
-                        <outlet property="randomProjectLoaderView" destination="nAs-1E-gdc" id="PVi-kj-hFP"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fHV-lA-AM8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

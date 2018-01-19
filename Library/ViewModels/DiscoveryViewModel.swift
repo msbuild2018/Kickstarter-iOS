@@ -8,8 +8,6 @@ import Result
 
 public protocol DiscoveryViewModelInputs {
 
-  func shakeMotionDetected()
-
   /// Call when params have been selected.
   func filter(withParams params: DiscoveryParams)
 
@@ -45,8 +43,6 @@ public protocol DiscoveryViewModelOutputs {
   /// Emits a boolean that determines if the discovery pages view is hidden.
   var discoveryPagesViewHidden: Signal<Bool, NoError> { get }
 
-  var goToProjectPage: Signal<Project?, NoError> { get }
-
   /// Emits a boolean that determines if the live stream discovery view is hidden.
   var liveStreamDiscoveryViewHidden: Signal<Bool, NoError> { get }
 
@@ -55,8 +51,6 @@ public protocol DiscoveryViewModelOutputs {
 
   /// Emits when we should manually navigate to a sort's page.
   var navigateToSort: Signal<(DiscoveryParams.Sort, UIPageViewControllerNavigationDirection), NoError> { get }
-
-  var randomProjectLoaderPageHidden: Signal<Bool, NoError> { get }
 
   /// Emits a sort that should be passed on to the sort pager view controller.
   var selectSortPage: Signal<DiscoveryParams.Sort, NoError> { get }
@@ -138,18 +132,6 @@ DiscoveryViewModelOutputs {
       .map { $0.hasLiveStreams != .some(true) }
       .skipRepeats()
 
-    let randomProjectEvent = self.shakeMotionDetectedProperty.signal.ignoreValues()
-      .switchMap { _ -> SignalProducer<Event<Project, ErrorEnvelope>, NoError> in
-        AppEnvironment.current.apiService.fetchRandomProject()
-        .ksr_delay(AppEnvironment.current.apiDelayInterval, on: AppEnvironment.current.scheduler)
-        .materialize()
-    }
-
-    self.goToProjectPage = randomProjectEvent
-      .map { $0.value }
-
-    self.randomProjectLoaderPageHidden = .empty
-
     self.discoveryPagesViewHidden = self.liveStreamDiscoveryViewHidden
       .map(negate)
 
@@ -163,11 +145,6 @@ DiscoveryViewModelOutputs {
     currentParams
       .takeWhen(self.viewWillAppearProperty.signal.skipNil().filter(isFalse))
       .observeValues { AppEnvironment.current.koala.trackDiscoveryViewed(params: $0) }
-  }
-
-  fileprivate let shakeMotionDetectedProperty = MutableProperty()
-  public func shakeMotionDetected() {
-    self.shakeMotionDetectedProperty.value = ()
   }
 
   fileprivate let filterWithParamsProperty = MutableProperty<DiscoveryParams?>(nil)
@@ -205,10 +182,8 @@ DiscoveryViewModelOutputs {
   public let configureSortPager: Signal<[DiscoveryParams.Sort], NoError>
   public let discoveryPagesViewHidden: Signal<Bool, NoError>
   public let liveStreamDiscoveryViewHidden: Signal<Bool, NoError>
-  public let goToProjectPage: Signal<Project?, NoError>
   public let loadFilterIntoDataSource: Signal<DiscoveryParams, NoError>
   public let navigateToSort: Signal<(DiscoveryParams.Sort, UIPageViewControllerNavigationDirection), NoError>
-  public var randomProjectLoaderPageHidden: Signal<Bool, NoError>
   public let selectSortPage: Signal<DiscoveryParams.Sort, NoError>
   public let sortsAreEnabled: Signal<Bool, NoError>
   public let sortViewHidden: Signal<Bool, NoError>

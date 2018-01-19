@@ -1,3 +1,4 @@
+import AVFoundation
 import KsApi
 import Library
 import Prelude
@@ -5,6 +6,9 @@ import Social
 import UIKit
 
 internal final class DiscoveryPageViewController: UITableViewController {
+
+  fileprivate var avPlayer: AVPlayer?
+  fileprivate var playerView: UIView?
   fileprivate var emptyStatesController: EmptyStatesViewController?
   fileprivate let dataSource = DiscoveryProjectsDataSource()
   fileprivate let loadingIndicatorView = UIActivityIndicatorView()
@@ -24,6 +28,9 @@ internal final class DiscoveryPageViewController: UITableViewController {
 
   internal override func viewDidLoad() {
     super.viewDidLoad()
+
+    NotificationCenter.default.addObserver(self, selector: #selector(DiscoveryPageViewController.motionEnded(_:with:)), name: NSNotification.Name(rawValue: "did_shake"), object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(DiscoveryPageViewController.hidePlayer), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
 
     self.tableView.addSubview(self.loadingIndicatorView)
 
@@ -104,6 +111,17 @@ internal final class DiscoveryPageViewController: UITableViewController {
       .observeValues { [weak self] in
         DispatchQueue.main.async {
           self?.tableView.reloadData()
+        }
+    }
+
+    self.viewModel.outputs.goToProjectPage
+      .delay(4, on: AppEnvironment.current.scheduler)
+      .observeForUI()
+      .observeValues { [weak self] project in
+        if let proj = project {
+          self?.viewModel.inputs.tapped(project: proj)
+        } else {
+          self?.hidePlayer()
         }
     }
 
@@ -258,6 +276,44 @@ internal final class DiscoveryPageViewController: UITableViewController {
   private func updateProjectPlaylist(_ playlist: [Project]) {
     guard let navigator = self.presentedViewController as? ProjectNavigatorViewController else { return }
     navigator.updatePlaylist(playlist)
+  }
+
+  fileprivate func videoUrl() -> URL? {
+    guard let path = Bundle.main.path(forResource: "Interstitial_Lite.mp4", ofType: nil) else {
+      return nil
+    }
+    return URL(fileURLWithPath: path)
+  }
+
+  override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
+    super.motionEnded(motion, with: event)
+
+    self.playerView = UIView(frame: self.view.frame)
+
+    guard let view = self.playerView, let url = self.videoUrl()  else { return }
+
+    view.backgroundColor = .white
+    UIApplication.shared.keyWindow?.addSubview(view)
+
+    let playerItem = AVPlayerItem(url: url)
+    self.avPlayer = AVPlayer(playerItem: playerItem)
+    let videoLayer = AVPlayerLayer(player: self.avPlayer)
+    videoLayer.frame = view.bounds
+    videoLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+    view.layer.addSublayer(videoLayer)
+    self.avPlayer?.play()
+    self.avPlayer?.rate = 0.6
+    self.viewModel.inputs.shakeMotionDetected()
+  }
+
+  @objc private func hidePlayer() {
+
+    UIView.animate(withDuration: 0.5, animations: { [weak self] in
+      self?.playerView?.alpha = 0
+    }) { (finished) in
+      self.avPlayer = nil
+      self.playerView?.removeFromSuperview()
+    }
   }
 }
 
