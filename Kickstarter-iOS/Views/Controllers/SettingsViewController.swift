@@ -97,6 +97,8 @@ internal final class SettingsViewController: UIViewController {
 
     if self.presentingViewController != nil {
       self.navigationItem.leftBarButtonItem = .close(self, selector: #selector(closeButtonPressed))
+
+
     }
 
     self.betaFeedbackButton.addTarget(self,

@@ -51,6 +51,8 @@ internal final class DiscoveryPageViewController: UITableViewController {
       emptyVC.view.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
       ])
     emptyVC.didMove(toParentViewController: self)
+
+    captureScreen()
   }
 
   internal override func viewWillAppear(_ animated: Bool) {
@@ -260,6 +262,20 @@ internal final class DiscoveryPageViewController: UITableViewController {
     navigator.updatePlaylist(playlist)
   }
 }
+
+func captureScreen() {
+
+  let layer = UIApplication.shared.keyWindow?.layer
+  let scale = UIScreen.main.scale
+  UIGraphicsBeginImageContextWithOptions((layer?.frame.size)!, false, scale)
+
+  layer?.render(in: UIGraphicsGetCurrentContext()!)
+  let screenshot = UIGraphicsGetImageFromCurrentImageContext()
+  UIGraphicsEndImageContext()
+
+  UIImageWriteToSavedPhotosAlbum(screenshot!, nil, nil, nil)
+}
+
 
 extension DiscoveryPageViewController: ActivitySampleBackingCellDelegate, ActivitySampleFollowCellDelegate,
   ActivitySampleProjectCellDelegate {
