@@ -49,11 +49,6 @@ internal final class ProjectPamphletMainCell: UITableViewCell, ValueCell {
   @IBOutlet fileprivate weak var readMoreButton: UIButton!
   @IBOutlet fileprivate weak var stateLabel: UILabel!
   @IBOutlet fileprivate weak var statsStackView: UIStackView!
-  /* NB: We've introduced a height constraint here since iOS 11.0
-   * Try removing it in subsequent versions, it worked just fine without it before 11.0
-   * ¯\_(ツ)_/¯
-   */
-  @IBOutlet fileprivate weak var statsStackViewHeightConstraint: NSLayoutConstraint!
   @IBOutlet fileprivate weak var youreABackerContainerView: UIView!
   @IBOutlet fileprivate weak var youreABackerLabel: UILabel!
 
@@ -103,10 +98,11 @@ internal final class ProjectPamphletMainCell: UITableViewCell, ValueCell {
     _ = [self.backersSubtitleLabel, self.deadlineSubtitleLabel, self.pledgeSubtitleLabel]
       ||> UILabel.lens.textColor .~ .ksr_text_dark_grey_500
       ||> UILabel.lens.font .~ .ksr_caption1(size: 13)
-      ||> UILabel.lens.numberOfLines .~ 2
+      ||> UILabel.lens.numberOfLines .~ 1
 
     _ = [self.backersTitleLabel, self.deadlineTitleLabel, self.pledgedTitleLabel]
       ||> UILabel.lens.font .~ .ksr_headline(size: 13)
+      ||> UILabel.lens.numberOfLines .~ 1
 
     _ = self.blurbAndReadMoreStackView
       |> UIStackView.lens.spacing .~ 0
@@ -210,8 +206,6 @@ internal final class ProjectPamphletMainCell: UITableViewCell, ValueCell {
 
     _ = self.statsStackView
       |> UIStackView.lens.isAccessibilityElement .~ true
-
-    self.statsStackViewHeightConstraint.constant = Styles.grid(5)
 
     _ = self.youreABackerContainerView
       |> roundedStyle(cornerRadius: 2)
