@@ -16,7 +16,6 @@ internal final class DiscoverySelectableRowCell: UITableViewCell, ValueCell {
       self.filterTitleLabel.text = "Kickstarter Live"
       self.filterTitleLabel.accessibilityLabel =
         Strings.Filters_by_projects_with_upcoming_and_past_live_streams()
-
     } else if value.row.params.starred == true {
       self.filterTitleLabel.text = Strings.Saved()
       self.filterTitleLabel.accessibilityLabel = Strings.Filter_by_saved_projects()

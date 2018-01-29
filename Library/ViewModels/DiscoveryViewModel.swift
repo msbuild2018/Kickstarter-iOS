@@ -71,7 +71,9 @@ public protocol DiscoveryViewModelType {
 
 public final class DiscoveryViewModel: DiscoveryViewModelType, DiscoveryViewModelInputs,
 DiscoveryViewModelOutputs {
-  fileprivate static let defaultParams = .defaults |> DiscoveryParams.lens.includePOTD .~ true
+  fileprivate static let defaultParams = .defaults
+    |> DiscoveryParams.lens.recommended .~ true
+    |> DiscoveryParams.lens.backed .~ false
 
   public init() {
     let sorts: [DiscoveryParams.Sort] = [.magic, .popular, .newest, .endingSoon, .mostFunded]

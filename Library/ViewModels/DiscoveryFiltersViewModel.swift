@@ -71,8 +71,8 @@ DiscoveryFiltersViewModelInputs, DiscoveryFiltersViewModelOutputs {
       initialTopFilters,
       initialSelectedRow
       )
-      .map { params, selectedRow -> [SelectableRow] in
-        params.map { p in SelectableRow(isSelected: p == selectedRow.params, params: p) }
+      .map { params, selectedRow -> [SelectableRow] in params.map { p in
+          SelectableRow(isSelected: p == selectedRow.params, params: p) }
     }
 
     let categoryId = self.initialSelectedRowProperty.signal.skipNil()
