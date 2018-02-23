@@ -811,6 +811,7 @@
 		D08A817A1DFAACF8000128DB /* LiveStreamEventDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0247A901DF9F0EF00D7A7C1 /* LiveStreamEventDetailsViewModel.swift */; };
 		D08A817B1DFAAD04000128DB /* LiveStreamContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08A81711DFAA815000128DB /* LiveStreamContainerViewController.swift */; };
 		D08A817C1DFAAD08000128DB /* LiveStreamCountdownViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08A81721DFAA815000128DB /* LiveStreamCountdownViewController.swift */; };
+		D0A5E71320409BEF00E49884 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A5E71220409BEF00E49884 /* Helpers.swift */; };
 		D0AA77C61FBE400E00A382B5 /* UITableViewCell+SeparatorCatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0AA77C51FBE400E00A382B5 /* UITableViewCell+SeparatorCatch.swift */; };
 		D0AA77C71FBE400E00A382B5 /* UITableViewCell+SeparatorCatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0AA77C51FBE400E00A382B5 /* UITableViewCell+SeparatorCatch.swift */; };
 		D0B45B6B1EF858C00020A8DA /* KsApi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D01587501EEB2DE4006E7684 /* KsApi.framework */; };
@@ -2379,6 +2380,7 @@
 		D08A816F1DFAA7EF000128DB /* ClearNavigationBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearNavigationBar.swift; sourceTree = "<group>"; };
 		D08A81711DFAA815000128DB /* LiveStreamContainerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveStreamContainerViewController.swift; sourceTree = "<group>"; };
 		D08A81721DFAA815000128DB /* LiveStreamCountdownViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveStreamCountdownViewController.swift; sourceTree = "<group>"; };
+		D0A5E71220409BEF00E49884 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		D0AA77C51FBE400E00A382B5 /* UITableViewCell+SeparatorCatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableViewCell+SeparatorCatch.swift"; sourceTree = "<group>"; };
 		D0BB2D541E54894E00EE1D9D /* LiveStreamChatDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveStreamChatDataSource.swift; sourceTree = "<group>"; };
 		D0C5957E1E49C835003A29EC /* LiveStreamSubscribeEnvelope.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveStreamSubscribeEnvelope.swift; sourceTree = "<group>"; };
@@ -3644,6 +3646,7 @@
 				D01587701EEB2ED6006E7684 /* Decodable.swift */,
 				D01587711EEB2ED6006E7684 /* EncodableTests.swift */,
 				D01587721EEB2ED6006E7684 /* EncodableType.swift */,
+				D0A5E71220409BEF00E49884 /* Helpers.swift */,
 				D01587731EEB2ED6006E7684 /* Method.swift */,
 				D01587741EEB2ED6006E7684 /* MimeType.swift */,
 				D01587751EEB2ED6006E7684 /* Route.swift */,
@@ -5526,6 +5529,7 @@
 				D6B9DF3F1F72E25A0064A4D8 /* Category.swift in Sources */,
 				D01589051EEB2ED7006E7684 /* ProjectActivityEnvelope.swift in Sources */,
 				D015899F1EEB2ED7006E7684 /* ServiceType.swift in Sources */,
+				D0A5E71320409BEF00E49884 /* Helpers.swift in Sources */,
 				D01588391EEB2ED7006E7684 /* Method.swift in Sources */,
 				D01588D91EEB2ED7006E7684 /* User.AvatarLenses.swift in Sources */,
 				D015882F1EEB2ED7006E7684 /* ClientAuth.swift in Sources */,

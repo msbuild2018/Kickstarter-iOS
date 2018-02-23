@@ -380,8 +380,8 @@ public struct Service: ServiceType {
 
   public func sendMessage(body: String, toSubject subject: MessageSubject)
     -> SignalProducer<Message, ErrorEnvelope> {
-
-      return request(.sendMessage(body: body, messageSubject: subject))
+return .empty
+//      return request(.sendMessage(body: body, messageSubject: subject))
   }
 
   public func signup(name: String,

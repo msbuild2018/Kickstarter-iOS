@@ -18,7 +18,7 @@ extension MessageThread: Argo.Decodable {
       <^> json <|? "backing"
       <*> json <| "closed"
       <*> json <| "id"
-      <*> json <| "last_message"
+      <*> (json <| "last_message" >>- decodableToDecoded)
     return tmp
       <*> json <| "participant"
       <*> json <| "project"

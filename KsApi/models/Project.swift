@@ -159,7 +159,7 @@ extension Project: Argo.Decodable {
   static public func decode(_ json: JSON) -> Decoded<Project> {
     let tmp1 = curry(Project.init)
       <^> json <| "blurb"
-      <*> ((json <| "category" >>- decodeToGraphCategory) as Decoded<Category>)
+      <*> (json <| "category" >>- decodeToGraphCategory)
       <*> Project.Country.decode(json)
       <*> json <| "creator"
     let tmp2 = tmp1
