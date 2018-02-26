@@ -534,6 +534,46 @@ public struct Service: ServiceType {
     }
   }
 
+  private func requestDecodable<A: Swift.Decodable>(_ route: Route) -> SignalProducer<A, ErrorEnvelope> {
+
+    return SignalProducer<A, ErrorEnvelope> { observer, disposable in
+
+      let properties = route.requestProperties
+
+      guard let URL = URL(string: properties.path, relativeTo: self.serverConfig.apiBaseUrl as URL) else {
+        fatalError(
+          "URL(string: \(properties.path), relativeToURL: \(self.serverConfig.apiBaseUrl)) == nil"
+        )
+      }
+
+      let request = self.preparedRequest(forURL: URL, method: properties.method, query: properties.query)
+
+      let task = URLSession.shared.dataTask(with: request) {  data, response, error in
+        if let _ = error {
+          observer.send(error: .couldNotParseErrorEnvelopeJSON)
+          return
+        }
+        guard let data = data else {
+          observer.send(error: .couldNotParseErrorEnvelopeJSON)
+
+          return
+        }
+
+        do {
+          let decodedObject = try JSONDecoder().decode(A.self, from: data)
+          observer.send(value: decodedObject)
+        } catch let error {
+          observer.send(error: .couldNotDecodeJSON(.custom(error.localizedDescription)))
+        }
+        observer.sendCompleted()
+      }
+      disposable.observeEnded {
+        task.cancel()
+      }
+      task.resume()
+    }
+  }
+
   private func requestPagination<M: Argo.Decodable>(_ paginationUrl: String)
     -> SignalProducer<M, ErrorEnvelope> where M == M.DecodedType {
 
