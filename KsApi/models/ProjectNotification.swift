@@ -21,4 +21,3 @@ extension ProjectNotification.Project: Equatable {}
 public func == (lhs: ProjectNotification.Project, rhs: ProjectNotification.Project) -> Bool {
   return lhs.id == rhs.id
 }
-

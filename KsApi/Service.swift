@@ -53,7 +53,7 @@ public struct Service: ServiceType {
   }
 
   public func facebookConnect(facebookAccessToken token: String) -> SignalProducer<User, ErrorEnvelope> {
-    return request(.facebookConnect(facebookAccessToken: token))
+    return requestDecodable(.facebookConnect(facebookAccessToken: token))
   }
 
   public func addImage(file fileURL: URL, toDraft draft: UpdateDraft)
@@ -267,11 +267,11 @@ public struct Service: ServiceType {
   }
 
   public func fetchUserSelf() -> SignalProducer<User, ErrorEnvelope> {
-    return request(.userSelf)
+    return requestDecodable(.userSelf)
   }
 
   public func fetchUser(userId: Int) -> SignalProducer<User, ErrorEnvelope> {
-    return request(.user(userId: userId))
+    return requestDecodable(.user(userId: userId))
   }
 
   public func fetchUser(_ user: User) -> SignalProducer<User, ErrorEnvelope> {
@@ -281,7 +281,7 @@ public struct Service: ServiceType {
   public func fetchUpdate(updateId: Int, projectParam: Param)
     -> SignalProducer<Update, ErrorEnvelope> {
 
-      return request(.update(updateId: updateId, projectParam: projectParam))
+      return requestDecodable(.update(updateId: updateId, projectParam: projectParam))
   }
 
   public func fetchUpdateDraft(forProject project: Project) -> SignalProducer<UpdateDraft, ErrorEnvelope> {
@@ -297,7 +297,7 @@ public struct Service: ServiceType {
   }
 
   public func followFriend(userId id: Int) -> SignalProducer<User, ErrorEnvelope> {
-    return request(.followFriend(userId: id))
+    return requestDecodable(.followFriend(userId: id))
   }
 
   public func incrementVideoCompletion(forProject project: Project) ->
@@ -360,7 +360,7 @@ public struct Service: ServiceType {
   }
 
   public func publish(draft: UpdateDraft) -> SignalProducer<Update, ErrorEnvelope> {
-    return request(.publishUpdateDraft(draft))
+    return requestDecodable(.publishUpdateDraft(draft))
   }
 
   public func register(pushToken: String) -> SignalProducer<VoidEnvelope, ErrorEnvelope> {
@@ -369,7 +369,7 @@ public struct Service: ServiceType {
   }
 
   public func resetPassword(email: String) -> SignalProducer<User, ErrorEnvelope> {
-    return request(.resetPassword(email: email))
+    return requestDecodable(.resetPassword(email: email))
   }
 
   public func searchMessages(query: String, project: Project?)
@@ -462,7 +462,7 @@ public struct Service: ServiceType {
   }
 
   public func updateUserSelf(_ user: User) -> SignalProducer<User, ErrorEnvelope> {
-    return request(.updateUserSelf(user))
+    return requestDecodable(.updateUserSelf(user))
   }
 
   private func decodeModel<M: Argo.Decodable>(_ json: Any) ->
@@ -562,11 +562,11 @@ public struct Service: ServiceType {
             return
         }
 
-
-        if let _ = error {
-          observer.send(error: .couldNotParseErrorEnvelopeJSON)
+        if let error = error {
+          observer.send(error: .couldNotDecodeJSON(.custom(error.localizedDescription)))
           return
         }
+        
         guard let data = data else {
           observer.send(error: .couldNotParseErrorEnvelopeJSON)
           return

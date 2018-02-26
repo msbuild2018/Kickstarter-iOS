@@ -26,7 +26,19 @@ public struct Update: Swift.Decodable {
 
 extension Update {
   enum CodingKeys: String, CodingKey {
-    case body, commentsCount = "comments_count", hasLiked = "has_liked", id, isPublic = "public", likesCount = "likes_count", projectId = "project_id", publishedAt = "published_at", sequence, title, urls, user, visible
+    case body,
+    commentsCount = "comments_count",
+    hasLiked = "has_liked",
+    id,
+    isPublic = "public",
+    likesCount = "likes_count",
+    projectId = "project_id",
+    publishedAt = "published_at",
+    sequence,
+    title,
+    urls,
+    user,
+    visible
   }
 
   public init(from decoder: Decoder) throws {
