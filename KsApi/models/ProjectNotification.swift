@@ -1,35 +1,14 @@
-import Argo
-import Curry
-import Runes
 import Foundation
 
-public struct ProjectNotification {
+public struct ProjectNotification: Swift.Decodable {
   public let email: Bool
   public let id: Int
   public let mobile: Bool
   public let project: Project
 
-  public struct Project {
+  public struct Project: Swift.Decodable {
     public let id: Int
     public let name: String
-  }
-}
-
-extension ProjectNotification: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<ProjectNotification> {
-    return curry(ProjectNotification.init)
-      <^> json <| "email"
-      <*> json <| "id"
-      <*> json <| "mobile"
-      <*> json <| "project"
-  }
-}
-
-extension ProjectNotification.Project: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<ProjectNotification.Project> {
-    return curry(ProjectNotification.Project.init)
-      <^> json <| "id"
-      <*> json <| "name"
   }
 }
 
@@ -42,3 +21,4 @@ extension ProjectNotification.Project: Equatable {}
 public func == (lhs: ProjectNotification.Project, rhs: ProjectNotification.Project) -> Bool {
   return lhs.id == rhs.id
 }
+
