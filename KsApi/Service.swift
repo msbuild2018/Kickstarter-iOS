@@ -566,7 +566,7 @@ public struct Service: ServiceType {
           observer.send(error: .couldNotDecodeJSON(.custom(error.localizedDescription)))
           return
         }
-        
+
         guard let data = data else {
           observer.send(error: .couldNotParseErrorEnvelopeJSON)
           return
