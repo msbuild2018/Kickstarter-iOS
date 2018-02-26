@@ -1,20 +1,14 @@
-import Argo
-import Curry
-import Runes
+import Foundation
 
-public struct RewardsItem {
+public struct RewardsItem: Swift.Decodable {
   public let id: Int
   public let item: Item
   public let quantity: Int
   public let rewardId: Int
 }
 
-extension RewardsItem: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<RewardsItem> {
-    return curry(RewardsItem.init)
-      <^> json <| "id"
-      <*> json <| "item"
-      <*> json <| "quantity"
-      <*> json <| "reward_id"
+extension RewardsItem {
+  enum CodingKeys: String, CodingKey {
+    case id, item, quantity, rewardId = "reward_id"
   }
 }

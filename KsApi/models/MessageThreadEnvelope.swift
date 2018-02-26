@@ -1,18 +1,15 @@
-import Argo
-import Curry
-import Runes
+import Foundation
 
-public struct MessageThreadEnvelope {
+public struct MessageThreadEnvelope: Swift.Decodable {
   public let participants: [User]
   public let messages: [Message]
   public let messageThread: MessageThread
 }
 
-extension MessageThreadEnvelope: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<MessageThreadEnvelope> {
-    return curry(MessageThreadEnvelope.init)
-      <^> json <|| "participants"
-      <*> json <|| "messages"
-      <*> json <| "message_thread"
+extension MessageThreadEnvelope {
+  enum CodingKeys: String, CodingKey {
+    case participants,
+    messages,
+    messageThread = "message_thread"
   }
 }

@@ -1,20 +1,17 @@
-import Argo
-import Curry
-import Runes
+import Foundation
 
-public struct Item {
+public struct Item: Swift.Decodable {
   public let description: String?
   public let id: Int
   public let name: String
   public let projectId: Int
 }
 
-extension Item: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Item> {
-    return curry(Item.init)
-      <^> json <|? "description"
-      <*> json <| "id"
-      <*> json <| "name"
-      <*> json <| "project_id"
+extension Item {
+  enum CodingKeys: String, CodingKey {
+    case description,
+    id,
+    name,
+    projectId = "project_id"
   }
 }

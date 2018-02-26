@@ -1,8 +1,6 @@
-import Argo
-import Curry
-import Runes
+import Foundation
 
-public struct UpdateDraft {
+public struct UpdateDraft: Swift.Decodable {
   public let update: Update
   public let images: [Image]
   public let video: Video?
@@ -12,18 +10,18 @@ public struct UpdateDraft {
     case video(Video)
   }
 
-  public struct Image {
+  public struct Image: Swift.Decodable {
     public let id: Int
     public let thumb: String
     public let full: String
   }
 
-  public struct Video {
+  public struct Video: Swift.Decodable {
     public let id: Int
     public let status: Status
     public let frame: String
 
-    public enum Status: String {
+    public enum Status: String, Swift.Decodable {
       case processing
       case failed
       case successful
@@ -59,33 +57,6 @@ extension UpdateDraft.Attachment {
 extension UpdateDraft.Attachment: Equatable {}
 public func == (lhs: UpdateDraft.Attachment, rhs: UpdateDraft.Attachment) -> Bool {
   return lhs.id == rhs.id
-}
-
-extension UpdateDraft: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<UpdateDraft> {
-    return curry(UpdateDraft.init)
-      <^> Update.decode(json)
-      <*> json <|| "images"
-      <*> json <|? "video"
-  }
-}
-
-extension UpdateDraft.Image: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<UpdateDraft.Image> {
-    return curry(UpdateDraft.Image.init)
-      <^> json <| "id"
-      <*> json <| "thumb"
-      <*> json <| "full"
-  }
-}
-
-extension UpdateDraft.Video: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<UpdateDraft.Video> {
-    return curry(UpdateDraft.Video.init)
-      <^> json <| "id"
-      <*> json <| "status"
-      <*> json <| "frame"
-  }
 }
 
 extension UpdateDraft.Video.Status: Argo.Decodable {
