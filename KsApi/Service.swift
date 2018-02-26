@@ -222,7 +222,7 @@ public struct Service: ServiceType {
   }
 
   public func fetchProjectNotifications() -> SignalProducer<[ProjectNotification], ErrorEnvelope> {
-    return request(.projectNotifications)
+    return requestDecodable(.projectNotifications)
   }
 
   public func fetchProjectActivities(forProject project: Project) ->
@@ -458,7 +458,7 @@ public struct Service: ServiceType {
   public func updateProjectNotification(_ notification: ProjectNotification)
     -> SignalProducer<ProjectNotification, ErrorEnvelope> {
 
-      return request(.updateProjectNotification(notification: notification))
+      return requestDecodable(.updateProjectNotification(notification: notification))
   }
 
   public func updateUserSelf(_ user: User) -> SignalProducer<User, ErrorEnvelope> {
@@ -549,13 +549,26 @@ public struct Service: ServiceType {
       let request = self.preparedRequest(forURL: URL, method: properties.method, query: properties.query)
 
       let task = URLSession.shared.dataTask(with: request) {  data, response, error in
+
+        guard let response = response as? HTTPURLResponse else { fatalError() }
+
+        guard
+          (200..<300).contains(response.statusCode),
+          let headers = response.allHeaderFields as? [String: String],
+          let contentType = headers["Content-Type"], contentType.hasPrefix("application/json")
+          else {
+
+            print("[KsApi] Failure \(request)")
+            return
+        }
+
+
         if let _ = error {
           observer.send(error: .couldNotParseErrorEnvelopeJSON)
           return
         }
         guard let data = data else {
           observer.send(error: .couldNotParseErrorEnvelopeJSON)
-
           return
         }
 
