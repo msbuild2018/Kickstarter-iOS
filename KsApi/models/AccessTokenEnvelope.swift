@@ -7,7 +7,7 @@ public struct AccessTokenEnvelope: Swift.Decodable {
 
 extension AccessTokenEnvelope {
   enum CodingKeys: String, CodingKey {
-    case accessToken = "accessToken",
+    case accessToken = "access_token",
     user
   }
 }

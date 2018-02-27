@@ -64,4 +64,3 @@ extension Backing {
     self.status = try values.decode(Status.self, forKey: .status)
   }
 }
-
