@@ -1,20 +1,9 @@
-import Argo
-import Curry
-import Runes
+import Foundation
 
-public struct ShippingRule {
+public struct ShippingRule: Swift.Decodable {
   public let cost: Double
   public let id: Int?
   public let location: Location
-}
-
-extension ShippingRule: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<ShippingRule> {
-    return curry(ShippingRule.init)
-      <^> (json <| "cost" >>- stringToDouble)
-      <*> json <|? "id"
-      <*> json <| "location"
-  }
 }
 
 extension ShippingRule: Equatable {}

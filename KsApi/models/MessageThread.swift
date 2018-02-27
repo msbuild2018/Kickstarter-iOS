@@ -20,6 +20,17 @@ extension MessageThread {
     project,
     unreadMessagesCount = "unread_messages_count"
   }
+
+  public init(from decoder: Decoder) throws {
+    let values = try decoder.container(keyedBy: CodingKeys.self)
+    self.backing = try? values.decode(Backing.self, forKey: .backing)
+    self.closed = try values.decode(Bool.self, forKey: .closed)
+    self.id = try values.decode(Int.self, forKey: .id)
+    self.lastMessage = try values.decode(Message.self, forKey: .lastMessage)
+    self.participant = try values.decode(User.self, forKey: .participant)
+    self.project = try values.decode(Project.self, forKey: .project)
+    self.unreadMessagesCount = try values.decode(Int.self, forKey: .unreadMessagesCount)
+  }
 }
 
 extension MessageThread: Equatable {}

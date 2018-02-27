@@ -59,7 +59,6 @@ extension Reward {
     startsAt = "starts_at",
     title
   }
-
 }
 
 extension Reward.Shipping {
@@ -72,7 +71,7 @@ extension Reward.Shipping {
   public init(from decoder: Decoder) throws {
     let values = try decoder.container(keyedBy: CodingKeys.self)
     self.enabled = try values.decode(Bool.self, forKey: .enabled)
-    self.preference = try? values.decode(Preference.self, forKey: .preference)
+    self.preference = try? values.decode(Reward.Shipping.Preference.self, forKey: .preference)
     self.summary = try? values.decode(String.self, forKey: .summary)
   }
 }
