@@ -1,8 +1,6 @@
-import Argo
-import Curry
-import Runes
+import Foundation
 
-public struct Comment {
+public struct Comment: Swift.Decodable {
   public let author: User
   public let body: String
   public let createdAt: TimeInterval
@@ -10,15 +8,22 @@ public struct Comment {
   public let id: Int
 }
 
-extension Comment: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Comment> {
-    let tmp = curry(Comment.init)
-      <^> json <| "author"
-      <*> json <| "body"
-      <*> json <| "created_at"
-    return tmp
-      <*> (json <|? "deleted_at" >>- decodePositiveTimeInterval)
-      <*> json <| "id"
+extension Comment {
+  enum CodingKeys: String, CodingKey {
+    case author,
+    body,
+    createdAt = "created_at",
+    deletedAt = "deleted_at",
+    id
+  }
+
+  public init(from decoder: Decoder) throws {
+    let values = try decoder.container(keyedBy: CodingKeys.self)
+    self.author = try values.decode(User.self, forKey: .author)
+    self.body = try values.decode(String.self, forKey: .body)
+    self.createdAt = try values.decode(TimeInterval.self, forKey: .createdAt)
+    self.deletedAt = try? values.decode(TimeInterval.self, forKey: .deletedAt)
+    self.id = try values.decode(Int.self, forKey: .id)
   }
 }
 

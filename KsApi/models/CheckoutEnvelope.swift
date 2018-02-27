@@ -1,9 +1,7 @@
-import Argo
-import Curry
-import Runes
+import Foundation
 
-public struct CheckoutEnvelope {
-  public enum State: String {
+public struct CheckoutEnvelope: Swift.Decodable {
+  public enum State: String, Swift.Decodable {
     case authorizing
     case failed
     case successful
@@ -13,13 +11,15 @@ public struct CheckoutEnvelope {
   public let stateReason: String
 }
 
-extension CheckoutEnvelope: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<CheckoutEnvelope> {
-    return curry(CheckoutEnvelope.init)
-      <^> json <| "state"
-      <*> (json <| "state_reason" <|> .success(""))
+extension CheckoutEnvelope {
+  enum CodingKeys: String, CodingKey {
+    case state,
+    stateReason = "state_reason"
   }
-}
 
-extension CheckoutEnvelope.State: Argo.Decodable {
+public init(from decoder: Decoder) throws {
+    let values = try decoder.container(keyedBy: CodingKeys.self)
+    self.state = try values.decode(State.self, forKey: .state)
+    self.stateReason = try values.decode(String.self, forKey: .stateReason)
+  }
 }

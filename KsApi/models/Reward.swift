@@ -1,9 +1,6 @@
-import Argo
-import Curry
-import Runes
-import Prelude
+import Foundation
 
-public struct Reward {
+public struct Reward: Swift.Decodable {
   public let backersCount: Int?
   public let description: String
   public let endsAt: TimeInterval?
@@ -22,7 +19,7 @@ public struct Reward {
     return self.id == Reward.noReward.id
   }
 
-  public struct Shipping {
+  public struct Shipping: Swift.Decodable {
     public let enabled: Bool
     public let preference: Preference?
     public let summary: String?
@@ -47,33 +44,35 @@ public func < (lhs: Reward, rhs: Reward) -> Bool {
   return minimumAndIdComparator.isOrdered(lhs, rhs)
 }
 
-extension Reward: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Reward> {
-    let tmp1 = curry(Reward.init)
-      <^> json <|? "backers_count"
-      <*> (json <| "description" <|> json <| "reward")
-      <*> json <|? "ends_at"
-      <*> json <|? "estimated_delivery_on"
-    let tmp2 = tmp1
-      <*> json <| "id"
-      <*> json <|? "limit"
-      <*> json <| "minimum"
-      <*> json <|? "remaining"
-    return tmp2
-      <*> ((json <|| "rewards_items") <|> .success([]))
-      <*> Reward.Shipping.decode(json)
-      <*> json <|? "starts_at"
-      <*> json <|? "title"
+extension Reward {
+  enum CodingKeys: String, CodingKey {
+    case backersCount = "backers_count",
+    description,
+    endsAt = "ends_at",
+    estimatedDeliveryOn = "estimated_delivery_on",
+    id,
+    limit,
+    minimum,
+    remaining,
+    rewardsItems = "rewards_items",
+    shipping,
+    startsAt = "starts_at",
+    title
   }
+
 }
 
-extension Reward.Shipping: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Reward.Shipping> {
-    return curry(Reward.Shipping.init)
-      <^> (json <| "shipping_enabled" <|> .success(false))
-      <*> json <|? "shipping_preference"
-      <*> json <|? "shipping_summary"
+extension Reward.Shipping {
+  enum CodingKeys: String, CodingKey {
+    case enabled = "shipping_enabled",
+    preference = "shipping_preference",
+    summary = "shipping_summary"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let values = try decoder.container(keyedBy: CodingKeys.self)
+    self.enabled = try values.decode(Bool.self, forKey: .enabled)
+    self.preference = try? values.decode(Preference.self, forKey: .preference)
+    self.summary = try? values.decode(String.self, forKey: .summary)
   }
 }
-
-extension Reward.Shipping.Preference: Argo.Decodable {}

@@ -1,9 +1,6 @@
 import Foundation
-import Argo
-import Curry
-import Runes
 
-public struct Activity {
+public struct Activity: Swift.Decodable {
   public let category: Activity.Category
   public let comment: Comment?
   public let createdAt: TimeInterval
@@ -13,7 +10,7 @@ public struct Activity {
   public let update: Update?
   public let user: User?
 
-  public enum Category: String {
+  public enum Category: String, Swift.Decodable {
     case backing          = "backing"
     case backingAmount    = "backing-amount"
     case backingCanceled  = "backing-canceled"
@@ -33,7 +30,7 @@ public struct Activity {
     case unknown          = "unknown"
   }
 
-  public struct MemberData {
+  public struct MemberData: Swift.Decodable {
     public let amount: Int?
     public let backing: Backing?
     public let oldAmount: Int?
@@ -50,22 +47,32 @@ public func == (lhs: Activity, rhs: Activity) -> Bool {
   return lhs.id == rhs.id
 }
 
-extension Activity: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Activity> {
-    let tmp = curry(Activity.init)
-      <^> json <|  "category"
-      <*> json <|? "comment"
-      <*> json <|  "created_at"
-      <*> json <|  "id"
-    return tmp
-      <*> Activity.MemberData.decode(json)
-      <*> json <|? "project"
-      <*> json <|? "update"
-      <*> json <|? "user"
+extension Activity {
+  enum CodingKeys: String, CodingKey {
+    case category,
+    comment,
+    createdAt = "created_at",
+    id,
+    memberData,
+    project,
+    update,
+    user
+  }
+
+  public init(from decoder: Decoder) throws {
+    let values = try decoder.container(keyedBy: CodingKeys.self)
+    self.category = try values.decode(Activity.Category.self, forKey: .category)
+    self.comment = try? values.decode(Comment.self, forKey: .comment)
+    self.createdAt = try values.decode(TimeInterval.self, forKey: .createdAt)
+    self.id = try values.decode(Int.self, forKey: .id)
+    self.memberData = try values.decode(Activity.MemberData.self, forKey: .memberData)
+    self.project = try? values.decode(Project.self, forKey: .project)
+    self.update = try? values.decode(Update.self, forKey: .update)
+    self.user = try? values.decode(User.self, forKey: .isFriend)
   }
 }
 
-extension Activity.Category: Argo.Decodable {
+extension Activity.Category {
   public static func decode(_ json: JSON) -> Decoded<Activity.Category> {
     switch json {
     case let .string(category):
@@ -76,16 +83,25 @@ extension Activity.Category: Argo.Decodable {
   }
 }
 
-extension Activity.MemberData: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Activity.MemberData> {
-    let tmp = curry(Activity.MemberData.init)
-      <^> json <|? "amount"
-      <*> json <|? "backing"
-      <*> json <|? "old_amount"
-      <*> json <|? "old_reward_id"
-    return tmp
-      <*> json <|? "new_amount"
-      <*> json <|? "new_reward_id"
-      <*> json <|? "reward_id"
+extension Activity.MemberData {
+  enum CodingKeys: String, CodingKey {
+    case amount,
+    backing,
+    oldAmount = "old_amount",
+    oldRewardId = "old_reward_id",
+    newAmount = "new_amount",
+    newRewardId = "new_reward_id",
+    rewardId = "reward_id"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let values = try decoder.container(keyedBy: CodingKeys.self)
+    self.amount = try? values.decode(Int.self, forKey: .amount)
+    self.backing = try? values.decode(Backing.self, forKey: .backing)
+    self.oldAmount = try? values.decode(Int.self, forKey: .oldAmount)
+    self.oldRewardId = try? values.decode(Int.self, forKey: .oldRewardId)
+    self.newAmount = try? values.decode(Int.self, forKey: .newAmount)
+    self.newRewardId = try? values.decode(Int.self, forKey: .newRewardId)
+    self.rewardId = try? values.decode(Int.self, forKey: .rewardId)
   }
 }

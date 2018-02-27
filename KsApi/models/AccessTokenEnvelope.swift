@@ -1,16 +1,13 @@
-import Argo
-import Curry
-import Runes
+import Foundation
 
-public struct AccessTokenEnvelope {
+public struct AccessTokenEnvelope: Swift.Decodable {
   public let accessToken: String
   public let user: User
 }
 
-extension AccessTokenEnvelope: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<AccessTokenEnvelope> {
-    return curry(AccessTokenEnvelope.init)
-      <^> json <| "access_token"
-      <*> json <| "user"
+extension AccessTokenEnvelope {
+  enum CodingKeys: String, CodingKey {
+    case accessToken = "accessToken",
+    user
   }
 }
