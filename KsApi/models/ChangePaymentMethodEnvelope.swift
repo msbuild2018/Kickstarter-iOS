@@ -1,23 +1,30 @@
-import Argo
-import Curry
-import Runes
+import Foundation
 
-public struct ChangePaymentMethodEnvelope {
+public struct ChangePaymentMethodEnvelope: Swift.Decodable {
   public let newCheckoutUrl: String?
   public let status: Int
-}
 
-extension ChangePaymentMethodEnvelope: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<ChangePaymentMethodEnvelope> {
-    return curry(ChangePaymentMethodEnvelope.init)
-      <^> json <|? ["data", "new_checkout_url"]
-      <*> ((json <| "status" >>- stringToIntOrZero) <|> (json <| "status"))
+  struct PaymentMethodData: Swift.Decodable {
+    let newCheckoutUrl: String?
   }
 }
 
-private func stringToIntOrZero(_ string: String) -> Decoded<Int> {
-  return
-    Double(string).flatMap(Int.init).map(Decoded.success)
-      ?? Int(string).map(Decoded.success)
-      ?? .success(0)
+extension ChangePaymentMethodEnvelope.PaymentMethodData {
+  enum CodingKeys: String, CodingKey {
+    case newCheckoutUrl = "new_checkout_url"
+  }
+}
+
+extension ChangePaymentMethodEnvelope {
+  enum CodingKeys: String, CodingKey {
+    case status, data
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    self.newCheckoutUrl = try container.decode(ChangePaymentMethodEnvelope.PaymentMethodData.self,
+                                               forKey: .data).newCheckoutUrl
+    let statusString = try container.decode(String.self, forKey: .status)
+    self.status = Int(statusString) ?? 0
+  }
 }
