@@ -222,7 +222,7 @@ public struct Service: ServiceType {
   }
 
   public func fetchProjectNotifications() -> SignalProducer<[ProjectNotification], ErrorEnvelope> {
-    return requestDecodable(.projectNotifications)
+    return request(.projectNotifications)
   }
 
   public func fetchProjectActivities(forProject project: Project) ->
@@ -458,7 +458,7 @@ public struct Service: ServiceType {
   public func updateProjectNotification(_ notification: ProjectNotification)
     -> SignalProducer<ProjectNotification, ErrorEnvelope> {
 
-      return requestDecodable(.updateProjectNotification(notification: notification))
+      return request(.updateProjectNotification(notification: notification))
   }
 
   public func updateUserSelf(_ user: User) -> SignalProducer<User, ErrorEnvelope> {
@@ -539,15 +539,8 @@ public struct Service: ServiceType {
     return SignalProducer<A, ErrorEnvelope> { observer, disposable in
 
       let properties = route.requestProperties
-
-      guard let URL = URL(string: properties.path, relativeTo: self.serverConfig.apiBaseUrl as URL) else {
-        fatalError(
-          "URL(string: \(properties.path), relativeToURL: \(self.serverConfig.apiBaseUrl)) == nil"
-        )
-      }
-
-      let request = self.preparedRequest(forURL: URL, method: properties.method, query: properties.query)
-
+      let url = self.serverConfig.apiBaseUrl.appendingPathComponent(properties.path)
+      let request = self.preparedRequest(forURL: url)
       let task = URLSession.shared.dataTask(with: request) {  data, response, error in
 
         guard let response = response as? HTTPURLResponse else { fatalError() }
@@ -568,7 +561,7 @@ public struct Service: ServiceType {
         }
 
         guard let data = data else {
-          observer.send(error: .couldNotParseErrorEnvelopeJSON)
+          observer.send(error: ErrorEnvelope.couldNotParseErrorEnvelopeJSON)
           return
         }
 

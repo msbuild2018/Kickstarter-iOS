@@ -34,5 +34,13 @@ let project = fakeTaps.switchMap {
 }.logEvents(identifier: "Project!")
 
 sink.send(value: ())
+
+
+
 PlaygroundPage.current.needsIndefiniteExecution = true
+
+
+
+
+
 
