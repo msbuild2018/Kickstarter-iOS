@@ -1,14 +1,16 @@
-import Argo
-import Curry
-import Runes
+import Foundation
 
-public struct ShippingRulesEnvelope {
+public struct ShippingRulesEnvelope: Swift.Decodable {
   public let shippingRules: [ShippingRule]
 }
 
-extension ShippingRulesEnvelope: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<ShippingRulesEnvelope> {
-    return curry(ShippingRulesEnvelope.init)
-      <^> json <|| "shipping_rules"
+extension ShippingRulesEnvelope {
+  enum CodingKeys: String, CodingKey {
+    case shippingRules = "shipping_rules"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    self.shippingRules = try container.decode([ShippingRule].self, forKey: .shippingRules)
   }
 }

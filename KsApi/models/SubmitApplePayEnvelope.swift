@@ -1,23 +1,35 @@
-import Argo
-import Curry
-import Runes
+import Foundation
 
-public struct SubmitApplePayEnvelope {
+public struct SubmitApplePayEnvelope: Swift.Decodable {
   public let thankYouUrl: String
   public let status: Int
-}
 
-extension SubmitApplePayEnvelope: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<SubmitApplePayEnvelope> {
-    return curry(SubmitApplePayEnvelope.init)
-      <^> json <| ["data", "thankyou_url"]
-      <*> ((json <| "status" >>- stringToIntOrZero) <|> (json <| "status"))
+  struct SubmitApplePayData: Swift.Decodable {
+    let thankYouUrl: String
   }
 }
 
-private func stringToIntOrZero(_ string: String) -> Decoded<Int> {
+extension SubmitApplePayEnvelope.SubmitApplePayData {
+  enum CodingKeys: String, CodingKey {
+    case thankYouUrl = "thankyou_url"
+  }
+}
+
+extension SubmitApplePayEnvelope {
+  enum CodingKeys: String, CodingKey {
+    case data,
+    status
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    self.thankYouUrl = try container.decode(SubmitApplePayData.self, forKey: .data).thankYouUrl
+    let statusString = try container.decode(String.self, forKey: .status)
+    self.status = stringToIntOrZero(statusString)
+  }
+}
+
+private func stringToIntOrZero(_ string: String) -> Int {
   return
-    Double(string).flatMap(Int.init).map(Decoded.success)
-      ?? Int(string).map(Decoded.success)
-      ?? .success(0)
+    Double(string).flatMap(Int.init) ?? Int(string) ?? 0
 }
