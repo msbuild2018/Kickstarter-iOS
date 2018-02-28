@@ -1,6 +1,4 @@
-import Argo
-import Curry
-import Runes
+import Foundation
 
 public enum Experiment {
 
@@ -14,7 +12,7 @@ public enum Experiment {
   }
 }
 
-public struct Config {
+public struct Config: Swift.Decodable, Swift.Encodable {
   public private(set) var abExperiments: [String: String]
   public private(set) var appId: Int
   public private(set) var applePayCountries: [String]
@@ -25,6 +23,11 @@ public struct Config {
   public private(set) var locale: String
   public private(set) var stripePublishableKey: String
 
+  public struct Stripe: Swift.Decodable {
+    let stripePublishableKey: String
+  }
+
+
   public var abExperimentsArray: [String] {
     let stringsArray = self.abExperiments.map { (key, value) in
       key + "[\(value)]"
@@ -33,24 +36,53 @@ public struct Config {
   }
 }
 
-extension Config: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Config> {
-    let tmp = curry(Config.init)
-      <^> decodeDictionary(json <| "ab_experiments")
-      <*> json <| "app_id"
-      <*> json <|| "apple_pay_countries"
-      <*> json <| "country_code"
-      <*> decodeDictionary(json <| "features")
-    return tmp
-      <*> json <| "itunes_link"
-      <*> json <|| "launched_countries"
-      <*> json <| "locale"
-      <*> json <| ["stripe", "publishable_key"]
+extension Config.Stripe {
+  enum CodingKeys: String, CodingKey {
+    case stripePublishableKey = "publishable_key"
   }
 }
 
-extension Config: Equatable {
+extension Config {
+  enum CodingKeys: String, CodingKey {
+    case abExperiments = "ab_experiments",
+    appId = "app_id",
+    applePayCountries = "apple_pay_countries",
+    countryCode = "country_code",
+    features = "features",
+    iTunesLink = "itunes_link",
+    launchedCountries = "launched_countries",
+    locale,
+    stripe
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    self.abExperiments = try container.decode([String: String].self, forKey: .abExperiments)
+    self.appId = try container.decode(Int.self, forKey: .appId)
+    self.applePayCountries = try container.decode([String].self, forKey: .applePayCountries)
+    self.countryCode = try container.decode(String.self, forKey: .countryCode)
+    self.features = try container.decode([String: Bool].self, forKey: .features)
+    self.iTunesLink = try container.decode(String.self, forKey: .iTunesLink)
+    self.launchedCountries = try container.decode([Project.Country].self, forKey: .launchedCountries)
+    self.locale = try container.decode(String.self, forKey: .locale)
+    self.stripePublishableKey = try container.decode(Config.Stripe.self, forKey: .stripe).stripePublishableKey
+  }
+
+  public func encode(to encoder: Encoder) throws {
+    var container = encoder.container(keyedBy: CodingKeys.self)
+    try container.encode(self.abExperiments, forKey: .abExperiments)
+    try container.encode(self.appId, forKey: .appId)
+    try container.encode(self.applePayCountries, forKey: .applePayCountries)
+    try container.encode(self.countryCode, forKey: .countryCode)
+    try container.encode(self.features, forKey: .features)
+    try container.encode(self.iTunesLink, forKey: .iTunesLink)
+    try container.encode(self.launchedCountries, forKey: .launchedCountries)
+    try container.encode(self.locale, forKey: .locale)
+    try container.encode(["publishable_key": self.stripePublishableKey], forKey: .stripe)
+  }
 }
+
+extension Config: Equatable {}
 public func == (lhs: Config, rhs: Config) -> Bool {
   return lhs.abExperiments == rhs.abExperiments &&
     lhs.appId == rhs.appId &&
@@ -61,31 +93,4 @@ public func == (lhs: Config, rhs: Config) -> Bool {
     lhs.launchedCountries == rhs.launchedCountries &&
     lhs.locale == rhs.locale &&
     lhs.stripePublishableKey == rhs.stripePublishableKey
-}
-
-extension Config: EncodableType {
-  public func encode() -> [String: Any] {
-    var result: [String: Any] = [:]
-    result["ab_experiments"] = self.abExperiments
-    result["app_id"] = self.appId
-    result["apple_pay_countries"] = self.applePayCountries
-    result["country_code"] = self.countryCode
-    result["features"] = self.features
-    result["itunes_link"] = self.iTunesLink
-    result["launched_countries"] = self.launchedCountries.map { $0.encode() }
-    result["locale"] = self.locale
-    result["stripe"] = ["publishable_key": self.stripePublishableKey]
-    return result
-  }
-}
-
-// Useful for getting around swift optimization bug: https://github.com/thoughtbot/Argo/issues/363
-// Turns out using `>>-` or `flatMap` on a `Decoded` fails to compile with optimizations on, so this
-// function does it manually.
-private func decodeDictionary<T: Argo.Decodable>(_ j: Decoded<JSON>)
-  -> Decoded<[String:T]> where T.DecodedType == T {
-  switch j {
-  case let .success(json): return [String: T].decode(json)
-  case let .failure(e): return .failure(e)
-  }
 }
