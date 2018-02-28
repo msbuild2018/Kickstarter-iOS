@@ -36,4 +36,3 @@ extension SurveyResponse {
     self.urls = try values.decode(UrlsEnvelope.self, forKey: .urls)
   }
 }
-
