@@ -700,7 +700,6 @@
 		D01588F71EEB2ED7006E7684 /* Param.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01587D41EEB2ED7006E7684 /* Param.swift */; };
 		D01588F91EEB2ED7006E7684 /* Project.Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01587D51EEB2ED7006E7684 /* Project.Country.swift */; };
 		D01588FF1EEB2ED7006E7684 /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01587D81EEB2ED7006E7684 /* Project.swift */; };
-		D01589011EEB2ED7006E7684 /* Project.Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01587D91EEB2ED7006E7684 /* Project.Video.swift */; };
 		D01589051EEB2ED7006E7684 /* ProjectActivityEnvelope.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01587DB1EEB2ED7006E7684 /* ProjectActivityEnvelope.swift */; };
 		D01589071EEB2ED7006E7684 /* ProjectNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01587DC1EEB2ED7006E7684 /* ProjectNotification.swift */; };
 		D01589091EEB2ED7006E7684 /* ProjectsEnvelope.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01587DD1EEB2ED7006E7684 /* ProjectsEnvelope.swift */; };
@@ -2269,7 +2268,6 @@
 		D01587D61EEB2ED7006E7684 /* Project.CountryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project.CountryTests.swift; sourceTree = "<group>"; };
 		D01587D71EEB2ED7006E7684 /* Project.PhotoTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project.PhotoTests.swift; sourceTree = "<group>"; };
 		D01587D81EEB2ED7006E7684 /* Project.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project.swift; sourceTree = "<group>"; };
-		D01587D91EEB2ED7006E7684 /* Project.Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project.Video.swift; sourceTree = "<group>"; };
 		D01587DA1EEB2ED7006E7684 /* Project.VideoTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project.VideoTests.swift; sourceTree = "<group>"; };
 		D01587DB1EEB2ED7006E7684 /* ProjectActivityEnvelope.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectActivityEnvelope.swift; sourceTree = "<group>"; };
 		D01587DC1EEB2ED7006E7684 /* ProjectNotification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectNotification.swift; sourceTree = "<group>"; };
@@ -3710,7 +3708,6 @@
 				D01587D61EEB2ED7006E7684 /* Project.CountryTests.swift */,
 				D01587D71EEB2ED7006E7684 /* Project.PhotoTests.swift */,
 				D01587D81EEB2ED7006E7684 /* Project.swift */,
-				D01587D91EEB2ED7006E7684 /* Project.Video.swift */,
 				D01587DA1EEB2ED7006E7684 /* Project.VideoTests.swift */,
 				D01587DB1EEB2ED7006E7684 /* ProjectActivityEnvelope.swift */,
 				D01587DC1EEB2ED7006E7684 /* ProjectNotification.swift */,
@@ -5649,7 +5646,6 @@
 				D0158A0F1EEB30A2006E7684 /* CommentsEnvelopeTemplates.swift in Sources */,
 				D0158A2C1EEB30A2006E7684 /* UpdatePledgeEnvelopeTemplates.swift in Sources */,
 				D015889D1EEB2ED7006E7684 /* LocationLenses.swift in Sources */,
-				D01589011EEB2ED7006E7684 /* Project.Video.swift in Sources */,
 				D0158A1A1EEB30A2006E7684 /* Project.PhotoTemplates.swift in Sources */,
 				D01588B51EEB2ED7006E7684 /* ProjectNotificationLenses.swift in Sources */,
 				D015882B1EEB2ED7006E7684 /* NSURLSession.swift in Sources */,

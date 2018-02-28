@@ -50,4 +50,3 @@ extension FindFriendsEnvelope {
     self.users = try container.decode([User].self, forKey: .users)
   }
 }
-
