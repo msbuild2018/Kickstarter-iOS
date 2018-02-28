@@ -1,23 +1,34 @@
-import Argo
-import Curry
-import Runes
+import Foundation
 
-public struct UpdatePledgeEnvelope {
+public struct UpdatePledgeEnvelope: Swift.Decodable {
   public let newCheckoutUrl: String?
   public let status: Int
-}
 
-extension UpdatePledgeEnvelope: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<UpdatePledgeEnvelope> {
-    return curry(UpdatePledgeEnvelope.init)
-      <^> json <|? ["data", "new_checkout_url"]
-      <*> ((json <| "status" >>- stringToIntOrZero) <|> (json <| "status"))
+  struct UpdatePledgeEnvelopeData: Swift.Decodable {
+    let newCheckoutUrl: String
   }
 }
 
-private func stringToIntOrZero(_ string: String) -> Decoded<Int> {
+extension UpdatePledgeEnvelope.UpdatePledgeEnvelopeData {
+  enum CodingKeys: String, CodingKey {
+    case newCheckoutUrl = "new_checkout_url"
+  }
+}
+
+extension UpdatePledgeEnvelope {
+  enum CodingKeys: String, CodingKey {
+    case data,
+    status
+  }
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    self.newCheckoutUrl = try? container.decode(UpdatePledgeEnvelopeData.self, forKey: .data).newCheckoutUrl
+    let statusString = try container.decode(String.self, forKey: .status)
+    self.status = stringToIntOrZero(statusString)
+  }
+}
+
+private func stringToIntOrZero(_ string: String) -> Int {
   return
-    Double(string).flatMap(Int.init).map(Decoded.success)
-      ?? Int(string).map(Decoded.success)
-      ?? .success(0)
+    Double(string).flatMap(Int.init) ?? Int(string) ?? 0
 }
