@@ -27,7 +27,6 @@ public struct Config: Swift.Decodable, Swift.Encodable {
     let stripePublishableKey: String
   }
 
-
   public var abExperimentsArray: [String] {
     let stringsArray = self.abExperiments.map { (key, value) in
       key + "[\(value)]"
