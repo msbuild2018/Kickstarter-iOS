@@ -23,6 +23,30 @@ public struct DiscoveryEnvelope: Swift.Decodable {
 }
 
 // needed?
+extension DiscoveryEnvelope {
+  enum CodingKeys: String, CodingKey {
+    case projects, urls, stats
+  }
+
+  public init(from decoder: Decoder) throws {
+    let values = try decoder.container(keyedBy: CodingKeys.self)
+    self.projects = try values.decode(Project.self, forKey: .moreProjects)
+    self.urls = try values.decode(UrlsEnvelope.self, forKey: .urls)
+    self.stats = try values.decode(StatsEnvelope.self, forKey: .stats)
+  }
+}
+
+extension DiscoveryEnvelope.UrlsEnvelope {
+  enum CodingKeys: String, CodingKey {
+    case api = "api"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let values = try decoder.container(keyedBy: CodingKeys.self)
+    self.api = try values.decode(ApiEnvelope.self, forKey: .api)
+  }
+}
+
 extension DiscoveryEnvelope.UrlsEnvelope.ApiEnvelope {
   enum CodingKeys: String, CodingKey {
     case moreProjects = "more_projects"
