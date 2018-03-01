@@ -1,9 +1,7 @@
-import Argo
-import Curry
-import Runes
+import Foundation
 import Prelude
 
-public struct Project {
+public struct Project: Swift.Decodable {
 
   public private(set) var blurb: String
   public private(set) var category: Category
@@ -23,21 +21,21 @@ public struct Project {
   public private(set) var urls: UrlsEnvelope
   public private(set) var video: Video?
 
-  public struct UrlsEnvelope {
+  public struct UrlsEnvelope: Swift.Decodable {
     public let web: WebEnvelope
 
-    public struct WebEnvelope {
+    public struct WebEnvelope: Swift.Decodable {
       public let project: String
       public let updates: String?
     }
   }
 
-  public struct Video {
+  public struct Video: Swift.Decodable {
     public let id: Int
     public let high: String
   }
 
-  public enum State: String, Argo.Decodable {
+  public enum State: String, Swift.Decodable {
     case canceled
     case failed
     case live
@@ -48,7 +46,7 @@ public struct Project {
     case suspended
   }
 
-  public struct Stats {
+  public struct Stats: Swift.Decodable {
     public let backersCount: Int
     public let commentsCount: Int?
     public let currentCurrency: String?
@@ -90,13 +88,13 @@ public struct Project {
     }
   }
 
-  public struct MemberData {
+  public struct MemberData: Swift.Decodable {
     public let lastUpdatePublishedAt: TimeInterval?
     public let permissions: [Permission]
     public let unreadMessagesCount: Int?
     public let unseenActivityCount: Int?
 
-    public enum Permission: String {
+    public enum Permission: String, Swift.Decodable {
       case editProject = "edit_project"
       case editFaq = "edit_faq"
       case post = "post"
@@ -107,21 +105,21 @@ public struct Project {
     }
   }
 
-  public struct Dates {
+  public struct Dates: Swift.Decodable {
     public let deadline: TimeInterval
     public let featuredAt: TimeInterval?
     public let launchedAt: TimeInterval
     public let stateChangedAt: TimeInterval
   }
 
-  public struct Personalization {
+  public struct Personalization: Swift.Decodable {
     public let backing: Backing?
     public let friends: [User]?
     public let isBacking: Bool?
     public let isStarred: Bool?
   }
 
-  public struct Photo {
+  public struct Photo: Swift.Decodable {
     public let full: String
     public let med: String
     public let size1024x768: String?
@@ -155,114 +153,177 @@ extension Project: CustomDebugStringConvertible {
   }
 }
 
-extension Project: Argo.Decodable {
-  static public func decode(_ json: JSON) -> Decoded<Project> {
-    let tmp1 = curry(Project.init)
-      <^> json <| "blurb"
-      <*> ((json <| "category" >>- decodeToGraphCategory) as Decoded<Category>)
-      <*> Project.Country.decode(json)
-      <*> json <| "creator"
-    let tmp2 = tmp1
-      <*> Project.MemberData.decode(json)
-      <*> Project.Dates.decode(json)
-      <*> json <| "id"
-      <*> (json <| "location" <|> .success(Location.none))
-    let tmp3 = tmp2
-      <*> json <| "name"
-      <*> Project.Personalization.decode(json)
-      <*> json <| "photo"
-      <*> (json <|| "rewards" <|> .success([]))
-      <*> json <| "slug"
-    return tmp3
-      <*> json <| "state"
-      <*> Project.Stats.decode(json)
-      <*> json <| "urls"
-      <*> json <|? "video"
+extension Project {
+  enum CodingKeys: String, CodingKey {
+    case blurb,
+    category,
+    country,
+    creator,
+    dates,
+    id,
+    location,
+    memberData,
+    name,
+    personalization,
+    photo,
+    rewards,
+    slug,
+    state,
+    stats,
+    urls,
+    video
   }
-}
 
-extension Project.UrlsEnvelope: Argo.Decodable {
-  static public func decode(_ json: JSON) -> Decoded<Project.UrlsEnvelope> {
-    return curry(Project.UrlsEnvelope.init)
-      <^> json <| "web"
-  }
-}
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    self.blurb = try container.decode(String.self, forKey: .blurb)
+    self.category = try container.decode(Category.self, forKey: .category)
+    self.country = try container.decode(Project.Country.self, forKey: .country)
+    self.creator = try container.decode(User.self, forKey: .creator)
+    self.dates = try container.decode(Project.Dates.self, forKey: .dates)
+    self.id = try container.decode(Int.self, forKey: .id)
 
-extension Project.UrlsEnvelope.WebEnvelope: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Project.UrlsEnvelope.WebEnvelope> {
-    return curry(Project.UrlsEnvelope.WebEnvelope.init)
-      <^> json <| "project"
-      <*> json <|? "updates"
-  }
-}
-
-extension Project.Stats: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Project.Stats> {
-    let tmp1 = curry(Project.Stats.init)
-      <^> json <| "backers_count"
-      <*> json <|? "comments_count"
-      <*> json <|? "current_currency"
-      <*> json <|? "fx_rate"
-    return tmp1
-      <*> json <| "goal"
-      <*> json <| "pledged"
-      <*> (json <| "static_usd_rate" <|> .success(1.0))
-      <*> json <|? "updates_count"
-  }
-}
-
-extension Project.MemberData: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Project.MemberData> {
-    return curry(Project.MemberData.init)
-      <^> json <|? "last_update_published_at"
-      <*> (removeUnknowns <^> (json <|| "permissions") <|> .success([]))
-      <*> json <|? "unread_messages_count"
-      <*> json <|? "unseen_activity_count"
-  }
-}
-
-extension Project.Dates: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Project.Dates> {
-    return curry(Project.Dates.init)
-      <^> json <| "deadline"
-      <*> json <|? "featured_at"
-      <*> json <| "launched_at"
-      <*> json <| "state_changed_at"
-  }
-}
-
-extension Project.Personalization: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Project.Personalization> {
-    return curry(Project.Personalization.init)
-      <^> json <|? "backing"
-      <*> json <||? "friends"
-      <*> json <|? "is_backing"
-      <*> json <|? "is_starred"
-  }
-}
-
-extension Project.Photo: Argo.Decodable {
-  static public func decode(_ json: JSON) -> Decoded<Project.Photo> {
-
-    let url1024: Decoded<String?> = ((json <| "1024x768") <|> (json <| "1024x576"))
-      // swiftlint:disable:next syntactic_sugar
-      .map(Optional<String>.init)
-      <|> .success(nil)
-
-    return curry(Project.Photo.init)
-      <^> json <| "full"
-      <*> json <| "med"
-      <*> url1024
-      <*> json <| "small"
-  }
-}
-
-extension Project.MemberData.Permission: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Project.MemberData.Permission> {
-    if case .string(let permission) = json {
-      return self.init(rawValue: permission).map(pure) ?? .success(.unknown)
+    do {
+      self.location = try container.decode(Location.self, forKey: .location)
+    } catch {
+      self.location = .none
     }
-    return .success(.unknown)
+    self.memberData = try container.decode(Project.MemberData.self, forKey: .memberData)
+    self.name = try container.decode(String.self, forKey: .name)
+    self.personalization = try container.decode(Project.Personalization.self, forKey: .personalization)
+    self.photo = try container.decode(Project.Photo.self, forKey: .photo)
+    do {
+      self.rewards = try container.decode([Reward].self, forKey: .rewards)
+    } catch {
+      self.rewards = []
+    }
+    self.slug = try container.decode(String.self, forKey: .slug)
+    self.state = try container.decode(Project.State.self, forKey: .state)
+    self.stats = try container.decode(Project.Stats.self, forKey: .stats)
+    self.urls = try container.decode(Project.UrlsEnvelope.self, forKey: .urls)
+    self.video = try? container.decode(Project.Video.self, forKey: .video)
+  }
+}
+
+extension Project.MemberData {
+  enum CodingKeys: String, CodingKey {
+    case lastUpdatePublishedAt = "last_update_published_at",
+    permissions,
+    unreadMessagesCount = "unread_messages_count",
+    unseenActivityCount = "unseen_activity_count"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    self.lastUpdatePublishedAt = try? container.decode(TimeInterval.self, forKey: .lastUpdatePublishedAt)
+    let rawPermissions = try container.decode([Project.MemberData.Permission].self, forKey: .permissions)
+    self.permissions = removeUnknowns(rawPermissions)
+    self.unreadMessagesCount = try? container.decode(Int.self, forKey: .unreadMessagesCount)
+    self.unseenActivityCount = try? container.decode(Int.self, forKey: .unseenActivityCount)
+  }
+}
+
+extension Project.MemberData.Permission {
+  enum CodingKeys: String, CodingKey {
+    case permission
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    do {
+      self = try container.decode(Project.MemberData.Permission.self, forKey: .permission)
+    } catch {
+      self = .unknown
+    }
+  }
+}
+
+extension Project.Stats {
+  enum CodingKeys: String, CodingKey {
+    case backersCount = "backers_count",
+    commentsCount = "comments_count",
+    currentCurrency = "current_currency",
+    currentCurrencyRate = "fx_rate",
+    goal,
+    pledged,
+    staticUsdRate = "static_usd_rate",
+    updatesCount = "updates_count"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    self.backersCount = try container.decode(Int.self, forKey: .backersCount)
+    self.commentsCount = try? container.decode(Int.self, forKey: .commentsCount)
+    self.currentCurrency = try? container.decode(String.self, forKey: .currentCurrency)
+    self.currentCurrencyRate = try? container.decode(Float.self, forKey: .currentCurrencyRate)
+    self.goal = try container.decode(Int.self, forKey: .goal)
+    self.pledged = try container.decode(Int.self, forKey: .pledged)
+
+    do {
+      self.staticUsdRate = try container.decode(Float.self, forKey: .staticUsdRate)
+    } catch {
+      self.staticUsdRate = 1.0
+    }
+
+    self.updatesCount = try? container.decode(Int.self, forKey: .updatesCount)
+  }
+}
+
+extension Project.Dates {
+  enum CodingKeys: String, CodingKey {
+    case deadline,
+    featuredAt = "featured_at",
+    launchedAt = "launched_at",
+    stateChangedAt = "state_changed_at"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    self.deadline = try container.decode(TimeInterval.self, forKey: .deadline)
+    self.featuredAt = try? container.decode(TimeInterval.self, forKey: .featuredAt)
+    self.launchedAt = try container.decode(TimeInterval.self, forKey: .launchedAt)
+    self.stateChangedAt = try container.decode(TimeInterval.self, forKey: .stateChangedAt)
+  }
+}
+
+extension Project.Personalization {
+  enum CodingKeys: String, CodingKey {
+    case backing,
+    friends,
+    isBacking = "is_backing",
+    isStarred = "is_starred"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    self.backing = try? container.decode(Backing.self, forKey: .backing)
+    self.friends = try? container.decode([User].self, forKey: .friends)
+    self.isBacking = try? container.decode(Bool.self, forKey: .isBacking)
+    self.isStarred = try? container.decode(Bool.self, forKey: .isStarred)
+  }
+}
+
+extension Project.Photo {
+  enum CodingKeys: String, CodingKey {
+    case full,
+    med,
+    size1024x768 = "1024x768",
+    size1024x576 = "1024x576",
+    small
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    self.full = try container.decode(String.self, forKey: .full)
+    self.med = try container.decode(String.self, forKey: .med)
+
+    if let value =  try? container.decode(String.self, forKey: .size1024x768) {
+      self.size1024x768 = value
+    } else {
+      self.size1024x768 = try? container.decode(String.self, forKey: .size1024x576)
+    }
+
+    self.small = try container.decode(String.self, forKey: .small)
   }
 }
 
@@ -270,9 +331,8 @@ private func removeUnknowns(_ xs: [Project.MemberData.Permission]) -> [Project.M
   return xs.filter { $0 != .unknown }
 }
 
-private func toInt(string: String) -> Decoded<Int> {
-  return Int(string).map(Decoded.success)
-    ?? Decoded.failure(DecodeError.custom("Couldn't decoded \"\(string)\" into Int."))
+private func toInt(string: String) -> Int {
+  return Int(string) ?? -1
 }
 
 /*
@@ -281,36 +341,37 @@ private func toInt(string: String) -> Decoded<Int> {
  between Swift.Decodable and Argo.Decodable protocols and will be deleted in the future when we update our
  code to use exclusively Swift's native Decodable.
  */
-private func decodeToGraphCategory(_ json: JSON?) -> Decoded<Category> {
+//private func decodeToGraphCategory(_ json: JSON?) -> Decoded<Category> {
+//
+//  guard let jsonObj = json else {
+//    return .success(Category(id: "-1", name: "Unknown Category"))
+//  }
+//
+//  switch jsonObj {
+//  case .object(let dic):
+//    let category = Category(id: categoryInfo(dic).0,
+//                            name: categoryInfo(dic).1,
+//                            parentId: categoryInfo(dic).2)
+//    return .success(category)
+//  default:
+//    return .failure(DecodeError.custom("JSON should be object type"))
+//  }
+//}
+//
+//private func categoryInfo(_ json: [String: JSON]) -> (String, String, String?) {
+//
+//  guard let name = json["name"], let id = json["id"] else {
+//    return("", "", nil)
+//  }
+//  let parentId = json["parent_id"]
+//
+//  switch (id, name, parentId) {
+//  case (.number(let id), .string(let name), .number(let parentId)?):
+//    return ("\(id)", name, "\(parentId)")
+//  case (.number(let id), .string(let name), nil):
+//    return ("\(id)", name, nil)
+//  default:
+//    return("", "", nil)
+//  }
+//}
 
-  guard let jsonObj = json else {
-    return .success(Category(id: "-1", name: "Unknown Category"))
-  }
-
-  switch jsonObj {
-  case .object(let dic):
-    let category = Category(id: categoryInfo(dic).0,
-                            name: categoryInfo(dic).1,
-                            parentId: categoryInfo(dic).2)
-    return .success(category)
-  default:
-    return .failure(DecodeError.custom("JSON should be object type"))
-  }
-}
-
-private func categoryInfo(_ json: [String: JSON]) -> (String, String, String?) {
-
-  guard let name = json["name"], let id = json["id"] else {
-    return("", "", nil)
-  }
-  let parentId = json["parent_id"]
-
-  switch (id, name, parentId) {
-  case (.number(let id), .string(let name), .number(let parentId)?):
-    return ("\(id)", name, "\(parentId)")
-  case (.number(let id), .string(let name), nil):
-    return ("\(id)", name, nil)
-  default:
-    return("", "", nil)
-  }
-}

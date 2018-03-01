@@ -88,9 +88,17 @@ extension Category {
 
   public init(from decoder: Decoder) throws {
     let values = try decoder.container(keyedBy: CodingKeys.self)
-    self.id = try values.decode(String.self, forKey: .id)
+    if let catID = try? values.decode(String.self, forKey: .id) {
+      self.id = catID
+    } else {
+      self.id = try String(values.decode(Int.self, forKey: .id))
+    }
     self.name = try values.decode(String.self, forKey: .name)
-    self.parentId = try? values.decode(String.self, forKey: .parentId)
+    if let parID = try? values.decode(String.self, forKey: .parentId) {
+      self.parentId = parID
+    } else {
+      self.parentId = try String(values.decode(Int.self, forKey: .parentId))
+    }
     self._parent = try? values.decode(ParentCategory.self, forKey: ._parent)
     self.subcategories = try? values.decode(SubcategoryConnection.self, forKey: .subcategories)
     self.totalProjectCount = try? values.decode(Int.self, forKey: .totalProjectCount)
