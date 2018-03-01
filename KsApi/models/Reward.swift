@@ -24,7 +24,7 @@ public struct Reward: Swift.Decodable {
     public let preference: Preference?
     public let summary: String?
 
-    public enum Preference: String {
+    public enum Preference: String, Swift.Decodable {
       case none
       case restricted
       case unrestricted
