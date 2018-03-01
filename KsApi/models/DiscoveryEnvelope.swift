@@ -38,7 +38,7 @@ extension DiscoveryEnvelope {
 
 extension DiscoveryEnvelope.UrlsEnvelope {
   enum CodingKeys: String, CodingKey {
-    case api = "api"
+    case api
   }
 
   public init(from decoder: Decoder) throws {
