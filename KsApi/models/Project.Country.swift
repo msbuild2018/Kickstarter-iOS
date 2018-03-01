@@ -1,9 +1,7 @@
-import Argo
-import Curry
-import Runes
+import Foundation
 
 extension Project {
-  public struct Country {
+  public struct Country: Swift.Decodable, Swift.Encodable {
     public let countryCode: String
     public let currencyCode: String
     public let currencySymbol: String
@@ -54,27 +52,51 @@ extension Project.Country {
   }
 }
 
-extension Project.Country: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<Project.Country> {
-    let tmp = curry(Project.Country.init)
-      <^> (json <| "country" <|> json <| "name")
-      <*> (json <| "currency" <|> json <| "currency_code")
-      <*> json <| "currency_symbol"
-    return tmp
-      <*> json <|? "max_pledge"
-      <*> json <|? "min_pledge"
-      <*> (json <| "currency_trailing_code" <|> json <| "trailing_code")
+extension Project.Country {
+  enum CodingKeys: String, CodingKey {
+    case countryCode = "country",
+    currency = "currency",
+    currencyCode = "currency_code",
+    currencySymbol = "currency_symbol",
+    currencyTrailingCode = "currency_trailing_code",
+    maxPledge = "max_pledge",
+    minPledge = "min_pledge",
+    name,
+    trailingCode = "trailing_code"
   }
-}
 
-extension Project.Country: EncodableType {
-  public func encode() -> [String: Any] {
-    var result: [String: Any] = [:]
-    result["country"] = self.countryCode
-    result["currency"] = self.currencyCode
-    result["currency_symbol"] = self.currencySymbol
-    result["currency_trailing_code"] = self.trailingCode
-    return result
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    do {
+      self.countryCode = try container.decode(String.self, forKey: .countryCode)
+    } catch {
+      self.countryCode = try container.decode(String.self, forKey: .name)
+    }
+
+    do {
+      self.currencyCode = try container.decode(String.self, forKey: .currency)
+    } catch {
+      self.currencyCode = try container.decode(String.self, forKey: .currencyCode)
+    }
+
+    self.currencySymbol = try container.decode(String.self, forKey: .currencySymbol)
+    self.maxPledge = try? container.decode(Int.self, forKey: .maxPledge)
+    self.minPledge = try? container.decode(Int.self, forKey: .minPledge)
+
+    do {
+      self.trailingCode = try container.decode(Bool.self, forKey: .currencyTrailingCode)
+    } catch {
+      self.trailingCode = try container.decode(Bool.self, forKey: .trailingCode)
+    }
+  }
+
+  public func encode(to encoder: Encoder) throws {
+    var container = encoder.container(keyedBy: CodingKeys.self)
+    try container.encode(self.countryCode, forKey: .countryCode)
+    try container.encode(self.currencyCode, forKey: .currency)
+    try container.encode(self.currencySymbol, forKey: .currencySymbol)
+    try container.encode(self.trailingCode, forKey: .currencyTrailingCode)
   }
 }
 

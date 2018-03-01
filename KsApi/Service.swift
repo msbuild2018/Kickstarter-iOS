@@ -71,7 +71,7 @@ public struct Service: ServiceType {
   public func changePaymentMethod(project: Project)
     -> SignalProducer<ChangePaymentMethodEnvelope, ErrorEnvelope> {
 
-      return request(.changePaymentMethod(project: project))
+      return requestDecodable(.changePaymentMethod(project: project))
   }
 
   public func createPledge(project: Project,
@@ -79,7 +79,7 @@ public struct Service: ServiceType {
                            reward: Reward?,
                            shippingLocation: Location?,
                            tappedReward: Bool) -> SignalProducer<CreatePledgeEnvelope, ErrorEnvelope> {
-    return request(
+    return requestDecodable(
       .createPledge(
         project: project,
         amount: amount,
@@ -139,15 +139,15 @@ public struct Service: ServiceType {
   }
 
   public func fetchComments(project: Project) -> SignalProducer<CommentsEnvelope, ErrorEnvelope> {
-    return request(.projectComments(project))
+    return requestDecodable(.projectComments(project))
   }
 
   public func fetchComments(update: Update) -> SignalProducer<CommentsEnvelope, ErrorEnvelope> {
-    return request(.updateComments(update))
+    return requestDecodable(.updateComments(update))
   }
 
   public func fetchConfig() -> SignalProducer<Config, ErrorEnvelope> {
-    return request(.config)
+    return requestDecodable(.config)
   }
 
   public func fetchDiscovery(paginationUrl: String)
@@ -163,7 +163,7 @@ public struct Service: ServiceType {
   }
 
   public func fetchFriends() -> SignalProducer<FindFriendsEnvelope, ErrorEnvelope> {
-    return request(.friends)
+    return requestDecodable(.friends)
   }
 
   public func fetchFriends(paginationUrl: String)
@@ -222,7 +222,7 @@ public struct Service: ServiceType {
   }
 
   public func fetchProjectNotifications() -> SignalProducer<[ProjectNotification], ErrorEnvelope> {
-    return request(.projectNotifications)
+    return requestDecodable(.projectNotifications)
   }
 
   public func fetchProjectActivities(forProject project: Project) ->
@@ -250,7 +250,7 @@ public struct Service: ServiceType {
 
   public func fetchRewardShippingRules(projectId: Int, rewardId: Int)
     -> SignalProducer<ShippingRulesEnvelope, ErrorEnvelope> {
-      return request(.shippingRules(projectId: projectId, rewardId: rewardId))
+      return requestDecodable(.shippingRules(projectId: projectId, rewardId: rewardId))
   }
 
   public func fetchSurveyResponse(surveyResponseId id: Int) -> SignalProducer<SurveyResponse, ErrorEnvelope> {
@@ -413,7 +413,7 @@ public struct Service: ServiceType {
     paymentNetwork: String,
     transactionIdentifier: String) -> SignalProducer<SubmitApplePayEnvelope, ErrorEnvelope> {
 
-    return request(
+    return requestDecodable(
       .submitApplePay(
         checkoutUrl: checkoutUrl,
         stripeToken: stripeToken,
@@ -444,7 +444,7 @@ public struct Service: ServiceType {
                            shippingLocation: Location?,
                            tappedReward: Bool) -> SignalProducer<UpdatePledgeEnvelope, ErrorEnvelope> {
 
-    return request(
+    return requestDecodable(
       .updatePledge(
         project: project,
         amount: amount,
@@ -458,7 +458,7 @@ public struct Service: ServiceType {
   public func updateProjectNotification(_ notification: ProjectNotification)
     -> SignalProducer<ProjectNotification, ErrorEnvelope> {
 
-      return request(.updateProjectNotification(notification: notification))
+      return requestDecodable(.updateProjectNotification(notification: notification))
   }
 
   public func updateUserSelf(_ user: User) -> SignalProducer<User, ErrorEnvelope> {
