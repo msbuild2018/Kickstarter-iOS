@@ -14,14 +14,18 @@ public struct FindFriendsEnvelope: Swift.Decodable {
   }
 }
 
-extension FindFriendsEnvelope.UrlsEnvelope {
+extension FindFriendsEnvelope {
   enum CodingKeys: String, CodingKey {
-    case api
+    case contactsImported = "contacts_imported",
+    urls,
+    users
   }
 
   public init(from decoder: Decoder) throws {
-    let container = try decoder.container(keyedBy: CodingKeys.self)
-    self.api = try container.decode(ApiEnvelope.self, forKey: .api)
+    let values = try decoder.container(keyedBy: CodingKeys.self)
+    self.contactsImported = try values.decode(Bool.self, forKey: .contactsImported)
+    self.urls = try values.decode(UrlsEnvelope.self, forKey: .urls)
+    self.users = try [values.decode(User.self, forKey: .users)] // this?
   }
 }
 
@@ -31,22 +35,7 @@ extension FindFriendsEnvelope.UrlsEnvelope.ApiEnvelope {
   }
 
   public init(from decoder: Decoder) throws {
-    let container = try decoder.container(keyedBy: CodingKeys.self)
-    self.moreUsers = try? container.decode(String.self, forKey: .moreUsers)
-  }
-}
-
-extension FindFriendsEnvelope {
-  enum CodingKeys: String, CodingKey {
-    case contactsImported = "contacts_imported",
-    urls,
-    users
-  }
-
-  public init(from decoder: Decoder) throws {
-    let container = try decoder.container(keyedBy: CodingKeys.self)
-    self.contactsImported = try container.decode(Bool.self, forKey: .contactsImported)
-    self.urls = try container.decode(FindFriendsEnvelope.UrlsEnvelope.self, forKey: .urls)
-    self.users = try container.decode([User].self, forKey: .users)
+    let values = try decoder.container(keyedBy: CodingKeys.self)
+    self.moreUsers = try? values.decode(String.self, forKey: .moreUsers)
   }
 }

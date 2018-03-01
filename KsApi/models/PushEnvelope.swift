@@ -1,8 +1,6 @@
-import Argo
-import Curry
-import Runes
+import Foundation
 
-public struct PushEnvelope {
+public struct PushEnvelope: Swift.Decodable {
   public let activity: Activity?
   public let aps: ApsEnvelope
   public let forCreator: Bool?
@@ -12,7 +10,7 @@ public struct PushEnvelope {
   public let survey: Survey?
   public let update: Update?
 
-  public struct Activity {
+  public struct Activity: Swift.Decodable {
     public let category: KsApi.Activity.Category
     public let commentId: Int?
     public let id: Int
@@ -22,110 +20,89 @@ public struct PushEnvelope {
     public let userPhoto: String?
   }
 
-  public struct ApsEnvelope {
+  public struct ApsEnvelope: Swift.Decodable {
     public let alert: String
   }
 
-  public struct LiveStream {
+  public struct LiveStream: Swift.Decodable {
     public let id: Int
   }
 
-  public struct Message {
+  public struct Message: Swift.Decodable {
     public let messageThreadId: Int
     public let projectId: Int
   }
 
-  public struct Project {
+  public struct Project: Swift.Decodable {
     public let id: Int
     public let photo: String?
   }
 
-  public struct Survey {
+  public struct Survey: Swift.Decodable {
     public let id: Int
     public let projectId: Int
   }
 
-  public struct Update {
+  public struct Update: Swift.Decodable {
     public let id: Int
     public let projectId: Int
   }
 }
 
-extension PushEnvelope: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<PushEnvelope> {
+extension PushEnvelope {
+  enum CodingKeys: String, CodingKey {
+    case activity,
+    aps,
+    forCreator = "for_creator",
+    liveStream = "live_stream",
+    message,
+    project,
+    survey,
+    update // check this  <*> optionalUpdate
+  }
 
-    let update: Decoded<Update> = json <| "update" <|> json <| "post"
-    let optionalUpdate: Decoded<Update?> = update.map(Optional.some) <|> .success(nil)
-
-    let tmp = curry(PushEnvelope.init)
-      <^> json <|? "activity"
-      <*> json <| "aps"
-      <*> json <|? "for_creator"
-      <*> json <|? "live_stream"
-    return tmp
-      <*> json <|? "message"
-      <*> json <|? "project"
-      <*> json <|? "survey"
-      <*> optionalUpdate
+  public init(from decoder: Decoder) throws {
+    let values = try decoder.container(keyedBy: CodingKeys.self)
+    self.activity = try? values.decode(Activity.self, forKey: .activity)
+    self.aps = try values.decode(ApsEnvelope.self, forKey: .aps)
+    self.forCreator = try? values.decode(Bool.self, forKey: .forCreator)
+    self.liveStream = try? values.decode(LiveStream.self, forKey: .liveStream)
+    self.message = try? values.decode(Message.self, forKey: .message)
+    self.project = try? values.decode(Project.self, forKey: .project)
+    self.survey = try? values.decode(Survey.self, forKey: .survey)
+    self.update = try? values.decode(Update.self, forKey: .update)
   }
 }
 
-extension PushEnvelope.Activity: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<PushEnvelope.Activity> {
-    let tmp = curry(PushEnvelope.Activity.init)
-      <^> json <| "category"
-      <*> json <|? "comment_id"
-      <*> json <| "id"
-      <*> json <|? "project_id"
-    return tmp
-      <*> json <|? "project_photo"
-      <*> json <|? "update_id"
-      <*> json <|? "user_photo"
+extension PushEnvelope.Activity {
+  enum CodingKeys: String, CodingKey {
+    case category,
+    commentId = "comment_id",
+    id,
+    projectId = "project_id",
+    projectPhoto = "project_photo",
+    updateId = "update_id",
+    userPhoto = "user_photo"
   }
 }
 
-extension PushEnvelope.ApsEnvelope: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<PushEnvelope.ApsEnvelope> {
-    return curry(PushEnvelope.ApsEnvelope.init)
-      <^> json <| "alert"
+extension PushEnvelope.Message {
+  enum CodingKeys: String, CodingKey {
+    case messageThreadId = "message_thread_id",
+    projectId = "project_id"
   }
 }
 
-extension PushEnvelope.LiveStream: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<PushEnvelope.LiveStream> {
-    return curry(PushEnvelope.LiveStream.init)
-      <^> json <| "id"
+extension PushEnvelope.Survey {
+  enum CodingKeys: String, CodingKey {
+    case id,
+    projectId = "project_id"
   }
 }
 
-extension PushEnvelope.Message: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<PushEnvelope.Message> {
-    return curry(PushEnvelope.Message.init)
-      <^> json <| "message_thread_id"
-      <*> json <| "project_id"
-  }
-}
-
-extension PushEnvelope.Project: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<PushEnvelope.Project> {
-    return curry(PushEnvelope.Project.init)
-      <^> json <| "id"
-      <*> json <|? "photo"
-  }
-}
-
-extension PushEnvelope.Survey: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<PushEnvelope.Survey> {
-    return curry(PushEnvelope.Survey.init)
-      <^> json <| "id"
-      <*> json <| "project_id"
-  }
-}
-
-extension PushEnvelope.Update: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<PushEnvelope.Update> {
-    return curry(PushEnvelope.Update.init)
-      <^> json <| "id"
-      <*> json <| "project_id"
+extension PushEnvelope.Update {
+  enum CodingKeys: String, CodingKey {
+    case id,
+    projectId = "project_id"
   }
 }

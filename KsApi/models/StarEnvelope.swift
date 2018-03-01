@@ -1,16 +1,18 @@
-import Argo
-import Curry
-import Runes
+import Foundation
 
-public struct StarEnvelope {
+public struct StarEnvelope: Swift.Decodable {
   public let user: User
   public let project: Project
 }
 
-extension StarEnvelope: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<StarEnvelope> {
-    return curry(StarEnvelope.init)
-      <^> json <| "user"
-      <*> json <| "project"
+extension StarEnvelope {
+  enum CodingKeys: String, CodingKey {
+    case user, project
+  }
+
+  public init(from decoder: Decoder) throws {
+    let values = try decoder.container(keyedBy: CodingKeys.self)
+    self.user = try values.decode(User.self, forKey: .user)
+    self.project = try values.decode(Project.self, forKey: .project)
   }
 }
