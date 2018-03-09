@@ -1,7 +1,6 @@
 import Foundation
 import Prelude
 
-
 public struct LiveStreamEvent: Swift.Decodable, Equatable {
   public fileprivate(set) var backgroundImage: BackgroundImage
   public fileprivate(set) var creator: Creator
@@ -136,8 +135,8 @@ extension LiveStreamEvent.Stream {
 extension LiveStreamEvent {
   enum CodingKeys: String, CodingKey {
     case hlsUrl = "hls_url", backgroundImage = "background_image", creator, description, firebase,
-    hasReplay = "has_replay", id, liveNow = "live_now", name, opentok, project, startDate = "start_date", stream,
-    user, webUrl = "web_url", numberPeopleWatching = "number_people_watching"
+    hasReplay = "has_replay", id, liveNow = "live_now", name, opentok, project, startDate = "start_date",
+    stream, user, webUrl = "web_url", numberPeopleWatching = "number_people_watching"
   }
 
   public init(from decoder: Decoder) throws {

@@ -1,7 +1,6 @@
 import Foundation
 import Prelude
 
-
 public struct LiveStreamEventsEnvelope: Swift.Decodable {
   public fileprivate(set) var numberOfLiveStreams: Int
   public fileprivate(set) var liveStreamEvents: [LiveStreamEvent]
