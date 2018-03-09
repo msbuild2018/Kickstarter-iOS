@@ -31,6 +31,7 @@ class ErrorEnvelopeTests: XCTestCase {
     XCTAssertEqual(ErrorEnvelope.KsrCode.UnknownCode, env.value?.ksrCode)
   }
 
+  // FIXME: write backer_reward test too
   func testJsonDecodingWithNonStandardError() {
     let env = ErrorEnvelope.decodeJSONDictionary([
       "status": 406,
