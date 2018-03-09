@@ -1,7 +1,5 @@
-import Argo
-import Curry
+import Foundation
 import Prelude
-import Runes
 
 internal protocol FirebaseDataSnapshotType {
   var key: String { get }
@@ -10,14 +8,14 @@ internal protocol FirebaseDataSnapshotType {
 
 // Returns an empty array if any snapshot decodings fail
 internal extension Collection where Iterator.Element == LiveStreamChatMessage {
-  static func decode(_ snapshots: [FirebaseDataSnapshotType]) -> Decoded<[LiveStreamChatMessage]> {
-    return .success(snapshots.flatMap { snapshot in
-      LiveStreamChatMessage.decode(snapshot).value
-    })
+  static func decode(_ snapshots: [FirebaseDataSnapshotType]) -> [LiveStreamChatMessage] {
+    return snapshots.flatMap { snapshot in
+      LiveStreamChatMessage.snapshot.value
+    }
   }
 }
 
-public struct LiveStreamChatMessage {
+public struct LiveStreamChatMessage: Swift.Decodable {
   public fileprivate(set) var date: TimeInterval
   public fileprivate(set) var id: String
   public fileprivate(set) var isCreator: Bool?
@@ -25,31 +23,28 @@ public struct LiveStreamChatMessage {
   public fileprivate(set) var name: String
   public fileprivate(set) var profilePictureUrl: String
   public fileprivate(set) var userId: String
-
-  static internal func decode(_ snapshot: FirebaseDataSnapshotType) -> Decoded<LiveStreamChatMessage> {
-      return (snapshot.value as? [String: Any])
-        .map {
-          self.decode(JSON($0.withAllValuesFrom(["id": snapshot.key])))
-        }
-        .coalesceWith(.failure(.custom("Unable to parse Firebase snapshot.")))
-  }
 }
 
-extension LiveStreamChatMessage: Argo.Decodable {
-  static public func decode(_ json: JSON) -> Decoded<LiveStreamChatMessage> {
+extension LiveStreamChatMessage {
+  enum CodingKeys: String, CodingKey {
+    case date = "timestamp",
+    id,
+    isCreator = "creator",
+    message,
+    name,
+    profilePictureUrl = "profilePic",
+    userId
+  }
 
-    let tmp1 = curry(LiveStreamChatMessage.init)
-      <^> json <| "timestamp"
-      <*> json <| "id"
-      <*> json <|? "creator"
-      <*> json <| "message"
-
-    let tmp2 = tmp1
-      <*> json <| "name"
-      <*> json <| "profilePic"
-      <*> json <| "userId"
-
-    return tmp2
+  public init(from decoder: Decoder) throws {
+    let values = try decoder.container(keyedBy: CodingKeys.self)
+    self.date = try values.decode(TimeInterval.self, forKey: .date)
+    self.id = try values.decode(String.self, forKey: .id)
+    self.isCreator = try? values.decode(Bool.self, forKey: .isCreator)
+    self.message = try values.decode(String.self, forKey: .message)
+    self.name = try values.decode(String.self, forKey: .name)
+    self.profilePictureUrl = try values.decode(String.self, forKey: .profilePictureUrl)
+    self.userId = try values.decode(String.self, forKey: .userId)
   }
 }
 

@@ -1,19 +1,9 @@
-import Argo
-import Curry
+import Foundation
 import Prelude
-import Runes
 
-public struct LiveStreamSubscribeEnvelope {
+public struct LiveStreamSubscribeEnvelope: Swift.Decodable {
   public fileprivate(set) var success: Bool
   public fileprivate(set) var reason: String?
-}
-
-extension LiveStreamSubscribeEnvelope: Argo.Decodable {
-  static public func decode(_ json: JSON) -> Decoded<LiveStreamSubscribeEnvelope> {
-    return curry(LiveStreamSubscribeEnvelope.init)
-      <^> json <| "success"
-      <*> json <|? "reason"
-  }
 }
 
 extension LiveStreamSubscribeEnvelope {

@@ -1,4 +1,5 @@
 import Foundation
+import Prelude
 
 public struct Reward: Swift.Decodable {
   public let backersCount: Int?

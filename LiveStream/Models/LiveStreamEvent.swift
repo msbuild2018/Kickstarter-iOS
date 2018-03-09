@@ -1,9 +1,7 @@
-import Argo
-import Curry
+import Foundation
 import Prelude
-import Runes
 
-public struct LiveStreamEvent: Equatable {
+public struct LiveStreamEvent: Swift.Decodable, Equatable {
   public fileprivate(set) var backgroundImage: BackgroundImage
   public fileprivate(set) var creator: Creator
   public fileprivate(set) var description: String
@@ -20,21 +18,37 @@ public struct LiveStreamEvent: Equatable {
   public fileprivate(set) var project: Project
   public fileprivate(set) var replayUrl: String?
   public fileprivate(set) var startDate: Date
+  public fileprivate(set) var stream: Stream
   public fileprivate(set) var user: User?
   public fileprivate(set) var webUrl: String
   public fileprivate(set) var numberPeopleWatching: Int?
 
-  public struct BackgroundImage {
+  public struct Stream: Swift.Decodable {
+    let backgroundImage: BackgroundImage
+    let description: String
+    let hasReplay: Bool
+    let hlsUrl: String?
+    let isRtmp: Bool?
+    let isScale: Bool?
+    let liveNow: Bool
+    let maxOpenTokViewers: Int?
+    let name: String
+    let replayUrl: String?
+    let startDate: Date
+    let webUrl: String
+  }
+
+  public struct BackgroundImage: Swift.Decodable {
     public fileprivate(set) var medium: String
     public fileprivate(set) var smallCropped: String
   }
 
-  public struct Creator {
+  public struct Creator: Swift.Decodable {
     public fileprivate(set) var avatar: String
     public fileprivate(set) var name: String
   }
 
-  public struct Firebase {
+  public struct Firebase: Swift.Decodable {
     public fileprivate(set) var apiKey: String
     public fileprivate(set) var chatAvatarUrl: String?
     public fileprivate(set) var chatPath: String
@@ -49,19 +63,19 @@ public struct LiveStreamEvent: Equatable {
     public fileprivate(set) var token: String?
   }
 
-  public struct OpenTok {
+  public struct OpenTok: Swift.Decodable {
     public fileprivate(set) var appId: String
     public fileprivate(set) var sessionId: String
     public fileprivate(set) var token: String
   }
 
-  public struct Project {
+  public struct Project: Swift.Decodable {
     public fileprivate(set) var id: Int?
     public fileprivate(set) var name: String
     public fileprivate(set) var webUrl: String
   }
 
-  public struct User {
+  public struct User: Swift.Decodable {
     public fileprivate(set) var isSubscribed: Bool
   }
 
@@ -109,105 +123,201 @@ public func == (lhs: LiveStreamEvent, rhs: LiveStreamEvent) -> Bool {
   return lhs.id == rhs.id
 }
 
-extension LiveStreamEvent: Argo.Decodable {
-  static public func decode(_ json: JSON) -> Decoded<LiveStreamEvent> {
-
-    let hlsUrl: Decoded<String?> = (json <| ["stream", "hls_url"] <|> json <| "hls_url")
-      .map(Optional.some)
-      <|> .success(nil)
-
-    let tmp1 = curry(LiveStreamEvent.init)
-      <^> (json <| ["stream", "background_image"] <|> json <| "background_image")
-      <*> json <| "creator"
-      <*> (json <| ["stream", "description"] <|> json <| "description")
-      <*> json <|? "firebase"
-    let tmp2 = tmp1
-      <*> (json <| ["stream", "has_replay"] <|> json <| "has_replay")
-      <*> hlsUrl
-      <*> json <| "id"
-      <*> json <|? ["stream", "is_rtmp"]
-    let tmp3 = tmp2
-      <*> json <|? ["stream", "is_scale"]
-      <*> (json <| ["stream", "live_now"] <|> json <| "live_now")
-      <*> json <|? ["stream", "max_opentok_viewers"]
-      <*> (json <| ["stream", "name"] <|> json <| "name")
-    let tmp4 = tmp3
-      <*> json <|? "opentok"
-      // Sometimes the project data is included in a `stream` sub-key, and sometimes it's in a `project`.
-      <*> (json <| "stream" <|> json <| "project")
-      <*> json <|? ["stream", "replay_url"]
-      <*> ((json <| "start_date" <|> json <| ["stream", "start_date"]) >>- toDate)
-    return tmp4
-      <*> json <|? "user"
-      <*> (json <| ["stream", "web_url"] <|> json <| "web_url")
-      <*> json <|? "number_people_watching"
+extension LiveStreamEvent.Stream {
+  enum CodingKeys: String, CodingKey {
+    case backgroundImage = "background_image", description, hasReplay = "has_replay", hlsUrl = "hls_url",
+    isRtmp = "is_rtmp", isScale = "is_scale", liveNow = "live_now",
+    maxOpenTokViewers = "max_opentok_viewers", name, replayUrl = "replay_url", startDate = "start_date",
+    webUrl = "web_url"
   }
 }
 
-extension LiveStreamEvent.BackgroundImage: Argo.Decodable {
-  public static func decode(_ json: JSON) -> Decoded<LiveStreamEvent.BackgroundImage> {
-    return curry(LiveStreamEvent.BackgroundImage.init)
-      <^> json <| "medium"
-      <*> json <| "small_cropped"
+extension LiveStreamEvent {
+  enum CodingKeys: String, CodingKey {
+    case hlsUrl = "hls_url", backgroundImage = "background_image", creator, description, firebase,
+    hasReplay = "has_replay", id, liveNow = "live_now", name, opentok, project, startDate = "start_date",
+    stream, user, webUrl = "web_url", numberPeopleWatching = "number_people_watching"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let values = try decoder.container(keyedBy: CodingKeys.self)
+
+    do {
+      self.backgroundImage = try values.decode(BackgroundImage.self, forKey: .backgroundImage)
+    } catch {
+      self.backgroundImage = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream).backgroundImage
+    }
+
+    self.creator = try values.decode(Creator.self, forKey: .creator)
+
+    do {
+      self.description = try values.decode(String.self, forKey: .description)
+    } catch {
+      self.description = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream).description
+    }
+
+    self.firebase = try? values.decode(Firebase.self, forKey: .firebase)
+
+    do {
+      self.hasReplay = try values.decode(Bool.self, forKey: .hasReplay)
+    } catch {
+      self.hasReplay = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream).hasReplay
+    }
+
+    do {
+      self.hlsUrl = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream).hlsUrl
+    } catch {
+      self.hlsUrl = try values.decode(String.self, forKey: .hlsUrl)
+    }
+
+    self.id = try values.decode(Int.self, forKey: .id)
+    self.isRtmp = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream).isRtmp
+    self.isScale = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream).isScale
+
+    do {
+      self.liveNow = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream).liveNow
+    } catch {
+      self.liveNow = try values.decode(Bool.self, forKey: .liveNow)
+    }
+
+    self.maxOpenTokViewers = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream).maxOpenTokViewers
+
+    do {
+      self.name = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream).name
+    } catch {
+      self.name = try values.decode(String.self, forKey: .name)
+    }
+
+    self.openTok = try values.decode(LiveStreamEvent.OpenTok.self, forKey: .opentok)
+
+    do {
+      self.stream = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream)
+    } catch {
+      self.project = try values.decode(Project.self, forKey: .project)
+    }
+
+    self.replayUrl = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream).replayUrl
+
+    do {
+      self.startDate = try values.decode(Date.self, forKey: .startDate)
+    } catch {
+      self.startDate = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream).startDate
+    }
+
+    self.user = try? values.decode(User.self, forKey: .user)
+
+    do {
+      self.webUrl = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream).webUrl
+    } catch {
+      self.webUrl = try values.decode(String.self, forKey: .webUrl)
+    }
+
+    self.numberPeopleWatching = try? values.decode(Int.self, forKey: .numberPeopleWatching)
+  }
+
+//  static public func decode(_ json: JSON) -> Decoded<LiveStreamEvent> {
+//
+//    let hlsUrl: Decoded<String?> = (json <| ["stream", "hls_url"] <|> json <| "hls_url")
+//      .map(Optional.some)
+//      <|> .success(nil)
+//
+//    let tmp1 = curry(LiveStreamEvent.init)
+//      <^> (json <| ["stream", "background_image"] <|> json <| "background_image")
+//      <*> json <| "creator"
+//      <*> (json <| ["stream", "description"] <|> json <| "description")
+//      <*> json <|? "firebase"
+//    let tmp2 = tmp1
+//      <*> (json <| ["stream", "has_replay"] <|> json <| "has_replay")
+//      <*> hlsUrl
+//      <*> json <| "id"
+//      <*> json <|? ["stream", "is_rtmp"]
+//    let tmp3 = tmp2
+//      <*> json <|? ["stream", "is_scale"]
+//      <*> (json <| ["stream", "live_now"] <|> json <| "live_now")
+//      <*> json <|? ["stream", "max_opentok_viewers"]
+//      <*> (json <| ["stream", "name"] <|> json <| "name")
+//    let tmp4 = tmp3
+//      <*> json <|? "opentok"
+//      // Sometimes the project data is included in a `stream` sub-key, and sometimes it's in a `project`.
+//      <*> (json <| "stream" <|> json <| "project")
+//      <*> json <|? ["stream", "replay_url"]
+//      <*> ((json <| "start_date" <|> json <| ["stream", "start_date"]) >>- toDate) /// WHAT DOES THIS MEAN?
+//    return tmp4
+//      <*> json <|? "user"
+//      <*> (json <| ["stream", "web_url"] <|> json <| "web_url")
+//      <*> json <|? "number_people_watching"
+//  }
+}
+
+extension LiveStreamEvent.BackgroundImage {
+  enum CodingKeys: String, CodingKey {
+    case medium,
+    smallCropped = "small_cropped"
   }
 }
 
-extension LiveStreamEvent.Creator: Argo.Decodable {
-  static public func decode(_ json: JSON) -> Decoded<LiveStreamEvent.Creator> {
-    return curry(LiveStreamEvent.Creator.init)
-      <^> json <| "creator_avatar"
-      <*> json <| "creator_name"
+extension LiveStreamEvent.Creator {
+  enum CodingKeys: String, CodingKey {
+    case avatar = "creator_avatar",
+    name = "creator_name"
   }
 }
 
-extension LiveStreamEvent.Firebase: Argo.Decodable {
-  static public func decode(_ json: JSON) -> Decoded<LiveStreamEvent.Firebase> {
-    let tmp = curry(LiveStreamEvent.Firebase.init)
-      <^> json <| "firebase_api_key"
-      <*> json <|? "avatar"
-      <*> json <| "chat_path"
-      <*> json <|? "chat_post_path"
-      <*> json <|? "user_id"
-      <*> json <|? "user_name"
-    return tmp
-      <*> json <| "green_room_path"
-      <*> json <| "hls_url_path"
-      <*> json <| "number_people_watching_path"
-      <*> json <| "firebase_project"
-      <*> json <| "scale_number_people_watching_path"
-      <*> json <|? "token"
+extension LiveStreamEvent.Firebase {
+  enum CodingKeys: String, CodingKey {
+    case apiKey = "firebase_api_key",
+    chatAvatarUrl = "avatar",
+    chatPath = "chat_path",
+    chatPostPath = "chat_post_path",
+    chatUserId = "user_id",
+    chatUserName = "user_name",
+    greenRoomPath = "green_room_path",
+    hlsUrlPath = "hls_url_path",
+    numberPeopleWatchingPath = "number_people_watching_path",
+    project = "firebase_project",
+    scaleNumberPeopleWatchingPath = "scale_number_people_watching_path",
+    token
   }
 }
 
-extension LiveStreamEvent.OpenTok: Argo.Decodable {
-  static public func decode(_ json: JSON) -> Decoded<LiveStreamEvent.OpenTok> {
-    return curry(LiveStreamEvent.OpenTok.init)
-      <^> json <| "app"
-      <*> json <| "session"
-      <*> json <| "token"
+extension LiveStreamEvent.OpenTok {
+  enum CodingKeys: String, CodingKey {
+    case appId = "app",
+    sessionId = "session",
+    token
   }
 }
 
-extension LiveStreamEvent.Project: Argo.Decodable {
-  static public func decode(_ json: JSON) -> Decoded<LiveStreamEvent.Project> {
+extension LiveStreamEvent.Project {
+  enum CodingKeys: String, CodingKey {
+    case id, uid, name, projectName =  "project_name", webURL = "web_url", projectWebUrl = "project_web_url"
+    }
 
-    // Sometimes the project id doesn't come back, and sometimes it comes back as `uid` even though it should
-    // probably just be `id`, so want to protect against that.
-    let id: Decoded<Int?> = (json <| "uid").map(Optional.some)
-      <|> (json <| "id").map(Optional.some)
-      <|> .success(nil)
+  public init(from decoder: Decoder) throws {
+    let value = try decoder.container(keyedBy: CodingKeys.self)
+    do {
+      self.id = try value.decode(Int.self, forKey: .id)
+    } catch {
+      self.id  = try value.decode(Int.self, forKey: .uid)
+    }
 
-    return curry(LiveStreamEvent.Project.init)
-      <^> id
-      <*> (json <| "project_name" <|> json <| "name")
-      <*> (json <| "project_web_url" <|> json <| "web_url")
+    do {
+      self.name = try value.decode(String.self, forKey: .name)
+    } catch {
+      self.name = try value.decode(String.self, forKey: .projectName)
+    }
+
+    do {
+      self.webUrl = try value.decode(String.self, forKey: .webURL)
+    } catch {
+      self.webUrl = try value.decode(String.self, forKey: .projectWebUrl)
+    }
   }
 }
 
-extension LiveStreamEvent.User: Argo.Decodable {
-  static public func decode(_ json: JSON) -> Decoded<LiveStreamEvent.User> {
-    return curry(LiveStreamEvent.User.init)
-      <^> json <| "is_subscribed"
+extension LiveStreamEvent.User {
+  enum CodingKeys: String, CodingKey {
+    case isSubscribed = "is_subscribed"
   }
 }
 
@@ -217,13 +327,13 @@ private let dateFormatter: DateFormatter = {
   return dateFormatter
 }()
 
-private func toDate(dateString: String) -> Decoded<Date> {
+private func toDate(dateString: String) -> Date {
 
   guard let date = dateFormatter.date(from: dateString) else {
     return .failure(DecodeError.custom("Unable to parse date format"))
   }
 
-  return .success(date)
+  return date
 }
 
 extension LiveStreamEvent {

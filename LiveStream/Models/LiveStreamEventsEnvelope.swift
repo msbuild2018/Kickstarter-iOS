@@ -1,18 +1,15 @@
-import Argo
-import Curry
+import Foundation
 import Prelude
-import Runes
 
-public struct LiveStreamEventsEnvelope {
+public struct LiveStreamEventsEnvelope: Swift.Decodable {
   public fileprivate(set) var numberOfLiveStreams: Int
   public fileprivate(set) var liveStreamEvents: [LiveStreamEvent]
 }
 
-extension LiveStreamEventsEnvelope: Argo.Decodable {
-  static public func decode(_ json: JSON) -> Decoded<LiveStreamEventsEnvelope> {
-    return curry(LiveStreamEventsEnvelope.init)
-      <^> json <| "number_live_streams"
-      <*> json <|| "live_streams"
+extension LiveStreamEventsEnvelope {
+  enum CodingKeys: String, CodingKey {
+    case numberOfLiveStreams = "number_live_streams",
+    liveStreamEvents = "live_streams"
   }
 }
 
