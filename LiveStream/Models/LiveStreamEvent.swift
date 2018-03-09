@@ -19,9 +19,25 @@ public struct LiveStreamEvent: Swift.Decodable, Equatable {
   public fileprivate(set) var project: Project
   public fileprivate(set) var replayUrl: String?
   public fileprivate(set) var startDate: Date
+  public fileprivate(set) var stream: Stream
   public fileprivate(set) var user: User?
   public fileprivate(set) var webUrl: String
   public fileprivate(set) var numberPeopleWatching: Int?
+
+  public struct Stream: Swift.Decodable {
+    let backgroundImage: BackgroundImage
+    let description: String
+    let hasReplay: Bool
+    let hlsUrl: String?
+    let isRtmp: Bool?
+    let isScale: Bool?
+    let liveNow: Bool
+    let maxOpenTokViewers: Int?
+    let name: String
+    let replayUrl: String?
+    let startDate: Date
+    let webUrl: String
+  }
 
   public struct BackgroundImage: Swift.Decodable {
     public fileprivate(set) var medium: String
@@ -48,19 +64,19 @@ public struct LiveStreamEvent: Swift.Decodable, Equatable {
     public fileprivate(set) var token: String?
   }
 
-  public struct OpenTok {
+  public struct OpenTok: Swift.Decodable {
     public fileprivate(set) var appId: String
     public fileprivate(set) var sessionId: String
     public fileprivate(set) var token: String
   }
 
-  public struct Project {
+  public struct Project: Swift.Decodable {
     public fileprivate(set) var id: Int?
     public fileprivate(set) var name: String
     public fileprivate(set) var webUrl: String
   }
 
-  public struct User {
+  public struct User: Swift.Decodable {
     public fileprivate(set) var isSubscribed: Bool
   }
 
@@ -108,7 +124,98 @@ public func == (lhs: LiveStreamEvent, rhs: LiveStreamEvent) -> Bool {
   return lhs.id == rhs.id
 }
 
+extension LiveStreamEvent.Stream {
+  enum CodingKeys: String, CodingKey {
+    case backgroundImage = "background_image", description, hasReplay = "has_replay", hlsUrl = "hls_url",
+    isRtmp = "is_rtmp", isScale = "is_scale", liveNow = "live_now",
+    maxOpenTokViewers = "max_opentok_viewers", name, replayUrl = "replay_url", startDate = "start_date",
+    webUrl = "web_url"
+  }
+}
+
 extension LiveStreamEvent {
+  enum CodingKeys: String, CodingKey {
+    case hlsUrl = "hls_url", backgroundImage = "background_image", creator, description, firebase,
+    hasReplay = "has_replay", id, liveNow = "live_now", name, opentok, project, startDate = "start_date", stream,
+    user, webUrl = "web_url", numberPeopleWatching = "number_people_watching"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let values = try decoder.container(keyedBy: CodingKeys.self)
+
+    do {
+      self.backgroundImage = try values.decode(BackgroundImage.self, forKey: .backgroundImage)
+    } catch {
+      self.backgroundImage = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream).backgroundImage
+    }
+
+    self.creator = try values.decode(Creator.self, forKey: .creator)
+
+    do {
+      self.description = try values.decode(String.self, forKey: .description)
+    } catch {
+      self.description = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream).description
+    }
+
+    self.firebase = try? values.decode(Firebase.self, forKey: .firebase)
+
+    do {
+      self.hasReplay = try values.decode(Bool.self, forKey: .hasReplay)
+    } catch {
+      self.hasReplay = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream).hasReplay
+    }
+
+    do {
+      self.hlsUrl = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream).hlsUrl
+    } catch {
+      self.hlsUrl = try values.decode(String.self, forKey: .hlsUrl)
+    }
+
+    self.id = try values.decode(Int.self, forKey: .id)
+    self.isRtmp = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream).isRtmp
+    self.isScale = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream).isScale
+
+    do {
+      self.liveNow = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream).liveNow
+    } catch {
+      self.liveNow = try values.decode(Bool.self, forKey: .liveNow)
+    }
+
+    self.maxOpenTokViewers = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream).maxOpenTokViewers
+
+    do {
+      self.name = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream).name
+    } catch {
+      self.name = try values.decode(String.self, forKey: .name)
+    }
+
+    self.openTok = try values.decode(LiveStreamEvent.OpenTok.self, forKey: .opentok)
+
+    do {
+      self.stream = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream)
+    } catch {
+      self.project = try values.decode(Project.self, forKey: .project)
+    }
+
+    self.replayUrl = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream).replayUrl
+
+    do {
+      self.startDate = try values.decode(Date.self, forKey: .startDate)
+    } catch {
+      self.startDate = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream).startDate
+    }
+
+    self.user = try? values.decode(User.self, forKey: .user)
+
+    do {
+      self.webUrl = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream).webUrl
+    } catch {
+      self.webUrl = try values.decode(String.self, forKey: .webUrl)
+    }
+
+    self.numberPeopleWatching = try? values.decode(Int.self, forKey: .numberPeopleWatching)
+  }
+
 //  static public func decode(_ json: JSON) -> Decoded<LiveStreamEvent> {
 //
 //    let hlsUrl: Decoded<String?> = (json <| ["stream", "hls_url"] <|> json <| "hls_url")
@@ -135,7 +242,7 @@ extension LiveStreamEvent {
 //      // Sometimes the project data is included in a `stream` sub-key, and sometimes it's in a `project`.
 //      <*> (json <| "stream" <|> json <| "project")
 //      <*> json <|? ["stream", "replay_url"]
-//      <*> ((json <| "start_date" <|> json <| ["stream", "start_date"]) >>- toDate)
+//      <*> ((json <| "start_date" <|> json <| ["stream", "start_date"]) >>- toDate) /// WHAT DOES THIS MEAN?
 //    return tmp4
 //      <*> json <|? "user"
 //      <*> (json <| ["stream", "web_url"] <|> json <| "web_url")
@@ -183,19 +290,30 @@ extension LiveStreamEvent.OpenTok {
 }
 
 extension LiveStreamEvent.Project {
-//  static public func decode(_ json: JSON) -> LiveStreamEvent.Project {
-//
-//    // Sometimes the project id doesn't come back, and sometimes it comes back as `uid` even though it should
-//    // probably just be `id`, so want to protect against that.
-//    let id: Decoded<Int?> = (json <| "uid").map(Optional.some)
-//      <|> (json <| "id").map(Optional.some)
-//      <|> .success(nil)
-//
-//    return curry(LiveStreamEvent.Project.init)
-//      <^> id
-//      <*> (json <| "project_name" <|> json <| "name")
-//      <*> (json <| "project_web_url" <|> json <| "web_url")
-//  }
+  enum CodingKeys: String, CodingKey {
+    case id, uid, name, projectName =  "project_name", webURL = "web_url", projectWebUrl = "project_web_url"
+    }
+
+  public init(from decoder: Decoder) throws {
+    let value = try decoder.container(keyedBy: CodingKeys.self)
+    do {
+      self.id = try value.decode(Int.self, forKey: .id)
+    } catch {
+      self.id  = try value.decode(Int.self, forKey: .uid)
+    }
+
+    do {
+      self.name = try value.decode(String.self, forKey: .name)
+    } catch {
+      self.name = try value.decode(String.self, forKey: .projectName)
+    }
+
+    do {
+      self.webUrl = try value.decode(String.self, forKey: .webURL)
+    } catch {
+      self.webUrl = try value.decode(String.self, forKey: .projectWebUrl)
+    }
+  }
 }
 
 extension LiveStreamEvent.User {
