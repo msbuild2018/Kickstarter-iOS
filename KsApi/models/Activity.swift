@@ -68,20 +68,20 @@ extension Activity {
     self.memberData = try values.decode(Activity.MemberData.self, forKey: .memberData)
     self.project = try? values.decode(Project.self, forKey: .project)
     self.update = try? values.decode(Update.self, forKey: .update)
-    self.user = try? values.decode(User.self, forKey: .isFriend)
+    self.user = try? values.decode(User.self, forKey: .user)
   }
 }
 
-extension Activity.Category {
-  public static func decode(_ json: JSON) -> Decoded<Activity.Category> {
-    switch json {
-    case let .string(category):
-      return .success(Activity.Category(rawValue: category) ?? .unknown)
-    default:
-      return .failure(.typeMismatch(expected: "String", actual: json.description))
-    }
-  }
-}
+//extension Activity.Category {
+//  public static func decode(_ json: JSON) -> Decoded<Activity.Category> {
+//    switch json {
+//    case let .string(category):
+//      return .success(Activity.Category(rawValue: category) ?? .unknown)
+//    default:
+//      return .failure(.typeMismatch(expected: "String", actual: json.description))
+//    }
+//  }
+//}
 
 extension Activity.MemberData {
   enum CodingKeys: String, CodingKey {

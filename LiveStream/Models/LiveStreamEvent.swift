@@ -18,7 +18,6 @@ public struct LiveStreamEvent: Swift.Decodable, Equatable {
   public fileprivate(set) var project: Project
   public fileprivate(set) var replayUrl: String?
   public fileprivate(set) var startDate: Date
-  public fileprivate(set) var stream: Stream
   public fileprivate(set) var user: User?
   public fileprivate(set) var webUrl: String
   public fileprivate(set) var numberPeopleWatching: Int?
@@ -33,6 +32,7 @@ public struct LiveStreamEvent: Swift.Decodable, Equatable {
     let liveNow: Bool
     let maxOpenTokViewers: Int?
     let name: String
+    let project: Project
     let replayUrl: String?
     let startDate: Date
     let webUrl: String
@@ -127,7 +127,8 @@ extension LiveStreamEvent.Stream {
   enum CodingKeys: String, CodingKey {
     case backgroundImage = "background_image", description, hasReplay = "has_replay", hlsUrl = "hls_url",
     isRtmp = "is_rtmp", isScale = "is_scale", liveNow = "live_now",
-    maxOpenTokViewers = "max_opentok_viewers", name, replayUrl = "replay_url", startDate = "start_date",
+    maxOpenTokViewers = "max_opentok_viewers", name, project,
+    replayUrl = "replay_url", startDate = "start_date",
     webUrl = "web_url"
   }
 }
@@ -188,10 +189,12 @@ extension LiveStreamEvent {
       self.name = try values.decode(String.self, forKey: .name)
     }
 
+    self.numberPeopleWatching = try? values.decode(Int.self, forKey: .numberPeopleWatching)
+
     self.openTok = try values.decode(LiveStreamEvent.OpenTok.self, forKey: .opentok)
 
     do {
-      self.stream = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream)
+      self.project = try values.decode(LiveStreamEvent.Stream.self, forKey: .stream).project
     } catch {
       self.project = try values.decode(Project.self, forKey: .project)
     }
@@ -211,8 +214,6 @@ extension LiveStreamEvent {
     } catch {
       self.webUrl = try values.decode(String.self, forKey: .webUrl)
     }
-
-    self.numberPeopleWatching = try? values.decode(Int.self, forKey: .numberPeopleWatching)
   }
 
 //  static public func decode(_ json: JSON) -> Decoded<LiveStreamEvent> {
@@ -327,14 +328,14 @@ private let dateFormatter: DateFormatter = {
   return dateFormatter
 }()
 
-private func toDate(dateString: String) -> Date {
-
-  guard let date = dateFormatter.date(from: dateString) else {
-    return .failure(DecodeError.custom("Unable to parse date format"))
-  }
-
-  return date
-}
+//private func toDate(dateString: String) -> Date {
+//
+//  guard let date = dateFormatter.date(from: dateString) else {
+//    return .failure(DecodeError.custom("Unable to parse date format"))
+//  }
+//
+//  return date
+//}
 
 extension LiveStreamEvent {
   public enum lens {

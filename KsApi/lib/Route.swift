@@ -322,8 +322,8 @@ internal enum Route {
       return (.PUT, "/v1/users/self/notifications/\(notification.id)", params, nil)
 
     case let .updateUserSelf(user):
-      let params = user.notifications.encode().withAllValuesFrom(user.newsletters.encode())
-      return (.PUT, "/v1/users/self", params, nil)
+      //let params = user.notifications.encode().withAllValuesFrom(user.newsletters.encode())
+      return (.PUT, "/v1/users/self", [:], nil)
 
     case .userProjectsBacked:
       return (.GET, "/v1/users/self/projects/backed", [:], nil)

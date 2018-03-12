@@ -218,7 +218,7 @@ public struct AppEnvironment {
 
     var service = current.apiService
     var currentUser: User? = nil
-    let config: Config? = data["config"].flatMap(decode)
+    let config: Config? = nil//data["config"].flatMap(decode)
 
     if let oauthToken = data["apiService.oauthToken.token"] as? String {
       // If there is an oauth token stored in the defaults, then we can authenticate our api service
@@ -285,8 +285,16 @@ public struct AppEnvironment {
     }
 
     // Try restore the current user
-    if service.oauthToken != nil {
-      currentUser = data["currentUser"].flatMap(decode)
+    var jsonData: Data?
+    if service.oauthToken != nil && data["currentUser"] != nil {
+      do {
+        jsonData = try JSONSerialization.data(withJSONObject: data["currentUser"] as Any, options: .prettyPrinted)
+      } catch {
+        print(error.localizedDescription)
+      }
+
+      let user = try? JSONDecoder().decode(User.self, from: jsonData!)
+      currentUser = user//try! JSONDecoder().decode(User.self, from: userData) //data["currentUser"].flatMap(User.init())
     }
 
     return Environment(
@@ -314,8 +322,8 @@ public struct AppEnvironment {
     data["apiService.serverConfig.webBaseUrl"] = env.apiService.serverConfig.webBaseUrl.absoluteString
     data["apiService.language"] = env.apiService.language
     data["apiService.currency"] = env.apiService.currency
-    data["config"] = env.config?.encode()
-    data["currentUser"] = env.currentUser?.encode()
+    data["config"] = env.config?.encode
+    data["currentUser"] = env.currentUser?.encode
 
     userDefaults.set(data, forKey: environmentStorageKey)
   }

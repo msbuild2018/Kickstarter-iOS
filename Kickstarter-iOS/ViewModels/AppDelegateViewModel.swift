@@ -295,8 +295,9 @@ AppDelegateViewModelOutputs {
 
     let pushEnvelopeAndIsActive = notificationAndIsActive
       .map { (notification, isActive) -> (PushEnvelope, Bool)? in
-        guard let envelope = (decode(notification) as Decoded<PushEnvelope>).value else { return nil }
-        return (envelope, isActive)
+        //guard let envelope = (decode(notification) as Decoded<PushEnvelope>).value else { return nil }
+        return nil
+        //return (envelope, isActive)
       }
       .skipNil()
 
@@ -376,21 +377,36 @@ AppDelegateViewModelOutputs {
       }
       .skipNil()
       .switchMap { rawParams -> SignalProducer<DiscoveryParams?, NoError> in
-        guard
-          let rawParams = rawParams,
-          let params = DiscoveryParams.decode(.init(rawParams)).value
-          else { return .init(value: nil) }
+
+        guard let rawParams: [String: String] = rawParams else {
+          return .init(value: nil)
+        }
+
+        let paramsData = NSKeyedArchiver.archivedData(withRootObject: rawParams)
+        var params: DiscoveryParams?
+        do {
+          params = try JSONDecoder().decode(DiscoveryParams.self, from: paramsData)
+        } catch {
+          return .init(value: nil)
+        }
+
+//        guard
+//          let params = params,
+//          //let params = DiscoveryParams.decode(.init(rawParams)).value
+//          else { return .init(value: nil) }
+
+
 
         guard
           let rawCategoryParam = rawParams["category_id"],
-          let categoryParam = Param.decode(.string(rawCategoryParam)).value
+          let categoryParam: Param? = Param.slug(rawCategoryParam)// decode(.string(rawCategoryParam)).value
           else { return .init(value: params) }
         // We will replace `fetchGraph(query: rootCategoriesQuery)` by a call to get a category by ID
         return AppEnvironment.current.apiService.fetchGraphCategories(query: rootCategoriesQuery)
-          .map { $0.rootCategories.filter { $0.name.lowercased() == categoryParam.slug } }
+          .map { $0.rootCategories.filter { $0.name.lowercased() == categoryParam?.slug } }
           .ksr_delay(AppEnvironment.current.apiDelayInterval, on: AppEnvironment.current.scheduler)
           .demoteErrors()
-          .map { params |> DiscoveryParams.lens.category .~ $0.first }
+          .map { params! |> DiscoveryParams.lens.category .~ $0.first }
     }
 
     self.goToLiveStream = deepLink

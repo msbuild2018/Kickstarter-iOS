@@ -35,9 +35,9 @@ public func == (lhs: Comment, rhs: Comment) -> Bool {
 
 // Decode a time interval so that non-positive values are coalesced to `nil`. We do this because the API
 // sends back `0` when the comment hasn't been deleted, and we'd rather handle that value as `nil`.
-private func decodePositiveTimeInterval(_ interval: TimeInterval?) -> Decoded<TimeInterval?> {
+private func decodePositiveTimeInterval(_ interval: TimeInterval?) -> TimeInterval? {
   if let interval = interval, interval > 0.0 {
-    return .success(interval)
+    return interval
   }
-  return .success(nil)
+  return nil
 }

@@ -30,7 +30,7 @@ extension DiscoveryEnvelope {
 
   public init(from decoder: Decoder) throws {
     let values = try decoder.container(keyedBy: CodingKeys.self)
-    self.projects = try values.decode(Project.self, forKey: .moreProjects)
+    self.projects = try values.decode([Project].self, forKey: .projects)
     self.urls = try values.decode(UrlsEnvelope.self, forKey: .urls)
     self.stats = try values.decode(StatsEnvelope.self, forKey: .stats)
   }

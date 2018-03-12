@@ -80,10 +80,7 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
         }
 
         let event = data
-          .flatMap { try? JSONSerialization.jsonObject(with: $0, options: []) }
-          .map(JSON.init)
-          .map(LiveStreamEvent.decode)
-          .flatMap { $0.value }
+          .flatMap { try? JSONDecoder().decode(LiveStreamEvent.self, from: $0) }
           .map(Signal<LiveStreamEvent, LiveApiError>.Event.value)
           .coalesceWith(.failed(.genericFailure))
 
@@ -119,10 +116,7 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
         }
 
         let event = data
-          .flatMap { try? JSONSerialization.jsonObject(with: $0, options: []) }
-          .map(JSON.init)
-          .map([LiveStreamEvent].decode)
-          .flatMap { $0.value }
+          .flatMap { try? JSONDecoder().decode([LiveStreamEvent].self, from: $0) }
           .map(Signal<[LiveStreamEvent], LiveApiError>.Event.value)
           .coalesceWith(.failed(.genericFailure))
 
@@ -163,10 +157,7 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
           }
 
           let envelope = data
-            .flatMap { try? JSONSerialization.jsonObject(with: $0, options: []) }
-            .map(JSON.init)
-            .map(LiveStreamEventsEnvelope.decode)
-            .flatMap { $0.value }
+            .flatMap { try? JSONDecoder().decode(LiveStreamEventsEnvelope.self, from: $0) }
             .map(Signal<LiveStreamEventsEnvelope, LiveApiError>.Event.value)
             .coalesceWith(.failed(.genericFailure))
 
@@ -209,11 +200,9 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
         request.httpBody = formData(withDictionary: params).data(using: .utf8)
 
         let task = urlSession.dataTask(with: request) { data, _, _ in
+
           let envelope = data
-            .flatMap { try? JSONSerialization.jsonObject(with: $0, options: []) }
-            .map(JSON.init)
-            .map(LiveStreamSubscribeEnvelope.decode)
-            .flatMap { $0.value }
+            .flatMap { try? JSONDecoder().decode(LiveStreamSubscribeEnvelope.self, from: $0) }
             .map(Signal<LiveStreamSubscribeEnvelope, LiveApiError>.Event.value)
             .coalesceWith(.failed(.genericFailure))
 
@@ -246,13 +235,13 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
           .queryLimited(toLast: limit)
 
         query.observe(.value, with: { snapshot in
-          let chatMessages = (snapshot.children.allObjects as? [FIRDataSnapshot] ?? [])
-            .map([LiveStreamChatMessage].decode)
-            .flatMap { $0.value }
-            .map(Signal<[LiveStreamChatMessage], LiveApiError>.Event.value)
-            .coalesceWith(.failed(.chatMessageDecodingFailed))
+          //.failed(LiveApiError.chatMessageDecodingFailed)let chatMessages: [LiveStreamChatMessage] = (snapshot.children.allObjects as? [FIRDataSnapshot] ?? [])
+            //.map([LiveStreamChatMessage].decode)
+            //.flatMap { $0 }
+            //.map(Signal<[LiveStreamChatMessage], LiveApiError>.Event.value)
+            //.coalesceWith(.failed(LiveApiError.chatMessageDecodingFailed))
 
-          observer.send(chatMessages)
+          observer.send(.failed(LiveApiError.chatMessageDecodingFailed))
           observer.sendCompleted()
         })
 
@@ -284,12 +273,12 @@ public struct LiveStreamService: LiveStreamServiceProtocol {
           let tryChatMessage = (snapshot as FIRDataSnapshot?)
             .flatMap { $0 }
             .map(LiveStreamChatMessage.decode)
-            .flatMap { $0.value }
+            .flatMap { $0 }
             .map(Signal<LiveStreamChatMessage, LiveApiError>.Event.value)
 
           guard let chatMessage = tryChatMessage else { return }
 
-          observer.send(chatMessage)
+          observer.send(.failed(LiveApiError.chatMessageDecodingFailed))
         })
 
         disposable.observeEnded {

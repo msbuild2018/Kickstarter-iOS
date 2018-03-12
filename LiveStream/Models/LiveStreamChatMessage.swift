@@ -6,13 +6,15 @@ internal protocol FirebaseDataSnapshotType {
   var value: Any? { get }
 }
 
+// FIXME: Implement decode funtion
 // Returns an empty array if any snapshot decodings fail
 internal extension Collection where Iterator.Element == LiveStreamChatMessage {
   static func decode(_ snapshots: [FirebaseDataSnapshotType]) -> [LiveStreamChatMessage] {
     return snapshots.flatMap { snapshot in
-      LiveStreamChatMessage.snapshot.value
+      LiveStreamChatMessage.decode(snapshot)
     }
   }
+
 }
 
 public struct LiveStreamChatMessage: Swift.Decodable {
@@ -23,6 +25,16 @@ public struct LiveStreamChatMessage: Swift.Decodable {
   public fileprivate(set) var name: String
   public fileprivate(set) var profilePictureUrl: String
   public fileprivate(set) var userId: String
+
+  static internal func decode(_ snapshot: FirebaseDataSnapshotType) -> LiveStreamChatMessage {
+    return LiveStreamChatMessage.init(date: 0,
+                                      id: "",
+                                      isCreator: nil,
+                                      message: "",
+                                      name: "",
+                                      profilePictureUrl: "",
+                                      userId: "")//(snapshot.value as? [String: Any])
+  }
 }
 
 extension LiveStreamChatMessage {
