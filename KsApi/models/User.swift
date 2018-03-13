@@ -1,6 +1,6 @@
 import Foundation
 
-public struct User: Swift.Decodable, Swift.Encodable {
+public struct User: Swift.Decodable {
   public let avatar: Avatar
   public let facebookConnected: Bool?
   public let id: Int
@@ -59,7 +59,7 @@ public struct User: Swift.Decodable, Swift.Encodable {
   }
 }
 
-extension User {
+extension User: EncodableType {
   enum CodingKeys: String, CodingKey {
     case avatar,
     facebookConnected = "facebook_connected",
@@ -89,95 +89,67 @@ extension User {
     self.stats = try values.decode(User.Stats.self, forKey: .stats)
   }
 
-  public func encode(to encoder: Encoder) throws {
-    var container = encoder.container(keyedBy: CodingKeys.self)
-    try container.encode(self.avatar, forKey: .avatar)
-    try? container.encode(self.facebookConnected ?? false, forKey: .facebookConnected)
-    try container.encode(self.id, forKey: .id)
-    try? container.encode(self.isFriend, forKey: .isFriend)
-    try? container.encode(self.liveAuthToken, forKey: .liveAuthToken)
-    try? container.encode(self.location, forKey: .location)
-    try container.encode(self.newsletters, forKey: .newsletters)
-    try container.encode(self.notifications, forKey: .notifications)
-    try container.encode(self.stats, forKey: .stats)
+  public func encode() -> [String: Any] {
+
+    var result: [String: Any] = [:]
+    result["avatar"] = self.avatar.encode()
+    result["facebook_connected"] = self.facebookConnected ?? false
+    result["id"] = self.id
+    result["is_friend"] = self.isFriend ?? false
+    result["ksr_live_token"] = self.liveAuthToken
+    result["location"] = self.location?.encode()
+    result["name"] = self.name
+    result = result.withAllValuesFrom(self.newsletters.encode())
+    result = result.withAllValuesFrom(self.notifications.encode())
+    result = result.withAllValuesFrom(self.stats.encode())
+
+    return result
   }
 }
 
-extension User.NewsletterSubscriptions {
-  enum CodingKeys: String, CodingKey {
-    case arts = "arts_culture_newsletter",
-    games = "games_newsletter",
-    happening = "happening_newsletter",
-    invent = "invent_newsletter",
-    promo = "promo_newsletter",
-    weekly = "weekly_newsletter"
-  }
+extension User.NewsletterSubscriptions: EncodableType {
 
-  public func encode(to encoder: Encoder) throws {
-    var container = encoder.container(keyedBy: CodingKeys.self)
-    try? container.encode(self.arts, forKey: .arts)
-    try? container.encode(self.games, forKey: .games)
-    try? container.encode(self.happening, forKey: .happening)
-    try? container.encode(self.invent, forKey: .invent)
-    try? container.encode(self.promo, forKey: .promo)
-    try? container.encode(self.weekly, forKey: .weekly)
+  public func encode() -> [String: Any] {
+    var result: [String: Any] = [:]
+    result["games_newsletter"] = self.games
+    result["happening_newsletter"] = self.happening
+    result["promo_newsletter"] = self.promo
+    result["weekly_newsletter"] = self.weekly
+    return result
   }
 }
 
-extension User.Notifications {
-  enum CodingKeys: String, CodingKey {
-    case backings = "notify_of_backings",
-    comments = "notify_of_comments",
-    follower = "notify_of_follower",
-    friendActivity = "notify_of_friend_activity",
-    mobileBackings = "notify_mobile_of_backings",
-    mobileComments = "notify_mobile_of_comments",
-    mobileFollower = "notify_mobile_of_follower",
-    mobileFriendActivity = "notify_mobile_of_friend_activity",
-    mobilePostLikes = "notify_mobile_of_post_likes",
-    mobileUpdates = "notify_mobile_of_updates",
-    postLikes = "notify_of_post_likes",
-    creatorTips = "notify_of_creator_edu",
-    updates = "notify_of_updates",
-    creatorDigest = "notify_of_creator_digest"
-  }
+extension User.Notifications: EncodableType {
 
-  public func encode(to encoder: Encoder) throws {
-    var container = encoder.container(keyedBy: CodingKeys.self)
-    try? container.encode(self.backings, forKey: .backings)
-    try? container.encode(self.follower, forKey: .follower)
-    try? container.encode(self.friendActivity, forKey: .friendActivity)
-    try? container.encode(self.mobileBackings, forKey: .mobileBackings)
-    try? container.encode(self.mobileComments, forKey: .mobileComments)
-    try? container.encode(self.mobileFollower, forKey: .mobileFollower)
-    try? container.encode(self.mobileFriendActivity, forKey: .mobileFriendActivity)
-    try? container.encode(self.mobilePostLikes, forKey: .mobilePostLikes)
-    try? container.encode(self.mobileUpdates, forKey: .mobileUpdates)
-    try? container.encode(self.postLikes, forKey: .postLikes)
-    try? container.encode(self.creatorTips, forKey: .creatorTips)
-    try? container.encode(self.updates, forKey: .updates)
-    try? container.encode(self.creatorDigest, forKey: .creatorDigest)
+    public func encode() -> [String: Any] {
+      var result: [String: Any] = [:]
+      result["notify_of_backings"] = self.backings
+      result["notify_of_comments"] = self.comments
+      result["notify_of_follower"] = self.follower
+      result["notify_of_friend_activity"] = self.friendActivity
+      result["notify_of_post_likes"] = self.postLikes
+      result["notify_of_updates"] = self.updates
+      result["notify_mobile_of_backings"] = self.mobileBackings
+      result["notify_mobile_of_comments"] = self.mobileComments
+      result["notify_mobile_of_follower"] = self.mobileFollower
+      result["notify_mobile_of_friend_activity"] = self.mobileFriendActivity
+      result["notify_mobile_of_post_likes"] = self.mobilePostLikes
+      result["notify_mobile_of_updates"] = self.mobileUpdates
+      return result
   }
 }
 
-extension User.Stats {
-  enum CodingKeys: String, CodingKey {
-    case backedProjectsCount = "backed_projects_count",
-    createdProjectsCount = "created_projects_count",
-    memberProjectsCount = "member_projects_count",
-    starredProjectsCount = "starred_projects_count",
-    unansweredSurveysCount = "unanswered_surveys_count",
-    unreadMessagesCount = "unread_messages_count"
-  }
+extension User.Stats: EncodableType {
 
-  public func encode(to encoder: Encoder) throws {
-    var container = encoder.container(keyedBy: CodingKeys.self)
-    try? container.encode(self.backedProjectsCount, forKey: .backedProjectsCount)
-    try? container.encode(self.createdProjectsCount, forKey: .createdProjectsCount)
-    try? container.encode(self.memberProjectsCount, forKey: .memberProjectsCount)
-    try? container.encode(self.starredProjectsCount, forKey: .starredProjectsCount)
-    try? container.encode(self.unansweredSurveysCount, forKey: .unansweredSurveysCount)
-    try? container.encode(self.unreadMessagesCount, forKey: .unreadMessagesCount)
+  public func encode() -> [String: Any] {
+    var result: [String: Any] = [:]
+    result["backed_projects_count"] =  self.backedProjectsCount
+    result["created_projects_count"] = self.createdProjectsCount
+    result["member_projects_count"] = self.memberProjectsCount
+    result["starred_projects_count"] = self.starredProjectsCount
+    result["unanswered_surveys_count"] = self.unansweredSurveysCount
+    result["unread_messages_count"] =  self.unreadMessagesCount
+    return result
   }
 }
 

@@ -12,7 +12,7 @@ public enum Experiment {
   }
 }
 
-public struct Config: Swift.Decodable, Swift.Encodable {
+public struct Config: Swift.Decodable {
   public private(set) var abExperiments: [String: String]
   public private(set) var appId: Int
   public private(set) var applePayCountries: [String]
@@ -41,7 +41,7 @@ extension Config.Stripe {
   }
 }
 
-extension Config {
+extension Config: EncodableType {
   enum CodingKeys: String, CodingKey {
     case abExperiments = "ab_experiments",
     appId = "app_id",
@@ -67,17 +67,18 @@ extension Config {
     self.stripePublishableKey = try container.decode(Config.Stripe.self, forKey: .stripe).stripePublishableKey
   }
 
-  public func encode(to encoder: Encoder) throws {
-    var container = encoder.container(keyedBy: CodingKeys.self)
-    try container.encode(self.abExperiments, forKey: .abExperiments)
-    try container.encode(self.appId, forKey: .appId)
-    try container.encode(self.applePayCountries, forKey: .applePayCountries)
-    try container.encode(self.countryCode, forKey: .countryCode)
-    try container.encode(self.features, forKey: .features)
-    try container.encode(self.iTunesLink, forKey: .iTunesLink)
-    try container.encode(self.launchedCountries, forKey: .launchedCountries)
-    try container.encode(self.locale, forKey: .locale)
-    try container.encode(["publishable_key": self.stripePublishableKey], forKey: .stripe)
+  public func encode() -> [String: Any] {
+    var result: [String:Any] = [:]
+    result["ab_experiments"] = self.abExperiments
+    result["app_id"] = self.appId
+    result["apple_pay_countries"] = self.applePayCountries
+    result["country_code"] = self.countryCode
+    result["features"] = self.features
+    result["itunes_link"] = self.iTunesLink
+    result["launched_countries"] = self.launchedCountries.map { $0.encode() }
+    result["locale"] = self.locale
+    result["stripe"] = ["publishable_key": self.stripePublishableKey]
+    return result
   }
 }
 

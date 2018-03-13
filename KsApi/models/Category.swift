@@ -83,7 +83,7 @@ public struct Category: Swift.Decodable {
 extension Category {
 
   private enum CodingKeys: String, CodingKey {
-    case id, name, parentId, _parent = "parentCategory", subcategories, totalProjectCount
+    case id, name, parentId = "parent_id", _parent = "parentCategory", subcategories, totalProjectCount
   }
 
   public init(from decoder: Decoder) throws {

@@ -1,7 +1,7 @@
 import Foundation
 
 extension Project {
-  public struct Country: Swift.Decodable, Swift.Encodable {
+  public struct Country: Swift.Decodable {
     public let countryCode: String
     public let currencyCode: String
     public let currencySymbol: String
@@ -52,7 +52,7 @@ extension Project.Country {
   }
 }
 
-extension Project.Country {
+extension Project.Country: EncodableType {
   enum CodingKeys: String, CodingKey {
     case countryCode = "country",
     currency = "currency",
@@ -91,12 +91,13 @@ extension Project.Country {
     }
   }
 
-  public func encode(to encoder: Encoder) throws {
-    var container = encoder.container(keyedBy: CodingKeys.self)
-    try container.encode(self.countryCode, forKey: .countryCode)
-    try container.encode(self.currencyCode, forKey: .currency)
-    try container.encode(self.currencySymbol, forKey: .currencySymbol)
-    try container.encode(self.trailingCode, forKey: .currencyTrailingCode)
+  public func encode() -> [String: Any] {
+    var result: [String: Any] = [:]
+    result["country"] = self.countryCode
+    result["currency"] = self.currencyCode
+    result["currency_symbol"] = self.currencySymbol
+    result["currency_trailing_code"] = self.trailingCode
+    return result
   }
 }
 

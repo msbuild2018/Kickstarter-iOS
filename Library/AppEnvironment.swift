@@ -322,8 +322,8 @@ public struct AppEnvironment {
     data["apiService.serverConfig.webBaseUrl"] = env.apiService.serverConfig.webBaseUrl.absoluteString
     data["apiService.language"] = env.apiService.language
     data["apiService.currency"] = env.apiService.currency
-    data["config"] = env.config?.encode
-    data["currentUser"] = env.currentUser?.encode
+    data["config"] = env.config?.encode()
+    data["currentUser"] = env.currentUser?.encode()
 
     userDefaults.set(data, forKey: environmentStorageKey)
   }
