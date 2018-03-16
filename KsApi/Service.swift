@@ -548,12 +548,12 @@ public struct Service: ServiceType {
         let headers = response.allHeaderFields as? [String: String],
         let contentType = headers["Content-Type"], contentType.hasPrefix("application/json")
         else {
-
-          print("[KsApi] Failure \(request)")
+          print("\n[KsApi] Failure \(request) \nStatus Code: \(response.statusCode)")
           return
       }
 
       if let error = error {
+        print("[KsApi] Response Error: \(error)")
         observer.send(error: .couldNotDecodeJSON(.custom(error.localizedDescription)))
         return
       }
@@ -567,6 +567,7 @@ public struct Service: ServiceType {
         let decodedObject = try JSONDecoder().decode(A.self, from: data)
         observer.send(value: decodedObject)
       } catch let error {
+        print("\nError decoding \(A.self)! \nError: \(error)")
         observer.send(error: .couldNotDecodeJSON(.custom(error.localizedDescription)))
       }
       observer.sendCompleted()
