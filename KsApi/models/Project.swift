@@ -178,9 +178,9 @@ extension Project {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     self.blurb = try container.decode(String.self, forKey: .blurb)
     self.category = try container.decode(Category.self, forKey: .category)
-    self.country = try container.decode(Project.Country.self, forKey: .country)
+    self.country = try Project.Country(from: decoder)
     self.creator = try container.decode(User.self, forKey: .creator)
-    self.dates = try container.decode(Project.Dates.self, forKey: .dates)
+    self.dates = try Project.Dates(from: decoder)
     self.id = try container.decode(Int.self, forKey: .id)
 
     do {
@@ -188,9 +188,9 @@ extension Project {
     } catch {
       self.location = .none
     }
-    self.memberData = try container.decode(Project.MemberData.self, forKey: .memberData)
+    self.memberData = try Project.MemberData(from: decoder)
     self.name = try container.decode(String.self, forKey: .name)
-    self.personalization = try container.decode(Project.Personalization.self, forKey: .personalization)
+    self.personalization = try Project.Personalization(from: decoder)
     self.photo = try container.decode(Project.Photo.self, forKey: .photo)
     do {
       self.rewards = try container.decode([Reward].self, forKey: .rewards)
@@ -198,12 +198,38 @@ extension Project {
       self.rewards = []
     }
     self.slug = try container.decode(String.self, forKey: .slug)
-    self.state = try container.decode(Project.State.self, forKey: .state)
-    self.stats = try container.decode(Project.Stats.self, forKey: .stats)
+
+    let state = try container.decode(String.self, forKey: .state)
+    self.state = Project.State(rawValue: state)!
+    self.stats = try Project.Stats(from: decoder)
     self.urls = try container.decode(Project.UrlsEnvelope.self, forKey: .urls)
     self.video = try? container.decode(Project.Video.self, forKey: .video)
   }
 }
+
+extension Project.UrlsEnvelope {
+
+  enum CodingKeys: String, CodingKey {
+    case web
+  }
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    self.web = try container.decode(WebEnvelope.self, forKey: .web)
+  }
+}
+
+extension Project.UrlsEnvelope.WebEnvelope {
+
+  enum CodingKeys: String, CodingKey {
+    case project, updates
+  }
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    self.project = try container.decode(String.self, forKey: .project)
+    self.updates = try? container.decode(String.self, forKey: .updates)
+  }
+}
+
 
 extension Project.MemberData {
   enum CodingKeys: String, CodingKey {
@@ -216,8 +242,8 @@ extension Project.MemberData {
   public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     self.lastUpdatePublishedAt = try? container.decode(TimeInterval.self, forKey: .lastUpdatePublishedAt)
-    let rawPermissions = try container.decode([Project.MemberData.Permission].self, forKey: .permissions)
-    self.permissions = removeUnknowns(rawPermissions)
+    let rawPermissions = try Project.MemberData.Permission(from: decoder)
+    self.permissions = removeUnknowns([rawPermissions])
     self.unreadMessagesCount = try? container.decode(Int.self, forKey: .unreadMessagesCount)
     self.unseenActivityCount = try? container.decode(Int.self, forKey: .unseenActivityCount)
   }
@@ -257,7 +283,8 @@ extension Project.Stats {
     self.currentCurrency = try? container.decode(String.self, forKey: .currentCurrency)
     self.currentCurrencyRate = try? container.decode(Float.self, forKey: .currentCurrencyRate)
     self.goal = try container.decode(Int.self, forKey: .goal)
-    self.pledged = try container.decode(Int.self, forKey: .pledged)
+    let pledgedFloat = try Int(container.decode(Float.self, forKey: .pledged))
+    self.pledged = Int(pledgedFloat)
 
     do {
       self.staticUsdRate = try container.decode(Float.self, forKey: .staticUsdRate)

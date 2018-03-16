@@ -41,12 +41,4 @@ extension Location {
     result["name"] = self.name
     return result
   }
-//  public func encode(to encoder: Encoder) throws {
-//    var container = encoder.container(keyedBy: CodingKeys.self)
-//    try container.encode(self.country, forKey: .country)
-//    try container.encode(self.displayableName, forKey: .displayableName)
-//    try container.encode(self.id, forKey: .id)
-//    try container.encode(self.localizedName, forKey: .localizedName)
-//    try container.encode(self.name, forKey: .name)
-//  }
 }

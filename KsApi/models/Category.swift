@@ -83,7 +83,7 @@ public struct Category: Swift.Decodable {
 extension Category {
 
   private enum CodingKeys: String, CodingKey {
-    case id, name, parentId = "parent_id", _parent = "parentCategory", subcategories, totalProjectCount
+    case id, name, parentIdDiscovery = "parent_id", parentIdCategory = "parentId", _parent = "parentCategory", subcategories, totalProjectCount
   }
 
   public init(from decoder: Decoder) throws {
@@ -94,10 +94,10 @@ extension Category {
       self.id = try String(values.decode(Int.self, forKey: .id))
     }
     self.name = try values.decode(String.self, forKey: .name)
-    if let parID = try? values.decode(String.self, forKey: .parentId) {
+    if let parID = try? values.decode(String.self, forKey: .parentIdCategory) {
       self.parentId = parID
     } else {
-      self.parentId = try String(values.decode(Int.self, forKey: .parentId))
+      self.parentId = try? String(values.decode(Int.self, forKey: .parentIdDiscovery))
     }
     self._parent = try? values.decode(ParentCategory.self, forKey: ._parent)
     self.subcategories = try? values.decode(SubcategoryConnection.self, forKey: .subcategories)

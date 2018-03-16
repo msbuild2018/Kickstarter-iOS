@@ -83,10 +83,10 @@ extension User: EncodableType {
     self.liveAuthToken = try? values.decode(String.self, forKey: .liveAuthToken)
     self.location = try? values.decode(Location.self, forKey: .location)
     self.name = try values.decode(String.self, forKey: .name)
-    self.newsletters = try values.decode(User.NewsletterSubscriptions.self, forKey: .newsletters)
-    self.notifications = try values.decode(User.Notifications.self, forKey: .notifications)
+    self.newsletters = try User.NewsletterSubscriptions(from: decoder)
+    self.notifications = try User.Notifications(from: decoder)
     self.social = try? values.decode(Bool.self, forKey: .social)
-    self.stats = try values.decode(User.Stats.self, forKey: .stats)
+    self.stats = try User.Stats(from: decoder)
   }
 
   public func encode() -> [String: Any] {
@@ -108,6 +108,25 @@ extension User: EncodableType {
 }
 
 extension User.NewsletterSubscriptions: EncodableType {
+
+  enum CodingKeys: String, CodingKey {
+    case arts = "arts_culture_newsletter",
+    games = "games_newsletter",
+    happening = "happening_newsletter",
+    invent = "invent_newsletter",
+    promo = "promo_newsletter",
+    weekly = "weekly_newsletter"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    self.arts = try? container.decode(Bool.self, forKey: .arts)
+    self.games = try? container.decode(Bool.self, forKey: .games)
+    self.happening = try? container.decode(Bool.self, forKey: .happening)
+    self.invent = try? container.decode(Bool.self, forKey: .invent)
+    self.promo = try? container.decode(Bool.self, forKey: .promo)
+    self.weekly = try? container.decode(Bool.self, forKey: .weekly)
+  }
 
   public func encode() -> [String: Any] {
     var result: [String: Any] = [:]
@@ -140,6 +159,25 @@ extension User.Notifications: EncodableType {
 }
 
 extension User.Stats: EncodableType {
+
+  enum CodkingKeys: String, CodingKey {
+    case backedProjectsCount = "backed_projects_count",
+    createdProjectsCount = "created_projects_count",
+    memberProjectsCount = "member_projects_count",
+    starredProjectsCount = "starred_projects_count",
+    unansweredSurveysCount = "unanswered_surveys_count",
+    unreadMessagesCount = "unread_messages_count"
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    self.backedProjectsCount = try? container.decode(Int.self, forKey: .backedProjectsCount)
+    self.createdProjectsCount = try? container.decode(Int.self, forKey: .createdProjectsCount)
+    self.memberProjectsCount = try? container.decode(Int.self, forKey: .memberProjectsCount)
+    self.starredProjectsCount = try? container.decode(Int.self, forKey: .starredProjectsCount)
+    self.unansweredSurveysCount = try? container.decode(Int.self, forKey: .unansweredSurveysCount)
+    self.unreadMessagesCount = try? container.decode(Int.self, forKey: .unreadMessagesCount)
+  }
 
   public func encode() -> [String: Any] {
     var result: [String: Any] = [:]
