@@ -198,7 +198,6 @@ extension Project {
       self.rewards = []
     }
     self.slug = try container.decode(String.self, forKey: .slug)
-
     let state = try container.decode(String.self, forKey: .state)
     self.state = Project.State(rawValue: state)!
     self.stats = try Project.Stats(from: decoder)
@@ -278,13 +277,28 @@ extension Project.Stats {
 
   public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    self.backersCount = try container.decode(Int.self, forKey: .backersCount)
+
+    do {
+      self.backersCount = try container.decode(Int.self, forKey: .backersCount)
+    } catch {
+      self.backersCount = 0
+    }
+
     self.commentsCount = try? container.decode(Int.self, forKey: .commentsCount)
     self.currentCurrency = try? container.decode(String.self, forKey: .currentCurrency)
     self.currentCurrencyRate = try? container.decode(Float.self, forKey: .currentCurrencyRate)
-    self.goal = try container.decode(Int.self, forKey: .goal)
-    let pledgedFloat = try Int(container.decode(Float.self, forKey: .pledged))
-    self.pledged = Int(pledgedFloat)
+
+    do {
+      self.goal = try container.decode(Int.self, forKey: .goal)
+    } catch {
+      self.goal = 0
+    }
+
+    do {
+      self.pledged = try Int(container.decode(Float.self, forKey: .pledged))
+    } catch {
+      self.pledged = 0
+    }
 
     do {
       self.staticUsdRate = try container.decode(Float.self, forKey: .staticUsdRate)

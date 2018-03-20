@@ -60,6 +60,26 @@ extension Reward {
     startsAt = "starts_at",
     title
   }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    self.backersCount = try? container.decode(Int.self, forKey: .backersCount)
+    self.description = try container.decode(String.self, forKey: .description)
+    self.endsAt = try? container.decode(TimeInterval.self, forKey: .endsAt)
+    self.estimatedDeliveryOn = try? container.decode(TimeInterval.self, forKey: .estimatedDeliveryOn)
+    self.id = try container.decode(Int.self, forKey: .id)
+    self.limit = try? container.decode(Int.self, forKey: .limit)
+    self.minimum = try container.decode(Int.self, forKey: .minimum)
+    self.remaining = try? container.decode(Int.self, forKey: .remaining)
+    do {
+      self.rewardsItems = try [RewardsItem].init(from: decoder)
+    } catch {
+      self.rewardsItems = []
+    }
+    self.shipping = try Reward.Shipping(from: decoder)
+    self.startsAt = try? container.decode(TimeInterval.self, forKey: .startsAt)
+    self.title = try? container.decode(String.self, forKey: .title)
+  }
 }
 
 extension Reward.Shipping {
@@ -71,7 +91,11 @@ extension Reward.Shipping {
 
   public init(from decoder: Decoder) throws {
     let values = try decoder.container(keyedBy: CodingKeys.self)
-    self.enabled = try values.decode(Bool.self, forKey: .enabled)
+    do {
+      self.enabled = try values.decode(Bool.self, forKey: .enabled)
+    } catch {
+      self.enabled = false
+    }
     self.preference = try? values.decode(Reward.Shipping.Preference.self, forKey: .preference)
     self.summary = try? values.decode(String.self, forKey: .summary)
   }
