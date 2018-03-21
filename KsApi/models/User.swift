@@ -13,13 +13,13 @@ public struct User: Swift.Decodable {
   public let social: Bool?
   public let stats: Stats
 
-  public struct Avatar: Swift.Decodable, Swift.Encodable {
+  public struct Avatar: Swift.Decodable {
     public let large: String?
     public let medium: String
     public let small: String
   }
 
-  public struct NewsletterSubscriptions: Swift.Decodable, Swift.Encodable {
+  public struct NewsletterSubscriptions: Swift.Decodable {
     public let arts: Bool?
     public let games: Bool?
     public let happening: Bool?
@@ -28,7 +28,7 @@ public struct User: Swift.Decodable {
     public let weekly: Bool?
   }
 
-  public struct Notifications: Swift.Decodable, Swift.Encodable {
+  public struct Notifications: Swift.Decodable {
     public let backings: Bool?
     public let comments: Bool?
     public let follower: Bool?
@@ -45,7 +45,7 @@ public struct User: Swift.Decodable {
     public let creatorDigest: Bool?
   }
 
-  public struct Stats: Swift.Decodable, Swift.Encodable {
+  public struct Stats: Swift.Decodable {
     public let backedProjectsCount: Int?
     public let createdProjectsCount: Int?
     public let memberProjectsCount: Int?
@@ -68,10 +68,7 @@ extension User: EncodableType {
     liveAuthToken = "ksr_live_token",
     location,
     name,
-    newsletters,
-    notifications,
-    social,
-    stats
+    social
   }
 
   public init(from decoder: Decoder) throws {
@@ -158,9 +155,9 @@ extension User.Notifications: EncodableType {
   }
 }
 
-extension User.Stats: EncodableType {
+extension User.Stats {
 
-  enum CodkingKeys: String, CodingKey {
+  enum CodingKeys: String, CodingKey {
     case backedProjectsCount = "backed_projects_count",
     createdProjectsCount = "created_projects_count",
     memberProjectsCount = "member_projects_count",
