@@ -35,19 +35,13 @@ internal extension URLSession {
 
               print("[KsApi] Failure \(self.sanitized(request))")
 
-              if let json = parseJSONData(data) {
-                switch decode(json) as Decoded<ErrorEnvelope> {
-                case let .success(envelope):
-                  // Got the error envelope
+                do {
+                  let envelope = try JSONDecoder().decode(ErrorEnvelope.self, from: data)
                   return SignalProducer(error: envelope)
-                case let .failure(error):
-                  print("Argo decoding error envelope error: \(error)")
-                  return SignalProducer(error: .couldNotDecodeJSON(error))
+                } catch (let error) {
+                  print("Decoding error envelope error: \(error)")
+                  return SignalProducer(error: .couldNotDecodeJSON(.custom(error.localizedDescription)))
                 }
-              } else {
-                print("Couldn't parse error envelope JSON.")
-                return SignalProducer(error: .couldNotParseErrorEnvelopeJSON)
-              }
             }
 
           print("[KsApi] Success \(self.sanitized(request))")

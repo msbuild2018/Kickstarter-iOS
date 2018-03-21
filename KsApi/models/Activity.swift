@@ -65,7 +65,7 @@ extension Activity {
     self.comment = try? values.decode(Comment.self, forKey: .comment)
     self.createdAt = try values.decode(TimeInterval.self, forKey: .createdAt)
     self.id = try values.decode(Int.self, forKey: .id)
-    self.memberData = try values.decode(Activity.MemberData.self, forKey: .memberData)
+    self.memberData = try Activity.MemberData(from: decoder)
     self.project = try? values.decode(Project.self, forKey: .project)
     self.update = try? values.decode(Update.self, forKey: .update)
     self.user = try? values.decode(User.self, forKey: .user)

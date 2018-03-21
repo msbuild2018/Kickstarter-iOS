@@ -121,10 +121,10 @@ extension ErrorEnvelope: Swift.Decodable {
     // Typically API errors come back in this form...
     do {
       errorMessages = try container.decode([String].self, forKey: .errorMessages)
-      ksrCode = try container.decode(KsrCode?.self, forKey: .errorMessages)
+      ksrCode = try container.decode(KsrCode?.self, forKey: .ksrCode)
       httpCode = try container.decode(Int.self, forKey: .httpCode)
-      exception = try container.decode(Exception?.self, forKey: .exception)
-      facebookUser = try container.decode(FacebookUser?.self, forKey: .facebookUser)
+      exception = try Exception?(from: decoder)
+      facebookUser = try? container.decode(FacebookUser.self, forKey: .facebookUser)
     } catch {
       // ...but sometimes we make requests to the www server and JSON errors come back in a different envelope
       do {
