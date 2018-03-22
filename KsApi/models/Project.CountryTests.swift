@@ -15,32 +15,32 @@ final class ProjectCountryTests: XCTestCase {
   }
 
   func testJsonDecoding_StandardJSON() {
-    let decodedCountry = Project.Country.decodeJSONDictionary([
+    let decodedCountry: Project.Country? = Project.Country.decodeJSONDictionary([
       "country": "US",
       "currency": "USD",
       "currency_symbol": "$",
       "currency_trailing_code": true
       ])
 
-    XCTAssertEqual(.us, decodedCountry.value)
+    XCTAssertEqual(.us, decodedCountry)
 
     // swiftlint:disable:next force_unwrapping
-    let country = decodedCountry.value!
-    XCTAssertEqual(country, Project.Country.decodeJSONDictionary(country.encode()).value)
+    let country = decodedCountry!
+    XCTAssertEqual(country, Project.Country.decodeJSONDictionary(country.encode()))
   }
 
   func testJsonDecoding_ConfigJSON() {
-    let decodedCountry = Project.Country.decodeJSONDictionary([
+    let decodedCountry: Project.Country! = Project.Country.decodeJSONDictionary([
       "name": "US",
       "currency_code": "USD",
       "currency_symbol": "$",
       "trailing_code": true
       ])
 
-    XCTAssertEqual(.us, decodedCountry.value)
+    XCTAssertEqual(.us, decodedCountry)
 
     // swiftlint:disable:next force_unwrapping
-    let country = decodedCountry.value!
-    XCTAssertEqual(country, Project.Country.decodeJSONDictionary(country.encode()).value)
+    let country: Project.Country = decodedCountry!
+    XCTAssertEqual(country, Project.Country.decodeJSONDictionary(country.encode()))
   }
 }

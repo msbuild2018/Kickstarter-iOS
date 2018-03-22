@@ -37,10 +37,10 @@ final class UserTests: XCTestCase {
       ],
       "is_friend": false
     ]
-    let decoded = User.decodeJSONDictionary(json)
-    let user = decoded.value
 
-    XCTAssertNil(decoded.error)
+    let user: User? = User.decodeJSONDictionary(json)
+
+    XCTAssertNotNil(user)
     XCTAssertEqual(1, user?.id)
     XCTAssertEqual("http://www.kickstarter.com/small.jpg", user?.avatar.small)
     XCTAssertEqual(2, user?.stats.backedProjectsCount)
@@ -80,8 +80,8 @@ final class UserTests: XCTestCase {
       ],
       "is_friend": false
     ]
-    let user = User.decodeJSONDictionary(json)
+    let user: User? = User.decodeJSONDictionary(json)
 
-    XCTAssertEqual(user.value?.encode() as NSDictionary?, json as NSDictionary?)
+    XCTAssertEqual(user?.encode() as NSDictionary?, json as NSDictionary?)
   }
 }

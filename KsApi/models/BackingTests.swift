@@ -4,7 +4,7 @@ import XCTest
 final class BackingTests: XCTestCase {
 
   func testJSONDecoding_WithCompleteData() {
-    let backing = Backing.decodeJSONDictionary([
+    let backing: Backing? = Backing.decodeJSONDictionary([
       "amount": 1.0,
       "backer_id": 1,
       "id": 1,
@@ -16,8 +16,8 @@ final class BackingTests: XCTestCase {
       "status": "pledged"
     ])
 
-    XCTAssertNil(backing.error)
-    XCTAssertEqual(1, backing.value?.id)
-    XCTAssertEqual(Backing.Status.pledged, backing.value?.status)
+    XCTAssertNotNil(backing)
+    XCTAssertEqual(1, backing?.id)
+    XCTAssertEqual(Backing.Status.pledged, backing?.status)
   }
 }

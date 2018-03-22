@@ -9,22 +9,22 @@ final internal class ActivityTests: XCTestCase {
   }
 
   func testJSONDecoding_WithBadData() {
-    let activity = Activity.decodeJSONDictionary([
+    let activity: Activity? = Activity.decodeJSONDictionary([
       "category": "update"
     ])
 
-    XCTAssertNotNil(activity.error)
+    XCTAssertNil(activity)
   }
 
   func testJSONDecoding_WithGoodData() {
-    let activity = Activity.decodeJSONDictionary([
+    let activity: Activity? = Activity.decodeJSONDictionary([
       "category": "update",
       "created_at": 123123123,
       "id": 1,
       ])
 
-    XCTAssertNil(activity.error)
-    XCTAssertEqual(activity.value?.id, 1)
+    XCTAssertNotNil(activity)
+    XCTAssertEqual(activity?.id, 1)
   }
 
   func testJSONParsing_WithMemberData() {

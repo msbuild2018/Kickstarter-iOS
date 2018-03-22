@@ -563,13 +563,6 @@ public struct Service: ServiceType {
     SignalProducer<M, ErrorEnvelope> {
 
       do {
-        let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-        print(json)
-      } catch {
-        print("Error")
-      }
-
-      do {
         let decodedObject = try JSONDecoder().decode(M.self, from: data)
         return SignalProducer(value: decodedObject)
       } catch let error {

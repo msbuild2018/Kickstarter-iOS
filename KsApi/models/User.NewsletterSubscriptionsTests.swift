@@ -4,52 +4,52 @@ import XCTest
 final class NewsletterSubscriptionsTests: XCTestCase {
 
   func testJsonEncoding() {
-    let json: [String: Any] = [
+    let json: [String: AnyHashable] = [
       "games_newsletter": false,
       "promo_newsletter": false,
       "happening_newsletter": false,
       "weekly_newsletter": false
     ]
 
-    let newsletter = User.NewsletterSubscriptions.decodeJSONDictionary(json)
+    let newsletter: User.NewsletterSubscriptions? = User.NewsletterSubscriptions.decodeJSONDictionary(json)
 
-    XCTAssertEqual(newsletter.value?.encode().description, json.description)
+    XCTAssertEqual(newsletter?.encode().description, json.description)
 
-    XCTAssertEqual(false, newsletter.value?.weekly)
-    XCTAssertEqual(false, newsletter.value?.promo)
-    XCTAssertEqual(false, newsletter.value?.happening)
-    XCTAssertEqual(false, newsletter.value?.games)
+    XCTAssertEqual(false, newsletter?.weekly)
+    XCTAssertEqual(false, newsletter?.promo)
+    XCTAssertEqual(false, newsletter?.happening)
+    XCTAssertEqual(false, newsletter?.games)
   }
 
   func testJsonEncoding_TrueValues() {
-    let json: [String: Any] = [
+    let json: [String: AnyHashable] = [
       "games_newsletter": true,
       "promo_newsletter": true,
       "happening_newsletter": true,
       "weekly_newsletter": true
     ]
 
-    let newsletter = User.NewsletterSubscriptions.decodeJSONDictionary(json)
+    let newsletter: User.NewsletterSubscriptions? = User.NewsletterSubscriptions.decodeJSONDictionary(json)
 
-    XCTAssertEqual(newsletter.value?.encode().description, json.description)
+    XCTAssertEqual(newsletter?.encode().description, json.description)
 
-    XCTAssertEqual(true, newsletter.value?.weekly)
-    XCTAssertEqual(true, newsletter.value?.promo)
-    XCTAssertEqual(true, newsletter.value?.happening)
-    XCTAssertEqual(true, newsletter.value?.games)
+    XCTAssertEqual(true, newsletter?.weekly)
+    XCTAssertEqual(true, newsletter?.promo)
+    XCTAssertEqual(true, newsletter?.happening)
+    XCTAssertEqual(true, newsletter?.games)
   }
 
   func testJsonDecoding() {
-    let json = User.NewsletterSubscriptions.decodeJSONDictionary([
+    let json: [String: AnyHashable] = [
       "games_newsletter": true,
       "happening_newsletter": false,
       "promo_newsletter": true,
       "weekly_newsletter": false
-    ])
+    ]
 
-    let newsletters = json.value
-
+    let newsletters: User.NewsletterSubscriptions? = User.NewsletterSubscriptions.decodeJSONDictionary(json)
+    let emptyDic: [String: AnyHashable] = [:]
     XCTAssertEqual(newsletters,
-                   User.NewsletterSubscriptions.decodeJSONDictionary(newsletters?.encode() ?? [:]).value)
+                   User.NewsletterSubscriptions.decodeJSONDictionary(newsletters?.encode() ?? emptyDic))
   }
 }
