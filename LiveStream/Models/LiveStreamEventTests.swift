@@ -61,7 +61,7 @@ final class LiveStreamEventTests: XCTestCase {
         "is_subscribed": true
       ]
     ]
-    let liveStreamEvent = LiveStreamEvent.decodeJSONDictionary(json)
+    let liveStreamEvent: LiveStreamEvent? = LiveStreamEvent.decodeJSONDictionary(json)
 
     var dateComponents = DateComponents()
     dateComponents.day = 1
@@ -72,51 +72,51 @@ final class LiveStreamEventTests: XCTestCase {
     let date = Calendar.current.date(from: dateComponents)
 
     // Stream
-    XCTAssertNil(liveStreamEvent.error)
-    XCTAssertEqual(123, liveStreamEvent.value?.id)
-    XCTAssertEqual("Live Stream Event Name", liveStreamEvent.value?.name)
-    XCTAssertEqual("Live Stream Event Description", liveStreamEvent.value?.description)
-    XCTAssertEqual("http://www.background.com/medium.jpg", liveStreamEvent.value?.backgroundImage.medium)
+    XCTAssertNotNil(liveStreamEvent)
+    XCTAssertEqual(123, liveStreamEvent?.id)
+    XCTAssertEqual("Live Stream Event Name", liveStreamEvent?.name)
+    XCTAssertEqual("Live Stream Event Description", liveStreamEvent?.description)
+    XCTAssertEqual("http://www.background.com/medium.jpg", liveStreamEvent?.backgroundImage.medium)
     XCTAssertEqual("http://www.background.com/small-cropped.jpg",
-                   liveStreamEvent.value?.backgroundImage.smallCropped)
-    XCTAssertEqual(date, liveStreamEvent.value?.startDate)
-    XCTAssertEqual("http://www.kickstarter.com", liveStreamEvent.value?.webUrl)
-    XCTAssertEqual("http://www.kickstarter.com", liveStreamEvent.value?.project.webUrl)
-    XCTAssertEqual("Live Stream Project Name", liveStreamEvent.value?.project.name)
-    XCTAssertEqual(false, liveStreamEvent.value?.isRtmp)
-    XCTAssertEqual(300, liveStreamEvent.value?.maxOpenTokViewers)
-    XCTAssertEqual("http://www.kickstarter.com", liveStreamEvent.value?.hlsUrl)
-    XCTAssertEqual(true, liveStreamEvent.value?.liveNow)
-    XCTAssertEqual(false, liveStreamEvent.value?.isScale)
-    XCTAssertEqual(true, liveStreamEvent.value?.hasReplay)
-    XCTAssertEqual("http://www.kickstarter.com", liveStreamEvent.value?.replayUrl)
+                   liveStreamEvent?.backgroundImage.smallCropped)
+    XCTAssertEqual(date, liveStreamEvent?.startDate)
+    XCTAssertEqual("http://www.kickstarter.com", liveStreamEvent?.webUrl)
+    XCTAssertEqual("http://www.kickstarter.com", liveStreamEvent?.project.webUrl)
+    XCTAssertEqual("Live Stream Project Name", liveStreamEvent?.project.name)
+    XCTAssertEqual(false, liveStreamEvent?.isRtmp)
+    XCTAssertEqual(300, liveStreamEvent?.maxOpenTokViewers)
+    XCTAssertEqual("http://www.kickstarter.com", liveStreamEvent?.hlsUrl)
+    XCTAssertEqual(true, liveStreamEvent?.liveNow)
+    XCTAssertEqual(false, liveStreamEvent?.isScale)
+    XCTAssertEqual(true, liveStreamEvent?.hasReplay)
+    XCTAssertEqual("http://www.kickstarter.com", liveStreamEvent?.replayUrl)
 
     // Creator
-    XCTAssertEqual("Creator Name", liveStreamEvent.value?.creator.name)
-    XCTAssertEqual("http://www.kickstarter.com", liveStreamEvent.value?.creator.avatar)
+    XCTAssertEqual("Creator Name", liveStreamEvent?.creator.name)
+    XCTAssertEqual("http://www.kickstarter.com", liveStreamEvent?.creator.avatar)
 
     // Firebase
-    XCTAssertEqual("huzza-web", liveStreamEvent.value?.firebase?.project)
-    XCTAssertEqual("apikey", liveStreamEvent.value?.firebase?.apiKey)
-    XCTAssertEqual("events/path", liveStreamEvent.value?.firebase?.greenRoomPath)
-    XCTAssertEqual("events/path", liveStreamEvent.value?.firebase?.hlsUrlPath)
-    XCTAssertEqual("presence/path", liveStreamEvent.value?.firebase?.numberPeopleWatchingPath)
-    XCTAssertEqual("globalpresence/path", liveStreamEvent.value?.firebase?.scaleNumberPeopleWatchingPath)
-    XCTAssertEqual("messages/path", liveStreamEvent.value?.firebase?.chatPath)
-    XCTAssertEqual("messages/post_path", liveStreamEvent.value?.firebase?.chatPostPath)
-    XCTAssertEqual("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9", liveStreamEvent.value?.firebase?.token)
+    XCTAssertEqual("huzza-web", liveStreamEvent?.firebase?.project)
+    XCTAssertEqual("apikey", liveStreamEvent?.firebase?.apiKey)
+    XCTAssertEqual("events/path", liveStreamEvent?.firebase?.greenRoomPath)
+    XCTAssertEqual("events/path", liveStreamEvent?.firebase?.hlsUrlPath)
+    XCTAssertEqual("presence/path", liveStreamEvent?.firebase?.numberPeopleWatchingPath)
+    XCTAssertEqual("globalpresence/path", liveStreamEvent?.firebase?.scaleNumberPeopleWatchingPath)
+    XCTAssertEqual("messages/path", liveStreamEvent?.firebase?.chatPath)
+    XCTAssertEqual("messages/post_path", liveStreamEvent?.firebase?.chatPostPath)
+    XCTAssertEqual("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9", liveStreamEvent?.firebase?.token)
     XCTAssertEqual("https://s3.amazonaws.com/justin-profile.jpg?1467136041",
-                   liveStreamEvent.value?.firebase?.chatAvatarUrl)
-    XCTAssertEqual("id_18", liveStreamEvent.value?.firebase?.chatUserId)
-    XCTAssertEqual("justin-w", liveStreamEvent.value?.firebase?.chatUserName)
+                   liveStreamEvent?.firebase?.chatAvatarUrl)
+    XCTAssertEqual("id_18", liveStreamEvent?.firebase?.chatUserId)
+    XCTAssertEqual("justin-w", liveStreamEvent?.firebase?.chatUserName)
 
     // OpenTok
-    XCTAssertEqual("45698472", liveStreamEvent.value?.openTok?.appId)
-    XCTAssertEqual("1_MX40NTY5ODQ3Mn5-MT", liveStreamEvent.value?.openTok?.sessionId)
-    XCTAssertEqual("T1==cGFydG5lcl9pZD00=", liveStreamEvent.value?.openTok?.token)
+    XCTAssertEqual("45698472", liveStreamEvent?.openTok?.appId)
+    XCTAssertEqual("1_MX40NTY5ODQ3Mn5-MT", liveStreamEvent?.openTok?.sessionId)
+    XCTAssertEqual("T1==cGFydG5lcl9pZD00=", liveStreamEvent?.openTok?.token)
 
     // User
-    XCTAssertEqual(true, liveStreamEvent.value?.user?.isSubscribed)
+    XCTAssertEqual(true, liveStreamEvent?.user?.isSubscribed)
   }
 
   func testDecoding_JSONFromListStream() {
@@ -151,11 +151,11 @@ final class LiveStreamEventTests: XCTestCase {
       ]
     ]
 
-    let liveStreamEventDecoded = LiveStreamEvent.decodeJSONDictionary(json)
-    let liveStreamEvent = liveStreamEventDecoded.value
+    let liveStreamEventDecoded: LiveStreamEvent? = LiveStreamEvent.decodeJSONDictionary(json)
+    let liveStreamEvent = liveStreamEventDecoded
 
     XCTAssertNotNil(liveStreamEvent)
-    XCTAssertNil(liveStreamEventDecoded.error)
+    XCTAssertNotNil(liveStreamEventDecoded)
 
     XCTAssertEqual(123, liveStreamEvent?.id)
 

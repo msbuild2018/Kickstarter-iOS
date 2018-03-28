@@ -9,7 +9,7 @@ public extension Swift.Decodable {
 
    - returns: A decoded value.
    */
-  public static func decodeJSONDictionary<M: Swift.Decodable>(_ json: [String: AnyHashable]) -> M? {
+  public static func decodeJSONDictionary<M: Swift.Decodable>(_ json: [String: Any]) -> M? {
     guard let data = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) else {
       return nil
     }

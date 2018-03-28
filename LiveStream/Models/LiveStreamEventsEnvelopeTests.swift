@@ -71,11 +71,11 @@ final class LiveStreamEventsEnvelopeTests: XCTestCase {
       ]
     ]
 
-    let eventsEnvelope = LiveStreamEventsEnvelope.decodeJSONDictionary(json)
+    let eventsEnvelope: LiveStreamEventsEnvelope? = LiveStreamEventsEnvelope.decodeJSONDictionary(json)
 
-    XCTAssertNil(eventsEnvelope.error)
-    XCTAssertEqual(1, eventsEnvelope.value?.numberOfLiveStreams)
-    XCTAssertEqual(12084, eventsEnvelope.value?.liveStreamEvents[0].id)
-    XCTAssertEqual(12085, eventsEnvelope.value?.liveStreamEvents[1].id)
+    XCTAssertNotNil(eventsEnvelope)
+    XCTAssertEqual(1, eventsEnvelope?.numberOfLiveStreams)
+    XCTAssertEqual(12084, eventsEnvelope?.liveStreamEvents[0].id)
+    XCTAssertEqual(12085, eventsEnvelope?.liveStreamEvents[1].id)
   }
 }

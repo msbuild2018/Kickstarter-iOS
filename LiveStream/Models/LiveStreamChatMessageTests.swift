@@ -1,5 +1,5 @@
 import XCTest
-import Argo
+import KsApi
 @testable import LiveStream
 
 private struct TestFirebaseDataSnapshotType: FirebaseDataSnapshotType {
@@ -19,16 +19,16 @@ final class LiveStreamChatMessageTests: XCTestCase {
       "userId": "id_1312341234321"
     ]
 
-    let chatMessage = LiveStreamChatMessage.decodeJSONDictionary(json)
+    let chatMessage: LiveStreamChatMessage? = LiveStreamChatMessage.decodeJSONDictionary(json)
 
-    XCTAssertNil(chatMessage.error)
-    XCTAssertEqual("KDeCy9vvd7ZCRwHc8Ca", chatMessage.value?.id)
-    XCTAssertEqual(false, chatMessage.value?.isCreator)
-    XCTAssertEqual("Test chat message", chatMessage.value?.message)
-    XCTAssertEqual("Test Name", chatMessage.value?.name)
-    XCTAssertEqual("http://www.kickstarter.com/picture.jpg", chatMessage.value?.profilePictureUrl)
-    XCTAssertEqual(1234234123, chatMessage.value?.date)
-    XCTAssertEqual("id_1312341234321", chatMessage.value?.userId)
+    XCTAssertNotNil(chatMessage)
+    XCTAssertEqual("KDeCy9vvd7ZCRwHc8Ca", chatMessage?.id)
+    XCTAssertEqual(false, chatMessage?.isCreator)
+    XCTAssertEqual("Test chat message", chatMessage?.message)
+    XCTAssertEqual("Test Name", chatMessage?.name)
+    XCTAssertEqual("http://www.kickstarter.com/picture.jpg", chatMessage?.profilePictureUrl)
+    XCTAssertEqual(1234234123, chatMessage?.date)
+    XCTAssertEqual("id_1312341234321", chatMessage?.userId)
   }
 
   func testParseFirebaseDataSnapshot() {
@@ -45,13 +45,13 @@ final class LiveStreamChatMessageTests: XCTestCase {
 
     let chatMessage = LiveStreamChatMessage.decode(snapshot)
 
-    XCTAssertNil(chatMessage.error)
-    XCTAssertEqual("KDeCy9vvd7ZCRwHc8Ca", chatMessage.value?.id)
-    XCTAssertEqual(false, chatMessage.value?.isCreator)
-    XCTAssertEqual("Test chat message", chatMessage.value?.message)
-    XCTAssertEqual("Test Name", chatMessage.value?.name)
-    XCTAssertEqual("http://www.kickstarter.com/picture.jpg", chatMessage.value?.profilePictureUrl)
-    XCTAssertEqual(1234234123, chatMessage.value?.date)
-    XCTAssertEqual("id_1312341234321", chatMessage.value?.userId)
+    XCTAssertNotNil(chatMessage)
+    XCTAssertEqual("KDeCy9vvd7ZCRwHc8Ca", chatMessage.id)
+    XCTAssertEqual(false, chatMessage.isCreator)
+    XCTAssertEqual("Test chat message", chatMessage.message)
+    XCTAssertEqual("Test Name", chatMessage.name)
+    XCTAssertEqual("http://www.kickstarter.com/picture.jpg", chatMessage.profilePictureUrl)
+    XCTAssertEqual(1234234123, chatMessage.date)
+    XCTAssertEqual("id_1312341234321", chatMessage.userId)
   }
 }

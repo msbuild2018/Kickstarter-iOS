@@ -5,7 +5,7 @@ final class CommentTests: XCTestCase {
 
   func testJSONParsing_WithCompleteData() {
 
-    let comment = Comment.decodeJSONDictionary([
+    let comment: Comment? = Comment.decodeJSONDictionary([
       "author": [
         "id": 1,
         "name": "Blob",
@@ -20,13 +20,13 @@ final class CommentTests: XCTestCase {
       "id": 1
       ])
 
-    XCTAssertNil(comment.error)
-    XCTAssertEqual(1, comment.value?.id)
+    XCTAssertNotNil(comment)
+    XCTAssertEqual(1, comment?.id)
   }
 
   func testJSONParsing_ZeroDeletedAt() {
 
-    let comment = Comment.decodeJSONDictionary([
+    let comment: Comment? = Comment.decodeJSONDictionary([
       "author": [
         "id": 1,
         "name": "Blob",
@@ -41,8 +41,7 @@ final class CommentTests: XCTestCase {
       "id": 1
       ])
 
-    XCTAssertNil(comment.error)
-    XCTAssertNotNil(comment.value)
-    XCTAssertNil(comment.value?.deletedAt)
+    XCTAssertNotNil(comment)
+    XCTAssertNil(comment?.deletedAt)
   }
 }

@@ -40,12 +40,12 @@ final class ConfigTests: XCTestCase {
     ]
 
     // Confirm json decoded successfully
-    let decodedConfig = Config.decodeJSONDictionary(json)
-    XCTAssertNil(decodedConfig.error)
+    let decodedConfig: Config? = Config.decodeJSONDictionary(json)
+    XCTAssertNotNil(decodedConfig)
 
     // Confirm fields decoded properly
     // swiftlint:disable:next force_unwrapping
-    let config = decodedConfig.value!
+    let config = decodedConfig!
     XCTAssertEqual(abExperiments, config.abExperiments)
     XCTAssertEqual(123456789, config.appId)
     XCTAssertEqual("US", config.countryCode)
@@ -57,6 +57,6 @@ final class ConfigTests: XCTestCase {
     XCTAssertEqual("pk", config.stripePublishableKey)
     XCTAssertEqual(["2001_space_odyssey[control]", "dr_strangelove[experiment]"], config.abExperimentsArray)
     // Confirm that encoding and decoding again results in the same config.
-    XCTAssertEqual(config, Config.decodeJSONDictionary(config.encode()).value)
+    XCTAssertEqual(config, Config.decodeJSONDictionary(config.encode()))
   }
 }

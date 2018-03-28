@@ -73,7 +73,8 @@ final class NotificationsTests: XCTestCase {
   }
 
   func testJsonDecoding() {
-    let json = User.Notifications.decodeJSONDictionary([
+
+    let json: [String: Any] = [
       "notify_of_backings": true,
       "notify_of_comments": false,
       "notify_of_follower": true,
@@ -86,11 +87,11 @@ final class NotificationsTests: XCTestCase {
       "notify_mobile_of_friend_activity": false,
       "notify_mobile_of_post_likes": true,
       "notify_mobile_of_updates": false
-    ])
+    ]
 
-    let notifications = json.value
+    let notifications: User.Notifications? = User.Notifications.decodeJSONDictionary(json)
 
     XCTAssertEqual(notifications,
-                   User.Notifications.decodeJSONDictionary(notifications?.encode() ?? [:]).value)
+                   User.Notifications.decodeJSONDictionary(notifications?.encode() ?? [:]))
   }
 }

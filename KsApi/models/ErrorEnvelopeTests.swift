@@ -5,7 +5,8 @@ import XCTest
 class ErrorEnvelopeTests: XCTestCase {
 
   func testJsonDecodingWithFullData() {
-    let env: ErrorEnvelope? = ErrorEnvelope.decodeJSONDictionary([
+
+    let json: [String: Any] = [
       "error_messages": ["hello"],
       "ksr_code": "access_token_invalid",
       "http_code": 401,
@@ -13,12 +14,15 @@ class ErrorEnvelopeTests: XCTestCase {
         "backtrace": ["hello"],
         "message": "hello"
       ]
-      ])
+    ]
+
+    let env: ErrorEnvelope? = ErrorEnvelope.decodeJSONDictionary(json)
     XCTAssertNotNil(env)
   }
 
   func testJsonDecodingWithBadKsrCode() {
-    let env: ErrorEnvelope? = ErrorEnvelope.decodeJSONDictionary([
+
+    let json: [String: Any] = [
       "error_messages": ["hello"],
       "ksr_code": "doesnt_exist",
       "http_code": 401,
@@ -26,14 +30,17 @@ class ErrorEnvelopeTests: XCTestCase {
         "backtrace": ["hello"],
         "message": "hello"
       ]
-      ])
+    ]
+
+    let env: ErrorEnvelope? = ErrorEnvelope.decodeJSONDictionary(json)
     XCTAssertNotNil(env)
     XCTAssertEqual(ErrorEnvelope.KsrCode.UnknownCode, env?.ksrCode)
   }
 
   // FIXME: write backer_reward test too
   func testJsonDecodingWithNonStandardError() {
-    let env: ErrorEnvelope? = ErrorEnvelope.decodeJSONDictionary([
+
+    let json: [String: Any] = [
       "status": 406,
       "data": [
         "errors": [
@@ -42,7 +49,9 @@ class ErrorEnvelopeTests: XCTestCase {
           ]
         ]
       ]
-    ])
+    ]
+    
+    let env: ErrorEnvelope? = ErrorEnvelope.decodeJSONDictionary(json)
     XCTAssertNotNil(env)
     XCTAssertEqual(ErrorEnvelope.KsrCode.UnknownCode, env?.ksrCode)
     // swiftlint:disable:next force_unwrapping
