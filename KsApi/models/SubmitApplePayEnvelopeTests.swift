@@ -4,7 +4,7 @@ import XCTest
 final class SubmitApplePayEnvelopeTests: XCTestCase {
 
   func testDecodingWithStringStatus() {
-    let decoded = SubmitApplePayEnvelope.decodeJSONDictionary(
+    let decoded: SubmitApplePayEnvelope? = SubmitApplePayEnvelope.decodeJSONDictionary(
       [
         "data": [
           "thankyou_url": "https://www.kickstarter.com/thanks"
@@ -13,12 +13,12 @@ final class SubmitApplePayEnvelopeTests: XCTestCase {
       ]
     )
 
-    XCTAssertNil(decoded.error)
-    XCTAssertEqual(200, decoded.value?.status)
+    XCTAssertNotNil(decoded)
+    XCTAssertEqual(200, decoded?.status)
   }
 
   func testDecodingWithStatus() {
-    let decoded = SubmitApplePayEnvelope.decodeJSONDictionary(
+    let decoded: SubmitApplePayEnvelope? = SubmitApplePayEnvelope.decodeJSONDictionary(
       [
         "data": [
           "thankyou_url": "https://www.kickstarter.com/thanks"
@@ -27,13 +27,13 @@ final class SubmitApplePayEnvelopeTests: XCTestCase {
       ]
     )
 
-    XCTAssertNil(decoded.error)
-    XCTAssertEqual(200, decoded.value?.status)
+    XCTAssertNotNil(decoded)
+    XCTAssertEqual(200, decoded?.status)
   }
 
   func testDecodingWithMissingStatus() {
 
-    let decoded = SubmitApplePayEnvelope.decodeJSONDictionary(
+    let decoded: SubmitApplePayEnvelope? = SubmitApplePayEnvelope.decodeJSONDictionary(
       [
         "data": [
           "thankyou_url": "https://www.kickstarter.com/thanks"
@@ -41,11 +41,11 @@ final class SubmitApplePayEnvelopeTests: XCTestCase {
       ]
     )
 
-    XCTAssertNotNil(decoded.error)
+    XCTAssertNil(decoded)
   }
 
   func testDecodingWithBadStatusData() {
-    let decoded = SubmitApplePayEnvelope.decodeJSONDictionary(
+    let decoded: SubmitApplePayEnvelope? = SubmitApplePayEnvelope.decodeJSONDictionary(
       [
         "data": [
           "thankyou_url": "bad data"
@@ -54,7 +54,7 @@ final class SubmitApplePayEnvelopeTests: XCTestCase {
       ]
     )
 
-    XCTAssertNil(decoded.error)
-    XCTAssertEqual(0, decoded.value?.status)
+    XCTAssertNotNil(decoded)
+    XCTAssertEqual(0, decoded?.status)
   }
 }

@@ -8,8 +8,8 @@ final class UserAvatarTests: XCTestCase {
       "medium": "http://www.kickstarter.com/medium.jpg",
       "small": "http://www.kickstarter.com/small.jpg"
     ]
-    let avatar = User.Avatar.decodeJSONDictionary(json)
+    let avatar: User.Avatar? = User.Avatar.decodeJSONDictionary(json)
 
-    XCTAssertEqual(avatar.value?.encode().description, json.description)
+    XCTAssertEqual(avatar?.encode().description, json.description)
   }
 }

@@ -53,7 +53,7 @@ final class ProjectTests: XCTestCase {
   }
 
   func testJSONParsing_WithCompleteData() {
-    let project = Project.decodeJSONDictionary([
+    let project: Project? = Project.decodeJSONDictionary([
       "id": 1,
       "name": "Project",
       "blurb": "The project blurb",
@@ -107,12 +107,12 @@ final class ProjectTests: XCTestCase {
       "state": "live"
       ])
 
-    XCTAssertNil(project.error)
-    XCTAssertEqual("US", project.value?.country.countryCode)
+    XCTAssertNotNil(project)
+    XCTAssertEqual("US", project?.country.countryCode)
   }
 
   func testJSONParsing_WithMemberData() {
-    let memberData = Project.MemberData.decodeJSONDictionary([
+    let memberData: Project.MemberData? = Project.MemberData.decodeJSONDictionary([
       "last_update_published_at": 123456789,
       "permissions": [
         "edit_project",
@@ -128,16 +128,16 @@ final class ProjectTests: XCTestCase {
       "unseen_activity_count": 2
       ])
 
-    XCTAssertNil(memberData.error)
-    XCTAssertEqual(123456789, memberData.value?.lastUpdatePublishedAt)
-    XCTAssertEqual(1, memberData.value?.unreadMessagesCount)
-    XCTAssertEqual(2, memberData.value?.unseenActivityCount)
+    XCTAssertNotNil(memberData)
+    XCTAssertEqual(123456789, memberData?.lastUpdatePublishedAt)
+    XCTAssertEqual(1, memberData?.unreadMessagesCount)
+    XCTAssertEqual(2, memberData?.unseenActivityCount)
     XCTAssertEqual([.editProject, .editFaq, .post, .comment, .viewPledges, .fulfillment],
-                   memberData.value?.permissions ?? [])
+                   memberData?.permissions ?? [])
   }
 
   func testJSONParsing_WithPesonalizationData() {
-    let project = Project.decodeJSONDictionary([
+    let project: Project? = Project.decodeJSONDictionary([
       "id": 1,
       "name": "Project",
       "blurb": "The project blurb",
@@ -193,9 +193,9 @@ final class ProjectTests: XCTestCase {
       "is_starred": true
     ])
 
-    XCTAssertNil(project.error)
-    XCTAssertEqual("US", project.value?.country.countryCode)
-    XCTAssertEqual(true, project.value?.personalization.isBacking)
+    XCTAssertNotNil(project)
+    XCTAssertEqual("US", project?.country.countryCode)
+    XCTAssertEqual(true, project?.personalization.isBacking)
   }
 
   func testPledgedUsd() {

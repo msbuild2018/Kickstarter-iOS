@@ -9,9 +9,9 @@ final class CheckoutEnvelopeTests: XCTestCase {
       "state_reason": "Oof!"
     ]
 
-    let envelope = CheckoutEnvelope.decodeJSONDictionary(json)
+    let envelope: CheckoutEnvelope? = CheckoutEnvelope.decodeJSONDictionary(json)
 
-    XCTAssertEqual(CheckoutEnvelope.State.failed, envelope.value?.state)
-    XCTAssertEqual("Oof!", envelope.value?.stateReason)
+    XCTAssertEqual(CheckoutEnvelope.State.failed, envelope?.state)
+    XCTAssertEqual("Oof!", envelope?.stateReason)
   }
 }

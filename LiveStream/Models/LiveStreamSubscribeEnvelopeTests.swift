@@ -8,10 +8,10 @@ final class LiveStreamSubscribeEnvelopeTests: XCTestCase {
       "success": true
     ]
 
-    let eventsEnvelope = LiveStreamSubscribeEnvelope.decodeJSONDictionary(json)
+    let eventsEnvelope: LiveStreamSubscribeEnvelope? = LiveStreamSubscribeEnvelope.decodeJSONDictionary(json)
 
-    XCTAssertNil(eventsEnvelope.error)
-    XCTAssertEqual(true, eventsEnvelope.value?.success)
+    XCTAssertNotNil(eventsEnvelope)
+    XCTAssertEqual(true, eventsEnvelope?.success)
   }
 
   func testParseJson_Failure() {
@@ -20,10 +20,10 @@ final class LiveStreamSubscribeEnvelopeTests: XCTestCase {
       "reason": "A great reason"
     ]
 
-    let eventsEnvelope = LiveStreamSubscribeEnvelope.decodeJSONDictionary(json)
+    let eventsEnvelope: LiveStreamSubscribeEnvelope? = LiveStreamSubscribeEnvelope.decodeJSONDictionary(json)
 
-    XCTAssertNil(eventsEnvelope.error)
-    XCTAssertEqual(false, eventsEnvelope.value?.success)
-    XCTAssertEqual("A great reason", eventsEnvelope.value?.reason)
+    XCTAssertNotNil(eventsEnvelope)
+    XCTAssertEqual(false, eventsEnvelope?.success)
+    XCTAssertEqual("A great reason", eventsEnvelope?.reason)
   }
 }
