@@ -81,7 +81,7 @@ class DiscoveryParamsTests: XCTestCase {
   func testDecode() {
 
     XCTAssertNil(decodedParam(with: [:]).backed, "absent values aren't set")
-    XCTAssertNil(DiscoveryParams.decodeJSONDictionary(["backed": "nope"])!, "invalid values error")
+    XCTAssertNil(decodedParam(with: ["backed": "nope"]), "invalid values error")
 
     // server logic
     XCTAssertEqual(true, decodedParam(with: ["has_video": "true"]).hasVideo)
