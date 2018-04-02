@@ -2,7 +2,7 @@ import Argo
 import Curry
 import Runes
 
-public struct ErrorEnvelope {
+public struct ErrorEnvelope: Swift.Decodable {
   public let errorMessages: [String]
   public let ksrCode: KsrCode?
   public let httpCode: Int
@@ -104,11 +104,44 @@ public struct ErrorEnvelope {
     exception: nil,
     facebookUser: nil
   )
+
+  public struct ErrorEnvelopeData: Swift.Decodable {
+    let errors: [String: [String]]
+  }
 }
 
 extension ErrorEnvelope: Error {}
 
-extension ErrorEnvelope: Swift.Decodable {
+extension ErrorEnvelope.ErrorEnvelopeData {
+  enum CodingKeys: String, CodingKey {
+    case errors
+  }
+}
+
+extension ErrorEnvelope.Exception {
+  enum CodingKeys: String, CodingKey {
+    case backtrace, message
+  }
+
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    self.backtrace = try? container.decode([String].self, forKey: .backtrace)
+    self.message = try? container.decode(String.self, forKey: .message)
+  }
+}
+
+extension ErrorEnvelope {
+
+  fileprivate enum CodingKeys: String, CodingKey {
+    case data
+    case errorMessages = "error_messages"
+    case ksrCode = "ksr_code"
+    case httpCode = "http_code"
+    case exception
+    case facebookUser = "facebook_user"
+    case status // Only used in non-standard error envelope
+  }
+
   public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
 
@@ -121,16 +154,17 @@ extension ErrorEnvelope: Swift.Decodable {
     // Typically API errors come back in this form...
     do {
       errorMessages = try container.decode([String].self, forKey: .errorMessages)
-      ksrCode = try container.decode(KsrCode?.self, forKey: .ksrCode)
+      ksrCode = retrieveKsrCode(with: container)
       httpCode = try container.decode(Int.self, forKey: .httpCode)
-      exception = try Exception?(from: decoder)
+      exception = try? container.decode(Exception.self, forKey: .exception)
       facebookUser = try? container.decode(FacebookUser.self, forKey: .facebookUser)
     } catch {
       // ...but sometimes we make requests to the www server and JSON errors come back in a different envelope
       do {
-        let errorDictionary = try container.decode([String: Any].self, forKey: .data)
 
-        errorMessages = ["amount", "backer_reward"].flatMap {
+        let errorDictionary = try container.decode(ErrorEnvelopeData.self, forKey: .data).errors
+
+        errorMessages = errorDictionary.keys.flatMap {
           retrieveErrorString(from: errorDictionary, key: $0)
         }.sconcat([])
 
@@ -147,26 +181,26 @@ extension ErrorEnvelope: Swift.Decodable {
     self.exception = exception
     self.facebookUser = facebookUser
   }
+}
 
-  private enum CodingKeys: String, CodingKey {
-    case data
-    case errorMessages = "error_messages"
-    case ksrCode = "ksr_code"
-    case httpCode = "http_code"
-    case exception
-    case facebookUser = "facebook_user"
-    case status // Only used in non-standard error envelope
+private func retrieveKsrCode(with container: KeyedDecodingContainer<ErrorEnvelope.CodingKeys>)
+  -> ErrorEnvelope.KsrCode? {
+
+  do {
+    let code =  try container.decode(ErrorEnvelope.KsrCode?.self, forKey: .ksrCode)
+    return code
+  } catch {
+    return ErrorEnvelope.KsrCode.UnknownCode
   }
 }
 
 private func retrieveErrorString(from dictionary: [String: Any?], key: String) -> [String]? {
-  guard let errors = dictionary["errors"] as? [String: Any?] else { return nil }
 
-  if let amount = errors["amount"] as? [String] {
+  if let amount = dictionary["amount"] as? [String] {
     return amount
   }
 
-  if let backerReward = errors["backer_reward"] as? [String] {
+  if let backerReward = dictionary["backer_reward"] as? [String] {
     return backerReward
   }
 
