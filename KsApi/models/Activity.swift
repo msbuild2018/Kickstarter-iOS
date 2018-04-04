@@ -61,7 +61,13 @@ extension Activity {
 
   public init(from decoder: Decoder) throws {
     let values = try decoder.container(keyedBy: CodingKeys.self)
-    self.category = try values.decode(Activity.Category.self, forKey: .category)
+
+    do {
+      self.category = try values.decode(Activity.Category.self, forKey: .category)
+    } catch {
+      self.category = .unknown
+    }
+
     self.comment = try? values.decode(Comment.self, forKey: .comment)
     self.createdAt = try values.decode(TimeInterval.self, forKey: .createdAt)
     self.id = try values.decode(Int.self, forKey: .id)
@@ -71,17 +77,6 @@ extension Activity {
     self.user = try? values.decode(User.self, forKey: .user)
   }
 }
-
-//extension Activity.Category {
-//  public static func decode(_ json: JSON) -> Decoded<Activity.Category> {
-//    switch json {
-//    case let .string(category):
-//      return .success(Activity.Category(rawValue: category) ?? .unknown)
-//    default:
-//      return .failure(.typeMismatch(expected: "String", actual: json.description))
-//    }
-//  }
-//}
 
 extension Activity.MemberData {
   enum CodingKeys: String, CodingKey {
@@ -95,13 +90,23 @@ extension Activity.MemberData {
   }
 
   public init(from decoder: Decoder) throws {
-    let values = try decoder.container(keyedBy: CodingKeys.self)
-    self.amount = try? values.decode(Int.self, forKey: .amount)
-    self.backing = try? values.decode(Backing.self, forKey: .backing)
-    self.oldAmount = try? values.decode(Int.self, forKey: .oldAmount)
-    self.oldRewardId = try? values.decode(Int.self, forKey: .oldRewardId)
-    self.newAmount = try? values.decode(Int.self, forKey: .newAmount)
-    self.newRewardId = try? values.decode(Int.self, forKey: .newRewardId)
-    self.rewardId = try? values.decode(Int.self, forKey: .rewardId)
+    do {
+      let values = try decoder.container(keyedBy: CodingKeys.self)
+      self.amount = try? values.decode(Int.self, forKey: .amount)
+      self.backing = try? values.decode(Backing.self, forKey: .backing)
+      self.oldAmount = try? values.decode(Int.self, forKey: .oldAmount)
+      self.oldRewardId = try? values.decode(Int.self, forKey: .oldRewardId)
+      self.newAmount = try? values.decode(Int.self, forKey: .newAmount)
+      self.newRewardId = try? values.decode(Int.self, forKey: .newRewardId)
+      self.rewardId = try? values.decode(Int.self, forKey: .rewardId)
+    } catch {
+      self.amount = nil
+      self.backing = nil
+      self.oldAmount = nil
+      self.oldRewardId = nil
+      self.newAmount = nil
+      self.newRewardId = nil
+      self.rewardId = nil
+    }
   }
 }

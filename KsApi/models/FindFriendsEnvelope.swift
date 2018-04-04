@@ -25,7 +25,7 @@ extension FindFriendsEnvelope {
     let values = try decoder.container(keyedBy: CodingKeys.self)
     self.contactsImported = try values.decode(Bool.self, forKey: .contactsImported)
     self.urls = try values.decode(UrlsEnvelope.self, forKey: .urls)
-    self.users = try [values.decode(User.self, forKey: .users)] // this?
+    self.users = try values.decode([User].self, forKey: .users)
   }
 }
 

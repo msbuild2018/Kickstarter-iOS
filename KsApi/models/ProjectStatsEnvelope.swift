@@ -68,9 +68,9 @@ extension ProjectStatsEnvelope {
   public init(from decoder: Decoder) throws {
     let values = try decoder.container(keyedBy: CodingKeys.self)
     self.cumulativeStats = try values.decode(CumulativeStats.self, forKey: .cumulativeStats)
-    self.fundingDistribution = try [values.decode(FundingDateStats.self, forKey: .fundingDistribution)]
-    self.referralDistribution = try [values.decode(ReferrerStats.self, forKey: .referralDistribution)]
-    self.rewardDistribution = try [values.decode(RewardStats.self, forKey: .rewardDistribution)]
+    self.fundingDistribution = try values.decode([FundingDateStats].self, forKey: .fundingDistribution)
+    self.referralDistribution = try values.decode([ReferrerStats].self, forKey: .referralDistribution)
+    self.rewardDistribution = try values.decode([RewardStats].self, forKey: .rewardDistribution)
     self.videoStats = try? values.decode(VideoStats.self, forKey: .videoStats)
   }
 }
@@ -86,7 +86,9 @@ extension ProjectStatsEnvelope.CumulativeStats {
 
   public init(from decoder: Decoder) throws {
     let values = try decoder.container(keyedBy: CodingKeys.self)
-    self.averagePledge = try values.decode(Int.self, forKey: .averagePledge)
+
+    let averageDouble = try values.decode(Double.self, forKey: .averagePledge)
+    self.averagePledge = Int(averageDouble)
     self.backersCount = try values.decode(Int.self, forKey: .backersCount)
     let goalString = try values.decode(String.self, forKey: .goal)
     self.goal = stringToIntOrZero(goalString)
@@ -113,7 +115,12 @@ extension ProjectStatsEnvelope.FundingDateStats {
 
   public init(from decoder: Decoder) throws {
     let values = try decoder.container(keyedBy: CodingKeys.self)
-    self.backersCount = try values.decode(Int.self, forKey: .backersCount)
+
+    do {
+      self.backersCount = try values.decode(Int.self, forKey: .backersCount)
+    } catch {
+      self.backersCount = 0
+    }
 
     do {
       let cumulativePledgedString = try values.decode(String.self, forKey: .cumulativePledged)
@@ -152,6 +159,7 @@ extension ProjectStatsEnvelope.ReferrerStats {
 
   public init(from decoder: Decoder) throws {
     let values = try decoder.container(keyedBy: CodingKeys.self)
+    
     self.backersCount = try values.decode(Int.self, forKey: .backersCount)
     self.code = try values.decode(String.self, forKey: .code)
     let percentageOfDollarsString = try values.decode(String.self, forKey: .percentageOfDollars)
@@ -181,7 +189,6 @@ extension ProjectStatsEnvelope.ReferrerStats.ReferrerType {
       default:
         return .unknown
       }
-      return .unknown
   }
 }
 
@@ -199,7 +206,7 @@ extension ProjectStatsEnvelope.RewardStats {
     self.rewardId = try values.decode(Int.self, forKey: .rewardId)
 
     do {
-      let minimumString = try? values.decode(String.self, forKey: .minimum)
+      let minimumString = try values.decode(String.self, forKey: .minimum)
       self.minimum = stringToInt(minimumString)
     } catch {
       self.minimum = try? values.decode(Int.self, forKey: .minimum)

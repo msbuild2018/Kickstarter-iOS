@@ -83,7 +83,7 @@ final internal class ActivityTests: XCTestCase {
     let activity: Activity? = Activity.decodeJSONDictionary([
       "category": "incorrect_category",
       "created_at": 123123123,
-      "id": 1,
+      "id": 1
       ])
 
     XCTAssertNotNil(activity)

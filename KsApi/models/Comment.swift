@@ -22,7 +22,11 @@ extension Comment {
     self.author = try values.decode(User.self, forKey: .author)
     self.body = try values.decode(String.self, forKey: .body)
     self.createdAt = try values.decode(TimeInterval.self, forKey: .createdAt)
-    self.deletedAt = try? values.decode(TimeInterval.self, forKey: .deletedAt)
+    if let deleted = try? values.decode(TimeInterval.self, forKey: .deletedAt) {
+      self.deletedAt = deleted > 0.0 ? deleted : nil
+    } else {
+      self.deletedAt = nil
+    }
     self.id = try values.decode(Int.self, forKey: .id)
   }
 }

@@ -54,7 +54,7 @@ final class FindFriendsEnvelopeTests: XCTestCase {
       ]
     ]
 
-      let friends: FindFriendsEnvelope? = FindFriendsEnvelope.decodeJSONDictionary(json)
+    let friends: FindFriendsEnvelope? = FindFriendsEnvelope.decodeJSONDictionary(json)
     let users = friends?.users ?? []
 
     XCTAssertEqual(true, friends?.contactsImported)

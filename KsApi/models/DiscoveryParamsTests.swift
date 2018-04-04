@@ -74,14 +74,14 @@ class DiscoveryParamsTests: XCTestCase {
                    "POTD flag is included with no filter + magic sort.")
   }
 
-  private func decodedParam(with json: [String: AnyHashable]) -> DiscoveryParams {
+  private func decodedParam(with json: [String: String]) -> DiscoveryParams {
      return DiscoveryParams.decodeJSONDictionary(json)!
   }
 
   func testDecode() {
 
     XCTAssertNil(decodedParam(with: [:]).backed, "absent values aren't set")
-    XCTAssertNil(decodedParam(with: ["backed": "nope"]), "invalid values error")
+    XCTAssertEqual(false, decodedParam(with: ["backed": "nope"]).backed, "invalid values error")
 
     // server logic
     XCTAssertEqual(true, decodedParam(with: ["has_video": "true"]).hasVideo)
@@ -107,7 +107,7 @@ class DiscoveryParamsTests: XCTestCase {
     XCTAssertEqual(41, decodedParam(with: ["per_page": "41"]).perPage)
     XCTAssertEqual(42, decodedParam(with: ["seed": "42"]).seed)
 
-    XCTAssertNil(decodedParam(with: ["backed": "42"]))
+    XCTAssertEqual(false, decodedParam(with: ["backed": "42"]).backed)
     XCTAssertNil(decodedParam(with: ["backed": "0"]).backed)
     XCTAssertEqual(true, decodedParam(with: ["backed": "1"]).backed)
     XCTAssertEqual(false, decodedParam(with: ["backed": "-1"]).backed)

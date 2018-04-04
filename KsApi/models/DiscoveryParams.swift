@@ -113,7 +113,7 @@ extension DiscoveryParams {
   public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     let backedString = try? container.decode(String.self, forKey: .backed)
-    self.backed = stringToBool(backedString)
+    self.backed = stringIntToBool(backedString)
     self.category = try? container.decode(Category.self, forKey: .category)
     let collaboratedString = try? container.decode(String.self, forKey: .collaborated)
     self.collaborated = stringToBool(collaboratedString)
@@ -133,7 +133,7 @@ extension DiscoveryParams {
     self.recommended = stringToBool(recommendedString)
     let seedString = try? container.decode(String.self, forKey: .seed)
     self.seed = stringToInt(seedString)
-    self.similarTo = nil//try? container.decode(Project.self, forKey: .similarTo)
+    self.similarTo = try? container.decode(Project.self, forKey: .similarTo)
     let socialString = try? container.decode(String.self, forKey: .social)
     self.social = stringIntToBool(socialString)
     self.sort = try? container.decode(DiscoveryParams.Sort.self, forKey: .sort)
@@ -169,30 +169,3 @@ private func stringIntToBool(_ string: String?) -> Bool? {
     .filter { $0 <= 1 && $0 >= -1 }
     .map { ($0 == 0 ? nil : $0 == 1) } ?? false
 }
-
-//private func decodeToGraphCategory(_ json: JSON?) -> Decoded<Category> {
-//
-//  guard let jsonObj = json else {
-//    return .success(Category(id: "-1", name: "Unknown Category"))
-//  }
-//  switch jsonObj {
-//  case .object(let dic):
-//    let category = Category(id: categoryInfo(dic)?.0 ?? "",
-//                                                   name: categoryInfo(dic)?.1 ?? "")
-//    return .success(category)
-//  default:
-//    return .failure(DecodeError.custom("JSON should be object type"))
-//  }
-//}
-//
-//private func categoryInfo(_ json: [String: JSON]) -> (String, String)? {
-//  guard let name = json["name"], let id = json["id"] else {
-//    return nil
-//  }
-//  switch (id, name) {
-//  case (.number(let id), .string(let name)):
-//    return ("\(id)", name)
-//  default:
-//    return nil
-//  }
-//}

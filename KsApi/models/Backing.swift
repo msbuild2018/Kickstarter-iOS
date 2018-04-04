@@ -60,7 +60,7 @@ extension Backing {
     self.reward = try? values.decode(Reward.self, forKey: .backer)
     self.rewardId = try? values.decode(Int.self, forKey: .rewardId)
     self.sequence = try values.decode(Int.self, forKey: .sequence)
-    self.shippingAmount = try values.decode(Int.self, forKey: .shippingAmount)
+    self.shippingAmount = try? values.decode(Int.self, forKey: .shippingAmount)
     self.status = try values.decode(Status.self, forKey: .status)
   }
 }

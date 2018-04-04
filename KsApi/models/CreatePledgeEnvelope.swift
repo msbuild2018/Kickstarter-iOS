@@ -24,6 +24,13 @@ extension CreatePledgeEnvelope {
     let data = try? container.decode(CreatePledgeEnvelope.EnvelopeData.self, forKey: .data)
     self.checkoutUrl = data?.checkoutUrl
     self.newCheckoutUrl = data?.newCheckoutUrl
-    self.status = try container.decode(Int.self, forKey: .status)
+
+    do {
+      let statusString  = try container.decode(String.self, forKey: .status)
+      self.status = Int(statusString) ?? 0
+    } catch {
+      let statusInt  = try container.decode(Int.self, forKey: .status)
+      self.status = statusInt
+    }
   }
 }

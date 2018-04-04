@@ -17,7 +17,8 @@ public extension Swift.Decodable {
     do {
       let object = try JSONDecoder().decode(M.self, from: data)
       return object as M
-    } catch {
+    } catch let error {
+      print("\n[Ksr Tests] Failed decoding \(M.self). Error: \(error)\n")
       return nil
     }
   }
